@@ -3,241 +3,41 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>ВЕРХ ремонт - ремонт квартир под ключ в Краснодаре</title>
-    <meta
-      name="description"
-      content="Квиз и предварительный расчет ремонта квартиры под ключ в Краснодаре: тарифы Стандарт, Комфорт и Люкс."
-    />
-    <link rel="stylesheet" href="styles.css" />
+    <title>ВЕРХ ремонт - версии сайта</title>
+    <meta name="description" content="Версии прототипа сайта ВЕРХ ремонт." />
+    <link rel="stylesheet" href="version-index.css" />
   </head>
   <body>
-    <header class="site-header">
-      <a class="brand" href="#top" aria-label="ВЕРХ ремонт">
-        <span class="brand__mark">ВЕРХ</span>
-        <span class="brand__sub">ремонт</span>
-      </a>
-      <nav class="nav" aria-label="Навигация">
-        <a href="#tariffs">Тарифы</a>
-        <a href="#materials">Материалы</a>
-        <a href="#process">Процесс</a>
-        <a href="#concept">Визуал</a>
-      </nav>
-      <div class="header-actions">
-        <a class="phone" href="tel:+79182383059" aria-label="Позвонить">
-          <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M7.1 4.4 8.7 3a1.7 1.7 0 0 1 2.7.6l1 2.7a1.7 1.7 0 0 1-.5 1.9l-1.1 1a12.5 12.5 0 0 0 4.3 4.3l1-1.1a1.7 1.7 0 0 1 1.9-.5l2.7 1a1.7 1.7 0 0 1 .6 2.7l-1.4 1.6c-1.2 1.3-3.1 1.8-4.8 1.2A18.9 18.9 0 0 1 5.9 8.8c-.6-1.6-.1-3.3 1.2-4.4Z"/></svg>
-          <span>+7 (918) 238-30-59</span>
+    <main class="versions">
+      <section class="intro">
+        <a class="brand" href="v2/" aria-label="Открыть актуальную версию">
+          <span>ВЕРХ</span>
+          <small>ремонт</small>
         </a>
-        <a class="button button--ghost" href="#lead">Замер</a>
-      </div>
-    </header>
-
-    <main id="top">
-      <section class="hero">
-        <div class="hero__visual" aria-label="ВЕРХ ремонт">
-          <img src="assets/hero-interior.png" alt="Интерьер в темной стилистике ВЕРХ ремонта" />
-          <div class="hero__content">
-            <p class="hero__logo">ВЕРХ</p>
-            <h1>Ремонт квартир под ключ в Краснодаре</h1>
-            <p>
-              Высококлассные материалы по доступной стоимости. Смета до старта,
-              оплата по этапам, контроль прораба.
-            </p>
-            <div class="hero__buttons">
-              <a class="button" href="#quiz">
-                <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M5 4h14v16H5V4Zm3 4h8M8 12h8M8 16h5"/></svg>
-                Рассчитать ремонт
-              </a>
-              <a class="button button--outline" href="#lead">
-                <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v16H6.5A2.5 2.5 0 0 0 4 21V5.5Zm0 0A2.5 2.5 0 0 0 6.5 8H20"/></svg>
-                Заказать каталоги
-              </a>
-            </div>
-          </div>
-          <div class="trust-strip">
-            <span>Договор и смета</span>
-            <span>Оплата по этапам</span>
-            <span>Контроль прораба</span>
-            <span>Гарантия до 5 лет</span>
-          </div>
-        </div>
-
-        <section class="quiz" id="quiz" aria-label="Квиз расчета ремонта">
-          <div class="quiz__top">
-            <div>
-              <p class="section-label">Расчет стоимости</p>
-              <h2 id="quiz-title">Какая квартира?</h2>
-            </div>
-            <span class="quiz__step" id="step-counter">1/6</span>
-          </div>
-          <div class="progress" aria-hidden="true"><span id="progress-bar"></span></div>
-          <p class="quiz__hint" id="quiz-hint">Выберите тип объекта, чтобы точнее собрать заявку.</p>
-          <div class="quiz__body" id="quiz-body"></div>
-          <div class="estimate">
-            <span>Предварительная стоимость</span>
-            <strong id="estimate-value">от 1 500 000 ₽</strong>
-          </div>
-          <div class="quiz__actions">
-            <button class="button button--outline" type="button" id="prev-step">Назад</button>
-            <button class="button" type="button" id="next-step">Далее</button>
-          </div>
-        </section>
+        <h1>Версии сайта ВЕРХ ремонта</h1>
+        <p>
+          Здесь сохраняем итерации макета, чтобы видеть динамику: от первого
+          кликабельного прототипа до более точной верстки по сгенерированным
+          desktop/mobile концептам.
+        </p>
+        <a class="primary" href="v2/">Открыть актуальную v2</a>
       </section>
 
-      <section class="summary-band" aria-label="Кратко о предложении">
-        <div>
-          <strong>20 000 ₽/м²</strong>
-          <span>Стандарт</span>
-        </div>
-        <div>
-          <strong>25 000 ₽/м²</strong>
-          <span>Комфорт</span>
-        </div>
-        <div>
-          <strong>29 000 ₽/м²</strong>
-          <span>Люкс</span>
-        </div>
-        <div>
-          <strong>12 лет</strong>
-          <span>опыт прораба</span>
-        </div>
-      </section>
+      <section class="version-grid" aria-label="Список версий">
+        <article class="version-card">
+          <span>v1</span>
+          <h2>Первый кликабельный прототип</h2>
+          <p>Базовая структура: квиз, расчет стоимости, тарифы, материалы, процесс и форма заявки.</p>
+          <a href="v1/">Открыть v1</a>
+        </article>
 
-      <section class="section" id="tariffs">
-        <div class="section__head">
-          <p class="section-label">Тарифы</p>
-          <h2>Три уровня ремонта под разные задачи</h2>
-          <p>Тарифная сетка перенесена из VK. Финальный состав и смета уточняются после замера.</p>
-        </div>
-        <div class="tariff-grid">
-          <article class="tariff-card" data-tariff-card="standard">
-            <img src="assets/tariff-standard.jpg" alt="Тариф Стандарт" />
-            <div>
-              <h3>Стандарт</h3>
-              <strong>20 000 ₽/м²</strong>
-              <p>Практичный ремонт под ключ с проверенными материалами и понятным бюджетом.</p>
-              <ul>
-                <li>Плитка 60х60</li>
-                <li>Ламинат 33 класс, 10 мм</li>
-                <li>Двери экошпон</li>
-                <li>Потолки ПВХ</li>
-              </ul>
-              <button class="link-button" type="button" data-pick-tariff="standard">Рассчитать по тарифу</button>
-            </div>
-          </article>
-          <article class="tariff-card tariff-card--featured" data-tariff-card="comfort">
-            <img src="assets/tariff-comfort.jpg" alt="Тариф Комфорт" />
-            <div>
-              <h3>Комфорт</h3>
-              <strong>25 000 ₽/м²</strong>
-              <p>Основной тариф для квартиры “заехать и жить”: больше света, сантехники и выбора материалов.</p>
-              <ul>
-                <li>Керамогранит и широкоформатная плитка</li>
-                <li>Тропический и гигиенический душ</li>
-                <li>Подсветка, бра и треки</li>
-                <li>Скрытые карнизы</li>
-              </ul>
-              <button class="link-button" type="button" data-pick-tariff="comfort">Рассчитать по тарифу</button>
-            </div>
-          </article>
-          <article class="tariff-card" data-tariff-card="lux">
-            <img src="assets/tariff-lux.jpg" alt="Тариф Люкс" />
-            <div>
-              <h3>Люкс</h3>
-              <strong>29 000 ₽/м²</strong>
-              <p>Для индивидуальных решений, дизайн-проекта и повышенного уровня материалов.</p>
-              <ul>
-                <li>Индивидуальная комплектация</li>
-                <li>Сложные интерьерные решения</li>
-                <li>Расширенный подбор материалов</li>
-                <li>Расчет после уточнения проекта</li>
-              </ul>
-              <button class="link-button" type="button" data-pick-tariff="lux">Рассчитать по тарифу</button>
-            </div>
-          </article>
-        </div>
-      </section>
-
-      <section class="materials" id="materials">
-        <div class="section__head">
-          <p class="section-label">Материалы</p>
-          <h2>Каталоги можно привезти на дом</h2>
-          <p>Клиент видит не абстрактный “ремонт под ключ”, а конкретный уровень плитки, пола, дверей, сантехники и света.</p>
-        </div>
-        <div class="material-grid">
-          <article><span>01</span><strong>Плитка</strong><p>60х60, керамогранит, широкоформатные решения.</p></article>
-          <article><span>02</span><strong>Ламинат</strong><p>33 класс, 10-14 мм в зависимости от тарифа.</p></article>
-          <article><span>03</span><strong>Двери</strong><p>Экошпон и подбор под общий стиль квартиры.</p></article>
-          <article><span>04</span><strong>Сантехника</strong><p>Тумбы, смесители, инсталляции, душевые решения.</p></article>
-          <article><span>05</span><strong>Свет</strong><p>Точки, бра, треки, подсветки и скрытые карнизы.</p></article>
-        </div>
-      </section>
-
-      <section class="process" id="process">
-        <div class="section__head">
-          <p class="section-label">Процесс</p>
-          <h2>Ремонт ведется по понятным этапам</h2>
-        </div>
-        <ol class="steps">
-          <li><span>01</span><strong>Заявка</strong><p>Фиксируем объект, площадь, тариф и цель ремонта.</p></li>
-          <li><span>02</span><strong>Замер</strong><p>Смотрим состояние квартиры и уточняем объем.</p></li>
-          <li><span>03</span><strong>Смета</strong><p>Собираем комплектацию и стоимость до старта.</p></li>
-          <li><span>04</span><strong>Договор</strong><p>Фиксируем этапы, оплату и ответственность.</p></li>
-          <li><span>05</span><strong>Ремонт</strong><p>Ведем объект по графику с контролем прораба.</p></li>
-          <li><span>06</span><strong>Сдача</strong><p>Передаем готовую квартиру и гарантийные условия.</p></li>
-        </ol>
-      </section>
-
-      <section class="concept" id="concept">
-        <div class="section__head">
-          <p class="section-label">Визуальный ориентир</p>
-          <h2>Как сайт должен ощущаться после финальной верстки</h2>
-          <p>Ниже сохранены рабочие концепты: desktop и mobile. В прототипе уже заложена та же логика, но финальные фото и тексты нужно заменить на реальные материалы команды.</p>
-        </div>
-        <div class="concept-grid">
-          <a href="assets/site-desktop-concept.png" target="_blank" rel="noreferrer">
-            <img src="assets/site-desktop-concept.png" alt="Desktop-концепт сайта ВЕРХ ремонт" />
-          </a>
-          <a href="assets/site-mobile-concept.png" target="_blank" rel="noreferrer">
-            <img src="assets/site-mobile-concept.png" alt="Mobile-концепт сайта ВЕРХ ремонт" />
-          </a>
-        </div>
-      </section>
-
-      <section class="lead" id="lead">
-        <div>
-          <p class="section-label">Заявка</p>
-          <h2>Получите расчет, замер или каталоги материалов</h2>
-          <p>Прототип показывает, какую заявку должен собирать будущий сайт. Реальную отправку в Telegram или CRM подключаем следующим шагом.</p>
-          <div class="lead-summary" id="lead-summary"></div>
-        </div>
-        <form class="lead-form" id="lead-form">
-          <label>
-            Имя
-            <input name="name" type="text" placeholder="Как к вам обращаться" autocomplete="name" />
-          </label>
-          <label>
-            Телефон
-            <input name="phone" type="tel" placeholder="+7" autocomplete="tel" />
-          </label>
-          <fieldset>
-            <legend>Удобная связь</legend>
-            <label><input type="radio" name="messenger" value="Telegram" checked /> Telegram</label>
-            <label><input type="radio" name="messenger" value="WhatsApp" /> WhatsApp</label>
-            <label><input type="radio" name="messenger" value="VK" /> VK</label>
-          </fieldset>
-          <button class="button" type="submit">Получить расчет</button>
-          <p class="form-note">Нажатие кнопки в прототипе не отправляет данные наружу.</p>
-        </form>
+        <article class="version-card version-card--current">
+          <span>v2</span>
+          <h2>Верстка ближе к макетам</h2>
+          <p>Плотная первая витрина, квиз справа, тарифная полоса, новые визуалы уровней ремонта и блок каталогов.</p>
+          <a href="v2/">Открыть v2</a>
+        </article>
       </section>
     </main>
-
-    <footer class="footer">
-      <strong>ВЕРХ ремонт</strong>
-      <span>Ремонт квартир под ключ в Краснодаре</span>
-      <a href="https://vk.ru/verhremont" target="_blank" rel="noreferrer">VK</a>
-      <a href="https://t.me/verh_rem" target="_blank" rel="noreferrer">Telegram</a>
-    </footer>
-
-    <script src="script.js"></script>
   </body>
 </html>

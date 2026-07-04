@@ -1,0 +1,192 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>ВЕРХ ремонт - сайт v2</title>
+    <meta
+      name="description"
+      content="ВЕРХ ремонт: версия 2 сайта с квизом, расчетом стоимости, тарифами и каталогами материалов."
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="topbar">
+      <a class="brand" href="#top" aria-label="ВЕРХ ремонт">
+        <span>ВЕРХ</span>
+        <small>ремонт</small>
+      </a>
+      <nav class="nav" aria-label="Разделы сайта">
+        <a href="#tariffs">Тарифы</a>
+        <a href="#materials">Материалы</a>
+        <a href="#process">Процесс</a>
+        <a href="#lead">Заявка</a>
+        <a href="../">Версии</a>
+      </nav>
+      <div class="topbar__right">
+        <a class="phone" href="tel:+79182383059">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7.1 4.4 8.7 3a1.7 1.7 0 0 1 2.7.6l1 2.7a1.7 1.7 0 0 1-.5 1.9l-1.1 1a12.5 12.5 0 0 0 4.3 4.3l1-1.1a1.7 1.7 0 0 1 1.9-.5l2.7 1a1.7 1.7 0 0 1 .6 2.7l-1.4 1.6c-1.2 1.3-3.1 1.8-4.8 1.2A18.9 18.9 0 0 1 5.9 8.8c-.6-1.6-.1-3.3 1.2-4.4Z"/></svg>
+          +7 (918) 238-30-59
+        </a>
+        <a class="btn btn--ghost" href="#lead">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 2v4M16 2v4M4 9h16M6 5h12a2 2 0 0 1 2 2v12H4V7a2 2 0 0 1 2-2Z"/></svg>
+          Записаться на замер
+        </a>
+      </div>
+    </header>
+
+    <main id="top" class="page-shell">
+      <section class="hero-grid">
+        <div class="hero-card">
+          <img src="assets/hero-interior.png" alt="Современный темный интерьер квартиры" />
+          <div class="hero-copy">
+            <p class="hero-logo">ВЕРХ</p>
+            <p class="hero-sublogo">ремонт</p>
+            <h1>Ремонт квартир под ключ в Краснодаре</h1>
+            <p class="hero-text">
+              Высококлассные материалы по доступной стоимости. Смета до старта,
+              оплата по этапам, контроль прораба.
+            </p>
+            <div class="hero-actions">
+              <a class="btn" href="#quiz">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h14v16H5V4Zm3 4h8M8 12h8M8 16h5"/></svg>
+                Рассчитать ремонт
+              </a>
+              <a class="btn btn--ghost" href="#lead">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v16H6.5A2.5 2.5 0 0 0 4 21V5.5Zm0 0A2.5 2.5 0 0 0 6.5 8H20"/></svg>
+                Заказать каталоги на дом
+              </a>
+            </div>
+          </div>
+          <div class="proof-row">
+            <span>5 лет гарантии на работы</span>
+            <span>Договор и смета</span>
+            <span>Оплата по этапам</span>
+            <span>Личный прораб на объекте</span>
+          </div>
+        </div>
+
+        <section class="quiz-card" id="quiz" aria-label="Квиз расчета ремонта">
+          <div class="quiz-head">
+            <div>
+              <p class="label">Рассчитайте стоимость ремонта</p>
+              <h2 id="quiz-title">Какая квартира?</h2>
+              <p id="quiz-hint">Выберите тип, чтобы мы подобрали оптимальные решения.</p>
+            </div>
+            <strong id="step-counter">1/6</strong>
+          </div>
+          <div class="progress"><span id="progress-bar"></span></div>
+          <div class="quiz-body" id="quiz-body"></div>
+          <div class="estimate-line">
+            <span>Предварительная стоимость ремонта</span>
+            <strong id="estimate-value">1 500 000 ₽</strong>
+          </div>
+          <div class="quiz-actions">
+            <button type="button" class="btn btn--ghost" id="prev-step">Назад</button>
+            <button type="button" class="btn" id="next-step">Далее</button>
+          </div>
+        </section>
+      </section>
+
+      <section class="tariff-band" id="tariffs" aria-label="Тарифы ремонта">
+        <div class="band-title">
+          <h2>Наши тарифы</h2>
+          <a href="#quiz">Подробнее о тарифах</a>
+        </div>
+        <article class="tariff-panel" data-tariff-card="standard">
+          <img src="assets/tariff-standard.png" alt="Пример ремонта уровня Стандарт" />
+          <div>
+            <h3>Стандарт</h3>
+            <strong>20 000 ₽/м²</strong>
+            <p>Практичные решения и проверенные материалы.</p>
+          </div>
+        </article>
+        <article class="tariff-panel tariff-panel--active" data-tariff-card="comfort">
+          <img src="assets/tariff-comfort.png" alt="Пример ремонта уровня Комфорт" />
+          <div>
+            <h3>Комфорт</h3>
+            <strong>25 000 ₽/м²</strong>
+            <p>Качество, свет и готовность к комфортной жизни.</p>
+          </div>
+        </article>
+        <article class="tariff-panel" data-tariff-card="lux">
+          <img src="assets/tariff-lux.png" alt="Пример ремонта уровня Люкс" />
+          <div>
+            <h3>Люкс</h3>
+            <strong>29 000 ₽/м²</strong>
+            <p>Индивидуальная комплектация и премиум-материалы.</p>
+          </div>
+        </article>
+      </section>
+
+      <section class="materials-band" id="materials" aria-label="Материалы и каталоги">
+        <div class="materials-title">
+          <p class="label">Материалы</p>
+          <h2>Каталоги можно привезти на дом</h2>
+          <p>Плитка, ламинат, двери, сантехника и свет подбираются под выбранный уровень ремонта.</p>
+        </div>
+        <div class="materials-visual">
+          <img src="assets/materials-catalog.png" alt="Каталоги и образцы материалов для ремонта" />
+        </div>
+        <div class="material-tile"><strong>Плитка</strong><span>60х60, керамогранит, широкоформат</span></div>
+        <div class="material-tile"><strong>Ламинат</strong><span>33 класс, 10-14 мм</span></div>
+        <div class="material-tile"><strong>Двери</strong><span>экошпон и подбор по стилю</span></div>
+        <div class="material-tile"><strong>Сантехника</strong><span>тумбы, душ, инсталляции</span></div>
+        <div class="material-tile"><strong>Свет</strong><span>точки, бра, треки, подсветки</span></div>
+      </section>
+
+      <section class="bottom-grid">
+        <section class="process-card" id="process">
+          <div class="section-head">
+            <p class="label">Как мы работаем</p>
+            <h2>Понятные этапы вместо хаоса ремонта</h2>
+          </div>
+          <ol class="steps">
+            <li><span>01</span><strong>Замер</strong><small>и консультация</small></li>
+            <li><span>02</span><strong>Смета</strong><small>до старта</small></li>
+            <li><span>03</span><strong>Договор</strong><small>и материалы</small></li>
+            <li><span>04</span><strong>Ремонт</strong><small>по графику</small></li>
+            <li><span>05</span><strong>Приемка</strong><small>и гарантия</small></li>
+          </ol>
+        </section>
+
+        <section class="lead-card" id="lead">
+          <div>
+            <p class="label">Оставьте заявку</p>
+            <h2>Свяжемся и ответим на вопросы</h2>
+            <div class="lead-summary" id="lead-summary"></div>
+          </div>
+          <form id="lead-form" class="lead-form">
+            <input name="name" type="text" placeholder="Ваше имя" autocomplete="name" />
+            <input name="phone" type="tel" placeholder="Телефон" autocomplete="tel" />
+            <div class="messengers">
+              <label><input type="radio" name="messenger" value="Telegram" checked /> Telegram</label>
+              <label><input type="radio" name="messenger" value="WhatsApp" /> WhatsApp</label>
+              <label><input type="radio" name="messenger" value="VK" /> VK</label>
+            </div>
+            <label class="consent"><input type="checkbox" checked /> Я согласен на обработку персональных данных</label>
+            <button class="btn" type="submit">Отправить заявку</button>
+          </form>
+        </section>
+      </section>
+
+      <section class="compare-card">
+        <div class="section-head">
+          <p class="label">Ориентир макета</p>
+          <h2>Версия 2 сверстана по сгенерированным прототипам</h2>
+          <p>Сохраняем концепты рядом, чтобы можно было сравнивать направление и следующие версии.</p>
+        </div>
+        <div class="concepts">
+          <a href="assets/site-desktop-concept.png" target="_blank" rel="noreferrer">
+            <img src="assets/site-desktop-concept.png" alt="Desktop-прототип сайта" />
+          </a>
+          <a href="assets/site-mobile-concept.png" target="_blank" rel="noreferrer">
+            <img src="assets/site-mobile-concept.png" alt="Mobile-прототип сайта" />
+          </a>
+        </div>
+      </section>
+    </main>
+
+    <script src="script.js"></script>
+  </body>
+</html>
