@@ -1,0 +1,259 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>ВЕРХ ремонт - сайт v4</title>
+    <meta
+      name="description"
+      content="ВЕРХ ремонт: версия 4 сайта с выбором уровня ремонта, быстрым расчетом, каталогами материалов и заявкой через удобный канал связи."
+    />
+    <link rel="icon" href='data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" fill="%23070707"/><text x="8" y="42" fill="%23d4a251" font-family="Arial" font-size="22" font-weight="900">VR</text></svg>' />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="topbar">
+      <a class="brand" href="#top" aria-label="ВЕРХ ремонт">
+        <span>ВЕРХ</span>
+        <small>ремонт</small>
+      </a>
+      <nav class="nav" aria-label="Разделы сайта">
+        <a href="#levels">Уровни ремонта</a>
+        <a href="#calculator">Расчет</a>
+        <a href="#materials">Материалы</a>
+        <a href="#process">Процесс</a>
+        <a href="../">Версии</a>
+      </nav>
+      <div class="topbar__right">
+        <a class="phone" href="tel:+79182383059">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7.1 4.4 8.7 3a1.7 1.7 0 0 1 2.7.6l1 2.7a1.7 1.7 0 0 1-.5 1.9l-1.1 1a12.5 12.5 0 0 0 4.3 4.3l1-1.1a1.7 1.7 0 0 1 1.9-.5l2.7 1a1.7 1.7 0 0 1 .6 2.7l-1.4 1.6c-1.2 1.3-3.1 1.8-4.8 1.2A18.9 18.9 0 0 1 5.9 8.8c-.6-1.6-.1-3.3 1.2-4.4Z"/></svg>
+          +7 (918) 238-30-59
+        </a>
+        <a class="quick-link" href="https://t.me/verh_rem" target="_blank" rel="noreferrer">Telegram</a>
+        <a class="quick-link" href="https://max.ru/join/xVCYmnoBVajOlPHV-udrKsLdipj2nwOdZ73CjM64WbY" target="_blank" rel="noreferrer">MAX</a>
+      </div>
+    </header>
+
+    <main id="top" class="page-shell">
+      <section class="hero-layout">
+        <div class="hero-card">
+          <img src="assets/hero-interior.png" alt="Современный интерьер квартиры после ремонта" />
+          <div class="hero-copy">
+            <p class="hero-logo">ВЕРХ</p>
+            <p class="hero-sublogo">ремонт</p>
+            <h1>Ремонт квартир под ключ в Краснодаре</h1>
+            <p class="hero-text">
+              Материалы входят в комплектацию уровня. Фиксируем точную смету до старта,
+              работаем по договору и сопровождаем ремонт до приемки.
+            </p>
+            <div class="hero-actions">
+              <a class="btn" href="#levels">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16M4 12h16M4 19h16M8 5v14"/></svg>
+                Выбрать уровень ремонта
+              </a>
+              <a class="btn btn--ghost" href="tel:+79182383059">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7.1 4.4 8.7 3a1.7 1.7 0 0 1 2.7.6l1 2.7a1.7 1.7 0 0 1-.5 1.9l-1.1 1a12.5 12.5 0 0 0 4.3 4.3l1-1.1a1.7 1.7 0 0 1 1.9-.5l2.7 1a1.7 1.7 0 0 1 .6 2.7l-1.4 1.6c-1.2 1.3-3.1 1.8-4.8 1.2A18.9 18.9 0 0 1 5.9 8.8c-.6-1.6-.1-3.3 1.2-4.4Z"/></svg>
+                Позвонить
+              </a>
+            </div>
+          </div>
+          <div class="proof-row">
+            <span>Материалы в стоимости</span>
+            <span>Точная смета</span>
+            <span>Договор и гарантия</span>
+            <span>Полное сопровождение</span>
+            <span>Материалы от производителей</span>
+          </div>
+        </div>
+
+        <aside class="calc-card" id="calculator" aria-label="Быстрый расчет ремонта">
+          <div class="calc-head">
+            <p class="label">Быстрый расчет</p>
+            <h2>Сначала выберите уровень ремонта</h2>
+            <p>Клик по уровню сразу пересчитает стоимость и подготовит заявку.</p>
+          </div>
+          <div class="level-picks" aria-label="Выбор уровня ремонта">
+            <button class="level-pick" type="button" data-level="standard">
+              <span>Стандарт</span>
+              <strong>20 000 ₽/м²</strong>
+            </button>
+            <button class="level-pick is-active" type="button" data-level="comfort">
+              <span>Комфорт</span>
+              <strong>25 000 ₽/м²</strong>
+            </button>
+            <button class="level-pick" type="button" data-level="lux">
+              <span>Люкс</span>
+              <strong>от 29 000 ₽/м²</strong>
+            </button>
+          </div>
+          <label class="area-control">
+            <span>Площадь квартиры</span>
+            <input id="area-range" type="range" min="20" max="200" step="1" value="60" />
+            <input id="area-input" type="number" min="20" max="300" value="60" />
+          </label>
+          <div class="estimate-box">
+            <span id="estimate-label">Комфорт, 60 м²</span>
+            <strong id="estimate-value">1 500 000 ₽</strong>
+            <small>Ориентир до замера. Итог фиксируется после сметы.</small>
+          </div>
+          <div class="request-options">
+            <label><input type="radio" name="request" value="Замер" checked /> Замер</label>
+            <label><input type="radio" name="request" value="Расчет" /> Расчет</label>
+            <label><input type="radio" name="request" value="Материалы" /> Материалы</label>
+          </div>
+          <div class="calc-actions">
+            <a class="btn" href="#lead">Оставить заявку</a>
+            <a class="btn btn--ghost" href="https://t.me/verh_rem" target="_blank" rel="noreferrer">Telegram</a>
+            <a class="btn btn--ghost" href="https://max.ru/join/xVCYmnoBVajOlPHV-udrKsLdipj2nwOdZ73CjM64WbY" target="_blank" rel="noreferrer">MAX</a>
+          </div>
+        </aside>
+      </section>
+
+      <section class="levels-section" id="levels" aria-label="Уровни ремонта">
+        <div class="section-intro">
+          <p class="label">Уровни ремонта</p>
+          <h2>Выберите подходящий ремонт, затем посчитайте свою площадь</h2>
+          <p>Карточки раскрывают состав. На кнопке расчета выбранный уровень сразу передается в калькулятор.</p>
+        </div>
+        <div class="level-grid">
+          <article class="level-card" data-level-card="standard">
+            <img src="assets/tariff-standard.png" alt="Интерьер уровня Стандарт" />
+            <div class="level-card__body">
+              <div class="level-card__title">
+                <h3>Стандарт</h3>
+                <strong>20 000 ₽/м²</strong>
+              </div>
+              <p>Практичный ремонт с материалами в стоимости для новостройки, сдачи или аккуратного обновления квартиры.</p>
+              <ul>
+                <li>плитка разных форматов, более 70 вариантов;</li>
+                <li>ламинат 33 класса 8-10 мм, более 50 вариантов;</li>
+                <li>обои флизелиновые моющиеся, более 100 вариантов;</li>
+                <li>сантехника, точечный свет и натяжной потолок.</li>
+              </ul>
+              <details>
+                <summary>Полный состав</summary>
+                <p>Двери шпон, инсталляция, акриловая ванна, зеркало с подсветкой, тропический душ, вентиляция, скрытые ревизионные люки, закладной брус под карниз.</p>
+              </details>
+              <button class="btn level-submit" type="button" data-level="standard">Рассчитать Стандарт</button>
+            </div>
+          </article>
+
+          <article class="level-card level-card--featured" data-level-card="comfort">
+            <img src="assets/tariff-comfort.png" alt="Интерьер уровня Комфорт" />
+            <div class="level-card__body">
+              <div class="level-card__title">
+                <h3>Комфорт</h3>
+                <strong>25 000 ₽/м²</strong>
+              </div>
+              <p>Основной уровень для жизни: больше выбора по материалам, свету, сантехнике и декоративным решениям.</p>
+              <ul>
+                <li>крупноформатная плитка, более 100 вариантов;</li>
+                <li>двери шпон или скрытого монтажа, более 50 вариантов;</li>
+                <li>ламинат 33 класса 10-12 мм, более 70 вариантов;</li>
+                <li>бра, треки, скрытые карнизы и подсветки.</li>
+              </ul>
+              <details>
+                <summary>Полный состав</summary>
+                <p>Подвесная тумба с накладной раковиной, душевой поддон или ванна, гигиенический душ, зеркало с подсветкой, парящий потолок в санузле, дополнение электрики.</p>
+              </details>
+              <button class="btn level-submit" type="button" data-level="comfort">Рассчитать Комфорт</button>
+            </div>
+          </article>
+
+          <article class="level-card" data-level-card="lux">
+            <img src="assets/tariff-lux.png" alt="Интерьер уровня Люкс" />
+            <div class="level-card__body">
+              <div class="level-card__title">
+                <h3>Люкс</h3>
+                <strong>от 29 000 ₽/м²</strong>
+              </div>
+              <p>Индивидуальный ремонт с дизайн-проектом. Материалы и финальная цена строятся от проекта и фиксируются в смете.</p>
+              <ul>
+                <li>дизайн-проект как основа комплектации;</li>
+                <li>подбор плитки, света, сантехники и дверей под визуальную концепцию;</li>
+                <li>расчет после согласования проекта и материалов;</li>
+                <li>сопровождение до приемки объекта.</li>
+              </ul>
+              <details>
+                <summary>Как считается Люкс</summary>
+                <p>Показываем стартовый ориентир от 29 000 ₽/м². После дизайн-проекта фиксируем точный состав материалов, работ и график платежей.</p>
+              </details>
+              <button class="btn level-submit" type="button" data-level="lux">Рассчитать Люкс</button>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section class="materials-section" id="materials" aria-label="Каталоги материалов">
+        <div class="section-intro">
+          <p class="label">Каталоги материалов</p>
+          <h2>Показываем материалы по выбранному уровню</h2>
+          <p>На сайте можно посмотреть подборки всех материалов. На дом привозим каталоги обоев, если нужно выбрать фактуру вживую.</p>
+        </div>
+        <div class="materials-layout">
+          <div class="materials-visual">
+            <img src="assets/materials-catalog.png" alt="Каталоги и образцы материалов для ремонта" />
+          </div>
+          <div class="materials-panel">
+            <div class="material-tabs" role="tablist" aria-label="Уровень ремонта для материалов">
+              <button class="material-tab" type="button" data-material-level="standard">Стандарт</button>
+              <button class="material-tab is-active" type="button" data-material-level="comfort">Комфорт</button>
+              <button class="material-tab" type="button" data-material-level="lux">Люкс</button>
+            </div>
+            <div class="material-grid" id="material-grid"></div>
+            <a class="btn" href="#lead">Получить подборку материалов</a>
+          </div>
+        </div>
+      </section>
+
+      <section class="bottom-grid">
+        <section class="process-card" id="process">
+          <div class="section-head">
+            <p class="label">Как мы работаем</p>
+            <h2>Смета, договор, сопровождение и приемка</h2>
+          </div>
+          <ol class="steps">
+            <li><span>01</span><strong>Замер</strong><small>и уточнение уровня</small></li>
+            <li><span>02</span><strong>Смета</strong><small>точный состав</small></li>
+            <li><span>03</span><strong>Договор</strong><small>гарантия и этапы</small></li>
+            <li><span>04</span><strong>Ремонт</strong><small>с сопровождением</small></li>
+            <li><span>05</span><strong>Приемка</strong><small>и закрытие работ</small></li>
+          </ol>
+          <div class="payment-note">
+            <strong>Оплата по этапам</strong>
+            <span>Перед стартом фиксируем понятный порядок платежей: работы, материалы и приемка этапов.</span>
+          </div>
+        </section>
+
+        <section class="lead-card" id="lead">
+          <div>
+            <p class="label">Заявка</p>
+            <h2>Передадим расчет в удобный канал</h2>
+            <p class="contact-text">Можно сразу позвонить, написать в Telegram или MAX.</p>
+            <div class="lead-summary" id="lead-summary"></div>
+          </div>
+          <form id="lead-form" class="lead-form">
+            <input name="name" type="text" placeholder="Ваше имя" autocomplete="name" />
+            <input name="phone" type="tel" placeholder="Телефон" autocomplete="tel" />
+            <div class="messengers">
+              <label><input type="radio" name="messenger" value="Звонок" /> Звонок</label>
+              <label><input type="radio" name="messenger" value="Telegram" checked /> Telegram</label>
+              <label><input type="radio" name="messenger" value="MAX" /> MAX</label>
+              <label><input type="radio" name="messenger" value="WhatsApp" /> WhatsApp</label>
+            </div>
+            <label class="consent"><input type="checkbox" checked /> Я согласен на обработку персональных данных</label>
+            <button class="btn" type="submit">Отправить заявку</button>
+          </form>
+        </section>
+      </section>
+    </main>
+
+    <div class="mobile-contactbar" aria-label="Быстрая связь">
+      <a href="tel:+79182383059">Звонок</a>
+      <a href="https://t.me/verh_rem" target="_blank" rel="noreferrer">Telegram</a>
+      <a href="https://max.ru/join/xVCYmnoBVajOlPHV-udrKsLdipj2nwOdZ73CjM64WbY" target="_blank" rel="noreferrer">MAX</a>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>
