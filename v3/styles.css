@@ -507,6 +507,26 @@ input[type="range"] {
 .steps strong { display: block; font-size: 18px; }
 .steps small { color: var(--muted); font-weight: 800; }
 
+.payment-note {
+  display: grid;
+  grid-template-columns: minmax(120px, 0.32fr) 1fr;
+  gap: 16px;
+  margin-top: 28px;
+  border-top: 1px solid var(--line);
+  padding-top: 20px;
+}
+
+.payment-note strong {
+  color: var(--accent-light);
+  font-size: 18px;
+}
+
+.payment-note span {
+  color: var(--muted);
+  line-height: 1.45;
+  font-weight: 800;
+}
+
 .lead-card {
   display: grid;
   grid-template-columns: 0.82fr 1fr;
@@ -619,6 +639,7 @@ input[type="range"] {
   .option-grid, .tariff-options, .area-line, .tariff-band, .materials-band, .steps, .concepts, .messengers {
     grid-template-columns: 1fr;
   }
+  .payment-note { grid-template-columns: 1fr; }
   .tariff-band, .tariff-panel { grid-template-columns: 1fr; }
   .tariff-panel { min-height: auto; }
   .estimate-line { align-items: flex-start; flex-direction: column; }
