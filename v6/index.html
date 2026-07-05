@@ -1,0 +1,204 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>ВЕРХ ремонт - сайт-квиз v6</title>
+    <meta
+      name="description"
+      content="ВЕРХ ремонт: быстрый квиз на одном экране для расчета ремонта квартиры в Краснодаре."
+    />
+    <link rel="icon" href='data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" fill="%23070707"/><text x="8" y="42" fill="%23d4a251" font-family="Arial" font-size="22" font-weight="900">VR</text></svg>' />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="quiz-app" id="top">
+      <section class="quiz-frame" aria-label="Квиз расчета ремонта квартиры">
+        <header class="app-header">
+          <a class="brand" href="../" aria-label="ВЕРХ ремонт">
+            <span>ВЕРХ</span>
+            <small>ремонт</small>
+          </a>
+          <div class="app-title">
+            <strong>Ремонт квартир под ключ в Краснодаре</strong>
+            <span>Материалы входят в стоимость ремонта. Смету фиксируем после замера.</span>
+          </div>
+          <nav class="contact-actions" aria-label="Быстрая связь">
+            <a href="tel:+79182383059" aria-label="Позвонить">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7.1 4.4 8.7 3a1.7 1.7 0 0 1 2.7.6l1 2.7a1.7 1.7 0 0 1-.5 1.9l-1.1 1a12.5 12.5 0 0 0 4.3 4.3l1-1.1a1.7 1.7 0 0 1 1.9-.5l2.7 1a1.7 1.7 0 0 1 .6 2.7l-1.4 1.6c-1.2 1.3-3.1 1.8-4.8 1.2A18.9 18.9 0 0 1 5.9 8.8c-.6-1.6-.1-3.3 1.2-4.4Z"/></svg>
+              <span>Позвонить</span>
+            </a>
+            <a href="https://t.me/verh_rem" target="_blank" rel="noreferrer" aria-label="Telegram">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 4 3 11.5l6.6 2.1L17 8l-5.4 7.1V20l3.1-3.1 4.5 3.1L21 4Z"/></svg>
+              <span>Telegram</span>
+            </a>
+            <a href="https://max.ru/join/xVCYmnoBVajOlPHV-udrKsLdipj2nwOdZ73CjM64WbY" target="_blank" rel="noreferrer" aria-label="MAX">
+              <img src="assets/max-logo.png" alt="" />
+              <span>MAX</span>
+            </a>
+          </nav>
+        </header>
+
+        <div class="quiz-layout">
+          <aside class="proof-panel">
+            <div class="proof-panel__image">
+              <img src="assets/hero-interior.png" alt="Интерьер квартиры после ремонта" />
+            </div>
+            <div class="proof-panel__content">
+              <h1>Расчет ремонта за 60 секунд</h1>
+              <p>Выберите вводные. В конце получите понятную заявку для замера.</p>
+              <div class="proof-list">
+                <span>материалы в цене</span>
+                <span>смета после замера</span>
+                <span>договор и гарантия</span>
+              </div>
+            </div>
+          </aside>
+
+          <section class="quiz-card" aria-live="polite">
+            <div class="quiz-card__top">
+              <div class="step-counter">
+                <span id="step-count">1 / 5</span>
+                <strong id="step-label">Что ремонтируем?</strong>
+              </div>
+              <div class="progress-dots" aria-label="Прогресс квиза">
+                <button class="is-active" type="button" data-step-nav="0" aria-label="Шаг 1">1</button>
+                <button type="button" data-step-nav="1" aria-label="Шаг 2" disabled>2</button>
+                <button type="button" data-step-nav="2" aria-label="Шаг 3" disabled>3</button>
+                <button type="button" data-step-nav="3" aria-label="Шаг 4" disabled>4</button>
+                <button type="button" data-step-nav="4" aria-label="Шаг 5" disabled>5</button>
+              </div>
+            </div>
+
+            <div class="slides" id="slides">
+              <article class="slide is-active" data-step="0">
+                <div class="slide-head">
+                  <h2>Что ремонтируем?</h2>
+                  <p>Нажмите на вариант. Квиз сразу перейдет дальше.</p>
+                </div>
+                <div class="photo-choice-grid">
+                  <button class="photo-choice is-selected" type="button" data-apartment="Новостройка">
+                    <img src="assets/apartment-newbuild.png" alt="Квартира в новостройке без ремонта" />
+                    <span>
+                      <strong>Новостройка</strong>
+                      <small>бетон, предчистовая или свободная планировка</small>
+                    </span>
+                  </button>
+                  <button class="photo-choice" type="button" data-apartment="Вторичка">
+                    <img src="assets/apartment-secondary.png" alt="Вторичная квартира до ремонта" />
+                    <span>
+                      <strong>Вторичка</strong>
+                      <small>демонтаж старой отделки и ремонт под ключ</small>
+                    </span>
+                  </button>
+                </div>
+              </article>
+
+              <article class="slide" data-step="1">
+                <div class="slide-head">
+                  <h2>Площадь квартиры</h2>
+                  <p>Выберите типовой метраж или укажите точную площадь.</p>
+                </div>
+                <div class="area-grid">
+                  <button type="button" data-area="28" data-area-label="Студия">
+                    <strong>Студия</strong>
+                    <span>28 м²</span>
+                  </button>
+                  <button type="button" data-area="36" data-area-label="1-комн.">
+                    <strong>1-комн.</strong>
+                    <span>36 м²</span>
+                  </button>
+                  <button class="is-selected" type="button" data-area="58" data-area-label="2-комн.">
+                    <strong>2-комн.</strong>
+                    <span>58 м²</span>
+                  </button>
+                  <button type="button" data-area="78" data-area-label="3-комн.">
+                    <strong>3-комн.</strong>
+                    <span>78 м²</span>
+                  </button>
+                </div>
+                <form class="custom-area" id="area-form">
+                  <label for="area-input">Своя площадь, м²</label>
+                  <div>
+                    <input id="area-input" name="area" type="number" inputmode="decimal" min="20" max="300" step="0.1" value="58" />
+                    <button type="submit">Зафиксировать</button>
+                  </div>
+                </form>
+              </article>
+
+              <article class="slide" data-step="2">
+                <div class="slide-head">
+                  <h2>Какой уровень нужен?</h2>
+                  <p>Стоимость считается за работы и материалы выбранного уровня.</p>
+                </div>
+                <div class="level-choice-grid">
+                  <button class="level-choice" type="button" data-level="standard">
+                    <img src="assets/tariff-standard.png" alt="Ремонт уровня Стандарт" />
+                    <span><strong>Стандарт</strong><small>20 000 ₽/м²</small></span>
+                  </button>
+                  <button class="level-choice is-selected" type="button" data-level="comfort">
+                    <img src="assets/tariff-comfort.png" alt="Ремонт уровня Комфорт" />
+                    <span><strong>Комфорт</strong><small>25 000 ₽/м²</small></span>
+                  </button>
+                  <button class="level-choice" type="button" data-level="lux">
+                    <img src="assets/tariff-lux.png" alt="Ремонт уровня Люкс" />
+                    <span><strong>Люкс</strong><small>от 29 000 ₽/м²</small></span>
+                  </button>
+                </div>
+              </article>
+
+              <article class="slide" data-step="3">
+                <div class="slide-head">
+                  <h2>Ваша заявка почти готова</h2>
+                  <p>Что уже будет включено в эту стоимость:</p>
+                </div>
+                <ul class="included-list" id="included-list"></ul>
+                <button class="primary-action" type="button" data-to-lead>Перейти к расчету</button>
+              </article>
+
+              <article class="slide" data-step="4">
+                <div class="lead-panel">
+                  <div class="slide-head">
+                    <h2>Забронируйте расчет сегодня</h2>
+                    <p>Оставьте телефон. Менеджер сверит вводные и предложит время замера.</p>
+                  </div>
+                  <div class="lead-offer">
+                    <span>бонус действует</span>
+                    <strong id="timer">01:00</strong>
+                  </div>
+                  <form class="lead-form" id="lead-form">
+                    <label for="phone-input">Телефон</label>
+                    <input
+                      id="phone-input"
+                      name="phone"
+                      type="tel"
+                      inputmode="tel"
+                      autocomplete="tel"
+                      placeholder="+7 (___) ___-__-__"
+                      required
+                    />
+                    <button type="submit">Получить расчет и замер</button>
+                  </form>
+                  <div class="success-message" id="success-message" hidden></div>
+                </div>
+              </article>
+            </div>
+
+            <footer class="quiz-summary" aria-label="Собранная заявка">
+              <div>
+                <span>Заявка</span>
+                <strong id="summary-line">Новостройка · 58 м² · Комфорт</strong>
+              </div>
+              <div>
+                <span>Ориентир</span>
+                <strong id="summary-estimate">≈ 1 450 000 ₽</strong>
+              </div>
+            </footer>
+          </section>
+        </div>
+      </section>
+    </main>
+
+    <script src="script.js"></script>
+  </body>
+</html>
