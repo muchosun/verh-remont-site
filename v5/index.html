@@ -1,0 +1,286 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>ВЕРХ ремонт - сайт-квиз v5</title>
+    <meta
+      name="description"
+      content="ВЕРХ ремонт: интерактивный квиз для расчета ремонта квартиры в Краснодаре с материалами в стоимости и заявкой на замер."
+    />
+    <link rel="icon" href='data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" fill="%23070707"/><text x="8" y="42" fill="%23d4a251" font-family="Arial" font-size="22" font-weight="900">VR</text></svg>' />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="topbar">
+      <a class="brand" href="#top" aria-label="ВЕРХ ремонт">
+        <span>ВЕРХ</span>
+        <small>ремонт</small>
+      </a>
+      <nav class="nav" aria-label="Быстрая навигация">
+        <a href="#quiz">Квиз</a>
+        <a href="#materials">Материалы</a>
+        <a href="#gallery">Фото</a>
+        <a href="../">Версии</a>
+      </nav>
+      <div class="quick-actions" aria-label="Быстрая связь">
+        <a class="contact-link contact-link--phone" href="tel:+79182383059">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7.1 4.4 8.7 3a1.7 1.7 0 0 1 2.7.6l1 2.7a1.7 1.7 0 0 1-.5 1.9l-1.1 1a12.5 12.5 0 0 0 4.3 4.3l1-1.1a1.7 1.7 0 0 1 1.9-.5l2.7 1a1.7 1.7 0 0 1 .6 2.7l-1.4 1.6c-1.2 1.3-3.1 1.8-4.8 1.2A18.9 18.9 0 0 1 5.9 8.8c-.6-1.6-.1-3.3 1.2-4.4Z"/></svg>
+          <span>+7 (918) 238-30-59</span>
+        </a>
+        <a class="contact-link" href="https://t.me/verh_rem" target="_blank" rel="noreferrer">Telegram</a>
+        <a class="contact-link" href="https://max.ru/join/xVCYmnoBVajOlPHV-udrKsLdipj2nwOdZ73CjM64WbY" target="_blank" rel="noreferrer">MAX</a>
+      </div>
+    </header>
+
+    <main id="top" class="page-shell">
+      <section class="quiz-hero" id="quiz" aria-label="Квиз расчета ремонта квартиры">
+        <div class="brand-stage">
+          <img src="assets/hero-interior.png" alt="Современный интерьер квартиры после ремонта" />
+          <div class="brand-stage__overlay">
+            <div>
+              <p class="logo-word">ВЕРХ</p>
+              <p class="logo-sub">ремонт</p>
+            </div>
+            <div class="hero-copy">
+              <h1>Рассчитайте ремонт квартиры за 60 секунд</h1>
+              <p>
+                Материалы уже входят в уровень. Точная смета фиксируется после
+                замера и договора.
+              </p>
+            </div>
+            <div class="contact-stack" aria-label="Связаться с ВЕРХ ремонт">
+              <a href="tel:+79182383059">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7.1 4.4 8.7 3a1.7 1.7 0 0 1 2.7.6l1 2.7a1.7 1.7 0 0 1-.5 1.9l-1.1 1a12.5 12.5 0 0 0 4.3 4.3l1-1.1a1.7 1.7 0 0 1 1.9-.5l2.7 1a1.7 1.7 0 0 1 .6 2.7l-1.4 1.6c-1.2 1.3-3.1 1.8-4.8 1.2A18.9 18.9 0 0 1 5.9 8.8c-.6-1.6-.1-3.3 1.2-4.4Z"/></svg>
+                Позвонить
+              </a>
+              <a href="https://t.me/verh_rem" target="_blank" rel="noreferrer">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 4 3 11.5l6.6 2.1L17 8l-5.4 7.1V20l3.1-3.1 4.5 3.1L21 4Z"/></svg>
+                Telegram
+              </a>
+              <a href="https://max.ru/join/xVCYmnoBVajOlPHV-udrKsLdipj2nwOdZ73CjM64WbY" target="_blank" rel="noreferrer">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19V5l8 8 8-8v14M4 5l8 8 8-8"/></svg>
+                MAX
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <section class="quiz-panel" aria-live="polite">
+          <div class="progress-rail" aria-label="Прогресс квиза">
+            <button class="progress-step is-active" type="button" data-jump-step="0">
+              <span>1</span>
+              <strong>Квартира</strong>
+            </button>
+            <button class="progress-step" type="button" data-jump-step="1">
+              <span>2</span>
+              <strong>Площадь</strong>
+            </button>
+            <button class="progress-step" type="button" data-jump-step="2">
+              <span>3</span>
+              <strong>Уровень</strong>
+            </button>
+            <button class="progress-step" type="button" data-jump-step="3">
+              <span>4</span>
+              <strong>Материалы</strong>
+            </button>
+            <button class="progress-step" type="button" data-jump-step="4">
+              <span>5</span>
+              <strong>Заявка</strong>
+            </button>
+          </div>
+
+          <div class="quiz-body">
+            <article class="quiz-step is-active" data-step="0">
+              <p class="step-note">Ремонтируем квартиры под ключ в Краснодаре</p>
+              <h2>Какая квартира?</h2>
+              <p class="step-text">
+                Выберите тип, чтобы расчет сразу учитывал стартовое состояние
+                объекта. Дома и коммерческие помещения в этом квизе не считаем.
+              </p>
+              <div class="answer-grid answer-grid--three">
+                <button class="answer-card is-selected" type="button" data-field="apartment" data-value="Новостройка">
+                  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V8l8-4 8 4v12M8 20v-6h8v6M8 10h.01M12 10h.01M16 10h.01"/></svg>
+                  <strong>Новостройка</strong>
+                  <span>бетон, предчистовая или свободная планировка</span>
+                </button>
+                <button class="answer-card" type="button" data-field="apartment" data-value="Вторичка">
+                  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 20V5h14v15M9 8h2M13 8h2M9 12h2M13 12h2M9 16h2M13 16h2"/></svg>
+                  <strong>Вторичка</strong>
+                  <span>обновление квартиры с демонтажом и заменой отделки</span>
+                </button>
+                <button class="answer-card" type="button" data-field="apartment" data-value="White box">
+                  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 20V4h14v16M9 8h6M9 12h6M9 16h4"/></svg>
+                  <strong>White box</strong>
+                  <span>нужна чистовая комплектация и доведение до жизни</span>
+                </button>
+              </div>
+            </article>
+
+            <article class="quiz-step" data-step="1">
+              <p class="step-note">Шаг фиксирует базу расчета</p>
+              <h2>Укажите площадь квартиры</h2>
+              <p class="step-text">
+                Быстрый выбор сразу перенесет вас к уровню ремонта. Если метраж
+                нестандартный, введите свое значение.
+              </p>
+              <div class="area-layout">
+                <div class="area-presets" aria-label="Быстрый выбор площади">
+                  <button type="button" data-area-preset="40">40 м²</button>
+                  <button type="button" data-area-preset="55">55 м²</button>
+                  <button class="is-selected" type="button" data-area-preset="60">60 м²</button>
+                  <button type="button" data-area-preset="70">70 м²</button>
+                  <button type="button" data-area-preset="90">90 м²</button>
+                </div>
+                <form class="area-custom" id="area-form">
+                  <label for="area-input">Своя площадь</label>
+                  <div>
+                    <input id="area-input" name="area" type="number" inputmode="numeric" min="20" max="300" value="60" />
+                    <span>м²</span>
+                  </div>
+                  <button type="submit">Зафиксировать площадь</button>
+                </form>
+              </div>
+              <div class="live-estimate">
+                <span>Ориентир по текущим параметрам</span>
+                <strong id="step-estimate">≈ 1 500 000 ₽</strong>
+                <small>Финальная смета уточняется после замера и состава материалов.</small>
+              </div>
+            </article>
+
+            <article class="quiz-step" data-step="2">
+              <p class="step-note">Материалы включены в уровень ремонта</p>
+              <h2>Выберите уровень</h2>
+              <p class="step-text">
+                Нажатие на карточку сразу собирает расчет и показывает состав
+                материалов под выбранный уровень.
+              </p>
+              <div class="level-grid">
+                <button class="level-card" type="button" data-field="level" data-value="standard">
+                  <img src="assets/tariff-standard.png" alt="" />
+                  <span>Стандарт</span>
+                  <strong>20 000 ₽/м²</strong>
+                  <small>практичный ремонт с проверенными материалами</small>
+                </button>
+                <button class="level-card is-selected" type="button" data-field="level" data-value="comfort">
+                  <img src="assets/tariff-comfort.png" alt="" />
+                  <span>Комфорт</span>
+                  <strong>25 000 ₽/м²</strong>
+                  <small>расширенный выбор материалов, света и сантехники</small>
+                </button>
+                <button class="level-card" type="button" data-field="level" data-value="lux">
+                  <img src="assets/tariff-lux.png" alt="" />
+                  <span>Люкс</span>
+                  <strong>от 29 000 ₽/м²</strong>
+                  <small>индивидуальный ремонт от дизайн-проекта</small>
+                </button>
+              </div>
+            </article>
+
+            <article class="quiz-step" data-step="3">
+              <p class="step-note">Показываем, из чего складывается уровень</p>
+              <h2>Материалы и комплектация</h2>
+              <p class="step-text" id="materials-intro">
+                Для Комфорта заложены крупный формат плитки, двери шпон или
+                скрытого монтажа, ламинат 33 класса 10-12 мм, расширенный свет
+                и сантехника.
+              </p>
+              <div class="materials-checklist" id="materials-list"></div>
+              <div class="mini-proof">
+                <span>Точная смета до старта</span>
+                <span>Договор и гарантия</span>
+                <span>Сопровождение до приемки</span>
+              </div>
+              <button class="collect-request" type="button" data-collect-request>Собрать мою заявку</button>
+            </article>
+
+            <article class="quiz-step" data-step="4">
+              <p class="step-note">Заявка уже собрана</p>
+              <h2>Оставьте телефон</h2>
+              <p class="step-text">
+                Передадим менеджеру выбранные параметры. Вам не придется
+                повторять вводные при первом контакте.
+              </p>
+              <div class="final-grid">
+                <div class="final-summary" id="final-summary"></div>
+                <form class="lead-form" id="lead-form">
+                  <label for="phone-input">Телефон для связи</label>
+                  <input
+                    id="phone-input"
+                    name="phone"
+                    type="tel"
+                    inputmode="tel"
+                    autocomplete="tel"
+                    placeholder="+7 (___) ___-__-__"
+                    required
+                  />
+                  <button type="submit">Получить расчет</button>
+                  <small>
+                    Нажимая на кнопку, вы соглашаетесь на обработку телефона
+                    для связи по заявке.
+                  </small>
+                </form>
+              </div>
+              <div class="success-message" id="success-message" hidden></div>
+            </article>
+          </div>
+
+          <aside class="state-card" aria-label="Выбранные параметры заявки">
+            <div>
+              <span>Ваша заявка</span>
+              <strong id="state-estimate">≈ 1 500 000 ₽</strong>
+            </div>
+            <dl>
+              <div><dt>квартира</dt><dd id="state-apartment">Новостройка</dd></div>
+              <div><dt>площадь</dt><dd id="state-area">60 м²</dd></div>
+              <div><dt>уровень</dt><dd id="state-level">Комфорт</dd></div>
+              <div><dt>ориентир</dt><dd id="state-price">25 000 ₽/м²</dd></div>
+            </dl>
+          </aside>
+        </section>
+      </section>
+
+      <section class="support-strip" id="materials" aria-label="Материалы и фотографии">
+        <article class="support-card support-card--text">
+          <h2>Материалы уже входят в уровень</h2>
+          <p>
+            На сайте показываем подборки плитки, ламината, дверей, света,
+            сантехники и обоев. Каталоги обоев можно привезти на дом, чтобы
+            выбрать фактуру вживую.
+          </p>
+        </article>
+        <div class="material-row" id="material-row"></div>
+        <article class="gallery-card" id="gallery">
+          <div class="gallery-head">
+            <div>
+              <h2>Живые фото работ</h2>
+              <p>Место под реальные фотографии объектов, которые можно листать.</p>
+            </div>
+            <div class="gallery-controls">
+              <button type="button" data-gallery-prev aria-label="Назад">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg>
+              </button>
+              <button type="button" data-gallery-next aria-label="Вперед">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg>
+              </button>
+            </div>
+          </div>
+          <div class="photo-rail" id="photo-rail" tabindex="0">
+            <img src="assets/tariff-comfort.png" alt="Интерьер уровня Комфорт" />
+            <img src="assets/materials-catalog.png" alt="Материалы и каталоги" />
+            <img src="assets/tariff-lux.png" alt="Интерьер уровня Люкс" />
+            <img src="assets/tariff-standard.png" alt="Интерьер уровня Стандарт" />
+          </div>
+        </article>
+      </section>
+    </main>
+
+    <div class="mobile-contactbar" aria-label="Быстрая связь">
+      <a href="tel:+79182383059">Звонок</a>
+      <a href="https://t.me/verh_rem" target="_blank" rel="noreferrer">Telegram</a>
+      <a href="https://max.ru/join/xVCYmnoBVajOlPHV-udrKsLdipj2nwOdZ73CjM64WbY" target="_blank" rel="noreferrer">MAX</a>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>
