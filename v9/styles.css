@@ -1131,7 +1131,7 @@ input:focus-visible {
 
   .quiz-sheet {
     width: 100%;
-    height: min(620px, 100dvh);
+    height: min(690px, calc(100dvh - 14px));
     border-right: 0;
     border-bottom: 0;
     border-left: 0;
@@ -1151,12 +1151,12 @@ input:focus-visible {
   }
 
   .quiz-card {
-    padding-top: 20px;
+    padding-top: 18px;
   }
 
   .quiz-card__top {
-    gap: 9px;
-    padding: 20px 58px 6px;
+    gap: 8px;
+    padding: 18px 58px 5px;
   }
 
   .step-counter strong {
@@ -1177,8 +1177,8 @@ input:focus-visible {
   }
 
   .slide {
-    gap: 13px;
-    padding: 6px 14px 14px;
+    gap: 11px;
+    padding: 5px 14px 14px;
   }
 
   .slide-head h2 {
@@ -1237,13 +1237,13 @@ input:focus-visible {
   }
 
   .level-choice {
-    min-height: 82px;
+    min-height: 76px;
     display: grid;
-    grid-template-columns: 96px 1fr;
+    grid-template-columns: 90px 1fr;
   }
 
   .level-choice img {
-    width: 96px;
+    width: 90px;
     height: 100%;
   }
 
@@ -1299,6 +1299,15 @@ input:focus-visible {
 
   .slide {
     gap: 12px;
+  }
+
+  .level-choice {
+    min-height: 72px;
+    grid-template-columns: 84px 1fr;
+  }
+
+  .level-choice img {
+    width: 84px;
   }
 }
 
