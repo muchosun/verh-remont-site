@@ -66,7 +66,14 @@ p {
   line-height: 1.55;
 }
 
+.intro-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
 .primary,
+.secondary,
 .version-card a {
   display: inline-flex;
   min-height: 46px;
@@ -78,6 +85,12 @@ p {
   color: #171006;
   padding: 0 22px;
   font-weight: 950;
+}
+
+.secondary {
+  border-color: rgba(255, 255, 255, 0.18);
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--text);
 }
 
 .version-grid {
@@ -96,6 +109,13 @@ p {
 
 .version-card--current {
   border-color: rgba(212, 162, 81, 0.68);
+}
+
+.version-card--preview {
+  border-color: rgba(241, 200, 117, 0.72);
+  background:
+    linear-gradient(180deg, rgba(212, 162, 81, 0.14), rgba(255, 255, 255, 0.025)),
+    var(--panel);
 }
 
 .version-card span {
