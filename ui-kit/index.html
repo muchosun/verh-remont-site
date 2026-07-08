@@ -11,7 +11,7 @@
     <link rel="icon" href='data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" fill="%23070707"/><text x="8" y="42" fill="%23d4a251" font-family="Arial" font-size="22" font-weight="900">VR</text></svg>' />
     <link rel="stylesheet" href="styles.css" />
   </head>
-  <body>
+  <body data-font-preset="manrope">
     <header class="topbar">
       <a class="brand" href="../" aria-label="ВЕРХ ремонт">
         <span>ВЕРХ</span>
@@ -19,6 +19,7 @@
       </a>
 
       <nav class="topnav" aria-label="Навигация UI kit">
+        <a href="#fonts">Шрифты</a>
         <a href="#system">Система</a>
         <a href="#tariffs">Тарифы</a>
         <a href="#quiz">Квиз</a>
@@ -63,6 +64,55 @@
             <span>ориентир</span>
             <strong>от 20 000 ₽/м²</strong>
             <p>Расчет показываем после короткого опроса и телефона.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="section font-checker" id="fonts">
+        <div class="section-head">
+          <h2>Чекер шрифтов</h2>
+          <p>
+            В VK-коммуникациях базовая связка — дисплейный шрифт для заголовков
+            и рекламных баннеров, текстовый — для длинных блоков. Здесь можно
+            быстро переключать группы и смотреть, как меняется характер сайта.
+          </p>
+        </div>
+
+        <div class="font-board">
+          <div class="font-board__controls">
+            <span>Группа шрифтов</span>
+            <div class="font-switcher" role="group" aria-label="Выбор группы шрифтов">
+              <button class="is-active" type="button" data-font-option="manrope">Manrope</button>
+              <button type="button" data-font-option="vk">VK Sans</button>
+              <button type="button" data-font-option="montserrat">Montserrat</button>
+              <button type="button" data-font-option="inter">Inter</button>
+              <button type="button" data-font-option="onest">Onest</button>
+              <button type="button" data-font-option="geologica">Geologica</button>
+            </div>
+            <p id="font-status">
+              Manrope: спокойная премиальная подача, близкая к текущему UI kit.
+            </p>
+          </div>
+
+          <div class="font-specimen">
+            <div class="font-specimen__headline">
+              <span>пример заголовка</span>
+              <strong>Ремонт квартир под ключ</strong>
+            </div>
+            <div class="font-specimen__ad">
+              <span>ВЕРХ</span>
+              <p>Стандарт 20 000 ₽/м²</p>
+              <p>Комфорт 25 000 ₽/м²</p>
+              <p>Люкс от 29 000 ₽/м²</p>
+            </div>
+            <div class="font-specimen__text">
+              <span>пример текста</span>
+              <p>
+                Хочешь въехать в готовую квартиру без беготни по магазинам?
+                Выбери уровень ремонта, оставь номер, и мы покажем ориентир
+                стоимости с материалами.
+              </p>
+            </div>
           </div>
         </div>
       </section>

@@ -1,4 +1,10 @@
+@import url("https://fonts.googleapis.com/css2?family=Geologica:wght@400;500;700;800;900&family=Inter:wght@400;500;700;800;900&family=Manrope:wght@400;500;700;800&family=Montserrat:wght@600;700;800;900&family=Onest:wght@400;500;700;800;900&display=swap");
+
 :root {
+  --font-display: "Manrope", "Inter", "Segoe UI", Arial, sans-serif;
+  --font-text: "Manrope", "Inter", "Segoe UI", Arial, sans-serif;
+  --font-ui: "Manrope", "Inter", "Segoe UI", Arial, sans-serif;
+  --font-wide: "Montserrat", "Manrope", Arial, sans-serif;
   --bg: #080807;
   --bg-soft: #0f0f0e;
   --surface: #151412;
@@ -32,7 +38,49 @@ body {
     linear-gradient(180deg, #070707 0%, var(--bg) 46%, #0d0c0b 100%),
     var(--bg);
   color: var(--text);
-  font-family: Inter, Manrope, "Segoe UI", Arial, sans-serif;
+  font-family: var(--font-text);
+}
+
+body[data-font-preset="vk"] {
+  --font-display: "VK Sans Display", "Manrope", "Inter", Arial, sans-serif;
+  --font-text: "VK Sans Text", "Inter", "Manrope", Arial, sans-serif;
+  --font-ui: "VK Sans Text", "Inter", "Manrope", Arial, sans-serif;
+  --font-wide: "VK Sans Display Expanded", "Montserrat", "Manrope", Arial, sans-serif;
+}
+
+body[data-font-preset="montserrat"] {
+  --font-display: "Montserrat", "Manrope", Arial, sans-serif;
+  --font-text: "Manrope", "Inter", Arial, sans-serif;
+  --font-ui: "Manrope", "Inter", Arial, sans-serif;
+  --font-wide: "Montserrat", "Manrope", Arial, sans-serif;
+}
+
+body[data-font-preset="manrope"] {
+  --font-display: "Manrope", "Inter", "Segoe UI", Arial, sans-serif;
+  --font-text: "Manrope", "Inter", "Segoe UI", Arial, sans-serif;
+  --font-ui: "Manrope", "Inter", "Segoe UI", Arial, sans-serif;
+  --font-wide: "Manrope", "Inter", Arial, sans-serif;
+}
+
+body[data-font-preset="inter"] {
+  --font-display: "Inter", "Manrope", "Segoe UI", Arial, sans-serif;
+  --font-text: "Inter", "Segoe UI", Arial, sans-serif;
+  --font-ui: "Inter", "Segoe UI", Arial, sans-serif;
+  --font-wide: "Inter", "Manrope", Arial, sans-serif;
+}
+
+body[data-font-preset="onest"] {
+  --font-display: "Onest", "Manrope", "Inter", Arial, sans-serif;
+  --font-text: "Onest", "Inter", Arial, sans-serif;
+  --font-ui: "Onest", "Inter", Arial, sans-serif;
+  --font-wide: "Onest", "Manrope", Arial, sans-serif;
+}
+
+body[data-font-preset="geologica"] {
+  --font-display: "Geologica", "Manrope", "Inter", Arial, sans-serif;
+  --font-text: "Geologica", "Inter", Arial, sans-serif;
+  --font-ui: "Geologica", "Inter", Arial, sans-serif;
+  --font-wide: "Geologica", "Manrope", Arial, sans-serif;
 }
 
 body::before {
@@ -58,7 +106,7 @@ a {
 
 button,
 input {
-  font: inherit;
+  font-family: var(--font-ui);
 }
 
 .topbar {
@@ -82,6 +130,7 @@ input {
 }
 
 .brand span {
+  font-family: var(--font-wide);
   font-size: 32px;
   font-weight: 950;
   color: var(--text);
@@ -89,6 +138,7 @@ input {
 
 .brand small {
   color: var(--gold-soft);
+  font-family: var(--font-ui);
   font-size: 14px;
   font-weight: 850;
 }
@@ -140,6 +190,7 @@ main {
 .final-cta {
   width: min(1200px, calc(100% - 40px));
   margin: 0 auto;
+  scroll-margin-top: 96px;
 }
 
 .hero {
@@ -166,6 +217,7 @@ p {
 h1 {
   max-width: 760px;
   color: var(--text);
+  font-family: var(--font-display);
   font-size: clamp(48px, 7vw, 94px);
   font-weight: 950;
   line-height: 0.92;
@@ -195,6 +247,7 @@ h1 {
   border-radius: var(--radius);
   padding: 0 22px;
   cursor: pointer;
+  font-family: var(--font-ui);
   font-weight: 950;
   transition: transform 180ms ease, border-color 180ms ease, background 180ms ease, box-shadow 180ms ease;
 }
@@ -365,6 +418,7 @@ h1 {
 .copy-block h2,
 .final-cta h2 {
   color: var(--text);
+  font-family: var(--font-display);
   font-size: clamp(34px, 5vw, 58px);
   font-weight: 950;
   line-height: 0.98;
@@ -374,6 +428,153 @@ h1 {
 .copy-block p,
 .final-cta p {
   font-size: 17px;
+}
+
+.font-checker {
+  padding-top: 34px;
+}
+
+.font-board {
+  display: grid;
+  grid-template-columns: minmax(280px, 0.72fr) minmax(0, 1fr);
+  gap: 14px;
+}
+
+.font-board__controls,
+.font-specimen {
+  border: 1px solid var(--gold-line);
+  border-radius: var(--radius);
+  background:
+    linear-gradient(180deg, rgba(255, 248, 234, 0.045), rgba(255, 248, 234, 0.015)),
+    var(--surface);
+  box-shadow: var(--shadow);
+}
+
+.font-board__controls {
+  display: grid;
+  align-content: start;
+  gap: 16px;
+  padding: 22px;
+}
+
+.font-board__controls > span,
+.font-specimen span {
+  color: var(--gold-soft);
+  font-family: var(--font-ui);
+  font-size: 13px;
+  font-weight: 950;
+  text-transform: uppercase;
+}
+
+.font-switcher {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.font-switcher button {
+  min-height: 42px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: rgba(255, 248, 234, 0.045);
+  color: var(--text);
+  cursor: pointer;
+  font-family: var(--font-ui);
+  font-size: 14px;
+  font-weight: 900;
+  transition: border-color 180ms ease, background 180ms ease, color 180ms ease;
+}
+
+.font-switcher button:hover,
+.font-switcher button:focus-visible,
+.font-switcher button.is-active {
+  border-color: var(--gold);
+  background: rgba(214, 163, 79, 0.14);
+  color: var(--gold-soft);
+}
+
+.font-board__controls p {
+  color: var(--text-soft);
+  font-size: 15px;
+  line-height: 1.48;
+}
+
+.font-specimen {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(260px, 0.7fr);
+  gap: 12px;
+  padding: 14px;
+}
+
+.font-specimen__headline,
+.font-specimen__ad,
+.font-specimen__text {
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: rgba(255, 248, 234, 0.04);
+  overflow: hidden;
+  padding: clamp(18px, 3vw, 28px);
+}
+
+.font-specimen__headline {
+  display: grid;
+  align-content: space-between;
+  min-height: 300px;
+  grid-row: span 2;
+}
+
+.font-specimen__headline strong {
+  display: block;
+  max-width: 100%;
+  color: var(--text);
+  font-family: var(--font-display);
+  font-size: clamp(38px, 4.8vw, 62px);
+  font-weight: 950;
+  line-height: 0.95;
+  text-wrap: balance;
+}
+
+.font-specimen__ad {
+  display: grid;
+  min-height: 210px;
+  align-content: end;
+  gap: 10px;
+  background:
+    linear-gradient(180deg, rgba(7, 7, 7, 0.08), rgba(7, 7, 7, 0.64)),
+    url("../v14/assets/vk-tariff-comfort.jpg") center / cover;
+}
+
+.font-specimen__ad span {
+  color: var(--text);
+  font-family: var(--font-wide);
+  font-size: 38px;
+  line-height: 0.9;
+}
+
+.font-specimen__ad p {
+  width: max-content;
+  max-width: 100%;
+  border: 1px solid var(--gold-line);
+  border-radius: var(--radius);
+  background: rgba(7, 7, 7, 0.72);
+  color: var(--text);
+  font-family: var(--font-display);
+  font-size: 15px;
+  font-weight: 900;
+  line-height: 1.15;
+  padding: 8px 10px;
+}
+
+.font-specimen__text {
+  display: grid;
+  gap: 12px;
+}
+
+.font-specimen__text p {
+  color: var(--text-soft);
+  font-family: var(--font-text);
+  font-size: 17px;
+  line-height: 1.58;
 }
 
 .system-grid {
@@ -536,6 +737,7 @@ h1 {
 }
 
 .mini-header strong {
+  font-family: var(--font-wide);
   font-size: 30px;
   line-height: 0.9;
 }
@@ -557,6 +759,7 @@ h1 {
 .quiz-sheet h3,
 .process-stack h3 {
   color: var(--text);
+  font-family: var(--font-display);
   font-size: 28px;
   line-height: 1.05;
 }
@@ -636,12 +839,14 @@ h1 {
 
 .tariff-body span {
   color: var(--gold-soft);
+  font-family: var(--font-ui);
   font-size: 14px;
   font-weight: 950;
 }
 
 .tariff-body strong {
   color: var(--text);
+  font-family: var(--font-display);
   font-size: clamp(30px, 4vw, 42px);
   line-height: 0.95;
 }
@@ -915,6 +1120,8 @@ h1 {
 @media (max-width: 1040px) {
   .hero,
   .section--split,
+  .font-board,
+  .font-specimen,
   .quiz-layout,
   .final-cta {
     grid-template-columns: 1fr;
@@ -991,6 +1198,22 @@ h1 {
   .hero__actions,
   .component-row {
     display: grid;
+  }
+
+  .font-switcher {
+    grid-template-columns: 1fr;
+  }
+
+  .font-specimen__headline {
+    min-height: 240px;
+  }
+
+  .font-specimen__headline strong {
+    font-size: clamp(38px, 12vw, 56px);
+  }
+
+  .font-specimen__ad span {
+    font-size: 34px;
   }
 
   .button {
