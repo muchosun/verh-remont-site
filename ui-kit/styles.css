@@ -647,6 +647,100 @@ h1 {
   padding: 18px;
 }
 
+.icon-pack {
+  padding-top: 34px;
+}
+
+.icon-pack-layout {
+  display: grid;
+  grid-template-columns: minmax(320px, 0.72fr) minmax(0, 1fr);
+  gap: 14px;
+  align-items: start;
+}
+
+.icon-pack-preview {
+  margin: 0;
+  border: 1px solid var(--gold-line);
+  border-radius: var(--radius);
+  background:
+    linear-gradient(180deg, rgba(255, 248, 234, 0.045), rgba(255, 248, 234, 0.015)),
+    var(--surface);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+}
+
+.icon-pack-preview img {
+  width: 100%;
+  aspect-ratio: 1;
+  object-fit: cover;
+}
+
+.icon-pack-preview figcaption {
+  border-top: 1px solid var(--line);
+  color: var(--text-soft);
+  font-size: 15px;
+  line-height: 1.5;
+  padding: 18px;
+}
+
+.icon-card-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.icon-card {
+  display: grid;
+  min-height: 214px;
+  align-content: start;
+  gap: 10px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background:
+    linear-gradient(180deg, rgba(255, 248, 234, 0.04), rgba(255, 248, 234, 0.015)),
+    var(--surface);
+  padding: 14px;
+  overflow: hidden;
+}
+
+.icon-sprite {
+  display: block;
+  width: 100%;
+  aspect-ratio: 1;
+  border: 1px solid var(--gold-line);
+  border-radius: var(--radius);
+  background-image: url("assets/verh-remont-icon-pack-v1.png");
+  background-repeat: no-repeat;
+  background-size: 400% 300%;
+  box-shadow: inset 0 0 0 1px rgba(255, 248, 234, 0.05);
+}
+
+.icon-sprite--tile { background-position: 0% 0%; }
+.icon-sprite--floor { background-position: 33.333% 0%; }
+.icon-sprite--door { background-position: 66.666% 0%; }
+.icon-sprite--light { background-position: 100% 0%; }
+.icon-sprite--wall { background-position: 0% 50%; }
+.icon-sprite--bath { background-position: 33.333% 50%; }
+.icon-sprite--measure { background-position: 66.666% 50%; }
+.icon-sprite--estimate { background-position: 100% 50%; }
+.icon-sprite--catalog { background-position: 0% 100%; }
+.icon-sprite--payments { background-position: 33.333% 100%; }
+.icon-sprite--tools { background-position: 66.666% 100%; }
+.icon-sprite--keys { background-position: 100% 100%; }
+
+.icon-card h3 {
+  color: var(--text);
+  font-family: var(--font-display);
+  font-size: 20px;
+  line-height: 1.05;
+}
+
+.icon-card p {
+  color: var(--text-soft);
+  font-size: 14px;
+  line-height: 1.4;
+}
+
 .section--split {
   display: grid;
   grid-template-columns: minmax(0, 0.85fr) minmax(340px, 0.75fr);
@@ -1122,6 +1216,7 @@ h1 {
   .section--split,
   .font-board,
   .font-specimen,
+  .icon-pack-layout,
   .quiz-layout,
   .final-cta {
     grid-template-columns: 1fr;
@@ -1140,6 +1235,7 @@ h1 {
   }
 
   .system-grid,
+  .icon-card-grid,
   .tariff-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
@@ -1223,9 +1319,26 @@ h1 {
   .proof-row,
   .system-grid,
   .tariff-grid,
+  .icon-card-grid,
   .material-grid,
   .payment-line {
     grid-template-columns: 1fr;
+  }
+
+  .icon-card {
+    grid-template-columns: 110px minmax(0, 1fr);
+    min-height: 142px;
+    align-items: center;
+  }
+
+  .icon-sprite {
+    grid-row: span 2;
+    width: 110px;
+  }
+
+  .icon-card h3,
+  .icon-card p {
+    grid-column: 2;
   }
 
   .hero__visual,
