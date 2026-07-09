@@ -3,136 +3,501 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>ВЕРХ ремонт - версии сайта</title>
-    <meta name="description" content="Версии прототипа сайта ВЕРХ ремонт." />
+    <title>ВЕРХ ремонт - ремонт квартир под ключ в Краснодаре</title>
+    <meta
+      name="description"
+      content="ВЕРХ ремонт: ремонт квартир под ключ в Краснодаре. Пройди короткий опрос, выбери желаемый результат и получи ориентир стоимости."
+    />
     <link rel="icon" href='data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" fill="%23070707"/><text x="8" y="42" fill="%23d4a251" font-family="Arial" font-size="22" font-weight="900">VR</text></svg>' />
-    <link rel="stylesheet" href="version-index.css" />
+    <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
-    <main class="versions">
-      <section class="intro">
-        <a class="brand" href="v14/" aria-label="Открыть актуальную версию">
-          <span>ВЕРХ</span>
-          <small>ремонт</small>
-        </a>
-        <h1>Версии сайта ВЕРХ ремонта</h1>
-        <p>
-          Здесь сохраняем итерации макета, чтобы видеть динамику: от первого
-          кликабельного прототипа до более точной верстки по сгенерированным
-          desktop/mobile концептам и правкам из рабочей Telegram-группы.
-        </p>
-        <div class="intro-actions">
-          <a class="primary" href="v14/">Открыть актуальную v14</a>
-          <a class="secondary" href="ui-kit/">Открыть UI kit</a>
+    <header class="site-header">
+      <a class="brand" href="#top" aria-label="ВЕРХ ремонт">
+        <span>ВЕРХ</span>
+        <small>ремонт</small>
+      </a>
+
+      <nav class="site-nav" aria-label="Навигация">
+        <a href="#tariffs">Тарифы</a>
+        <a href="#proof">Как выбрать</a>
+        <a href="#process">Этапы</a>
+        <a href="#materials">Материалы</a>
+        <a href="#contacts">Контакты</a>
+      </nav>
+
+      <button class="header-cta" type="button" data-quiz-open>Оставить заявку</button>
+    </header>
+
+    <main>
+      <section class="hero" id="top">
+        <div class="hero__media" aria-hidden="true">
+          <img src="v14/assets/vk-hero.jpg" alt="" />
+        </div>
+        <div class="hero__content">
+          <h1>Ремонт квартир под ключ в Краснодаре</h1>
+          <p>
+            Хочешь въехать в готовую квартиру без беготни по магазинам и
+            бесконечных доплат? Ответь на несколько вопросов — покажем ориентир
+            стоимости и подберем материалы под твой ремонт.
+          </p>
+          <div class="hero-badges" aria-label="Ключевые условия">
+            <span>от 20 000 ₽/м²</span>
+            <span>работа + материалы</span>
+            <span>смету закрепим после замера</span>
+          </div>
+          <div class="hero__actions">
+            <button class="primary-action" type="button" data-quiz-open>
+              Оставить номер и получить расчет
+            </button>
+            <a class="secondary-action" href="tel:+79182383059">Позвонить</a>
+          </div>
+          <dl class="hero-proof">
+            <div>
+              <dt>до 5 лет</dt>
+              <dd>гарантия на работы</dd>
+            </div>
+            <div>
+              <dt>3 уровня</dt>
+              <dd>Стандарт, Комфорт, Люкс</dd>
+            </div>
+            <div>
+              <dt>1 мин.</dt>
+              <dd>до заявки на расчет</dd>
+            </div>
+          </dl>
         </div>
       </section>
 
-      <section class="version-grid" aria-label="Список версий">
-        <article class="version-card version-card--preview">
-          <span>UI kit</span>
-          <h2>Предпросмотр темного стиля</h2>
-          <p>Отдельный стенд дизайн-системы: графитовая база, золото, реальные фото, тарифные карточки, материалы, этапы и темный квиз.</p>
-          <a href="ui-kit/">Открыть UI kit</a>
-        </article>
+      <section class="tariffs section" id="tariffs">
+        <div class="section-head">
+          <h2>Три уровня ремонта</h2>
+          <p>Выбери вариант под себя: аккуратно переехать, сделать комфортно для жизни или собрать индивидуальный результат.</p>
+        </div>
+        <div class="tariff-grid">
+          <article class="tariff-card">
+            <div class="tariff-gallery" data-tariff-gallery aria-label="Галерея ремонта Стандарт">
+              <div class="tariff-gallery__viewport">
+                <div class="tariff-gallery__track">
+                  <figure class="tariff-gallery__slide is-active" data-gallery-slide>
+                    <img src="v14/assets/standard_01_msg184.jpg" alt="Реальный ремонт уровня Стандарт" />
+                    <figcaption>комната</figcaption>
+                  </figure>
+                  <figure class="tariff-gallery__slide" data-gallery-slide>
+                    <img src="v14/assets/standard_02_msg185.jpg" alt="Коридор и двери в ремонте Стандарт" />
+                    <figcaption>коридор</figcaption>
+                  </figure>
+                  <figure class="tariff-gallery__slide" data-gallery-slide>
+                    <img src="v14/assets/standard_03_msg186.jpg" alt="Санузел в ремонте Стандарт" />
+                    <figcaption>санузел</figcaption>
+                  </figure>
+                  <figure class="tariff-gallery__slide" data-gallery-slide>
+                    <img src="v14/assets/standard_07_msg221.jpg" alt="Чистовая отделка комнаты Стандарт" />
+                    <figcaption>чистовая отделка</figcaption>
+                  </figure>
+                  <figure class="tariff-gallery__slide" data-gallery-slide>
+                    <img src="v14/assets/standard_11_msg225.jpg" alt="Санузел в объекте Стандарт" />
+                    <figcaption>мокрая зона</figcaption>
+                  </figure>
+                </div>
+              </div>
+              <button class="tariff-gallery__nav tariff-gallery__nav--prev" type="button" data-gallery-prev aria-label="Предыдущее фото">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 18-6-6 6-6" /></svg>
+              </button>
+              <button class="tariff-gallery__nav tariff-gallery__nav--next" type="button" data-gallery-next aria-label="Следующее фото">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 6 6 6-6 6" /></svg>
+              </button>
+              <div class="tariff-gallery__dots" aria-label="Фото в галерее">
+                <button class="is-active" type="button" data-gallery-dot="0" aria-label="Фото 1"></button>
+                <button type="button" data-gallery-dot="1" aria-label="Фото 2"></button>
+                <button type="button" data-gallery-dot="2" aria-label="Фото 3"></button>
+                <button type="button" data-gallery-dot="3" aria-label="Фото 4"></button>
+                <button type="button" data-gallery-dot="4" aria-label="Фото 5"></button>
+              </div>
+            </div>
+            <div class="tariff-card__body">
+              <h3>Стандарт</h3>
+              <strong>20 000 ₽/м²</strong>
+              <p class="tariff-card__composition">Материалы + работа</p>
+              <p>Когда нужен аккуратный ремонт без переплаты: заехать самому, подготовить квартиру к сдаче или быстро привести вторичку в порядок.</p>
+              <ul class="tariff-card__list">
+                <li>черновые материалы и работы под ключ;</li>
+                <li>плитка, напольное покрытие, обои или краска;</li>
+                <li>двери, потолки, базовая сантехника и свет.</li>
+              </ul>
+            </div>
+          </article>
+          <article class="tariff-card tariff-card--accent">
+            <div class="tariff-gallery" data-tariff-gallery aria-label="Галерея ремонта Комфорт">
+              <div class="tariff-gallery__viewport">
+                <div class="tariff-gallery__track">
+                  <figure class="tariff-gallery__slide is-active" data-gallery-slide>
+                    <img src="v14/assets/comfort_01_msg170.jpg" alt="Реальный ремонт уровня Комфорт" />
+                    <figcaption>кухня-гостиная</figcaption>
+                  </figure>
+                  <figure class="tariff-gallery__slide" data-gallery-slide>
+                    <img src="v14/assets/comfort_03_msg172.jpg" alt="Санузел в ремонте Комфорт" />
+                    <figcaption>санузел</figcaption>
+                  </figure>
+                  <figure class="tariff-gallery__slide" data-gallery-slide>
+                    <img src="v14/assets/comfort_04_msg173.jpg" alt="Кухонная зона в ремонте Комфорт" />
+                    <figcaption>кухня</figcaption>
+                  </figure>
+                  <figure class="tariff-gallery__slide" data-gallery-slide>
+                    <img src="v14/assets/comfort_05_msg174.jpg" alt="Комната в ремонте Комфорт" />
+                    <figcaption>комната</figcaption>
+                  </figure>
+                  <figure class="tariff-gallery__slide" data-gallery-slide>
+                    <img src="v14/assets/comfort_07_msg176.jpg" alt="Ванная комната в ремонте Комфорт" />
+                    <figcaption>ванная</figcaption>
+                  </figure>
+                  <figure class="tariff-gallery__slide" data-gallery-slide>
+                    <img src="v14/assets/comfort_08_msg214.jpg" alt="Деталь отделки уровня Комфорт" />
+                    <figcaption>деталь</figcaption>
+                  </figure>
+                </div>
+              </div>
+              <button class="tariff-gallery__nav tariff-gallery__nav--prev" type="button" data-gallery-prev aria-label="Предыдущее фото">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 18-6-6 6-6" /></svg>
+              </button>
+              <button class="tariff-gallery__nav tariff-gallery__nav--next" type="button" data-gallery-next aria-label="Следующее фото">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 6 6 6-6 6" /></svg>
+              </button>
+              <div class="tariff-gallery__dots" aria-label="Фото в галерее">
+                <button class="is-active" type="button" data-gallery-dot="0" aria-label="Фото 1"></button>
+                <button type="button" data-gallery-dot="1" aria-label="Фото 2"></button>
+                <button type="button" data-gallery-dot="2" aria-label="Фото 3"></button>
+                <button type="button" data-gallery-dot="3" aria-label="Фото 4"></button>
+                <button type="button" data-gallery-dot="4" aria-label="Фото 5"></button>
+                <button type="button" data-gallery-dot="5" aria-label="Фото 6"></button>
+              </div>
+            </div>
+            <div class="tariff-card__body">
+              <h3>Комфорт</h3>
+              <strong>25 000 ₽/м²</strong>
+              <p class="tariff-card__composition">Материалы + работа + расширенный выбор</p>
+              <p>Если делаешь квартиру для себя: больше выбора по плитке, полу, стенам, свету и деталям, которые каждый день будут на виду.</p>
+              <ul class="tariff-card__list">
+                <li>все работы и черновые материалы;</li>
+                <li>расширенный выбор плитки, пола и покрытий стен;</li>
+                <li>свет, двери, сантехника и потолочные решения по смете.</li>
+              </ul>
+            </div>
+          </article>
+          <article class="tariff-card">
+            <div class="tariff-gallery" data-tariff-gallery aria-label="Галерея ремонта Люкс">
+              <div class="tariff-gallery__viewport">
+                <div class="tariff-gallery__track">
+                  <figure class="tariff-gallery__slide is-active" data-gallery-slide>
+                    <img src="v14/assets/lux_01_msg178.jpg" alt="Реальный ремонт уровня Люкс" />
+                    <figcaption>спальня</figcaption>
+                  </figure>
+                  <figure class="tariff-gallery__slide" data-gallery-slide>
+                    <img src="v14/assets/lux_02_msg179.jpg" alt="Спальня с панорамным окном уровня Люкс" />
+                    <figcaption>панорамные окна</figcaption>
+                  </figure>
+                  <figure class="tariff-gallery__slide" data-gallery-slide>
+                    <img src="v14/assets/lux_03_msg180.jpg" alt="Гостиная зона в ремонте Люкс" />
+                    <figcaption>гостиная</figcaption>
+                  </figure>
+                  <figure class="tariff-gallery__slide" data-gallery-slide>
+                    <img src="v14/assets/lux_04_msg181.jpg" alt="Кухня-гостиная в ремонте Люкс" />
+                    <figcaption>кухня-гостиная</figcaption>
+                  </figure>
+                  <figure class="tariff-gallery__slide" data-gallery-slide>
+                    <img src="v14/assets/lux_05_msg182.jpg" alt="Санузел в ремонте Люкс" />
+                    <figcaption>санузел</figcaption>
+                  </figure>
+                  <figure class="tariff-gallery__slide" data-gallery-slide>
+                    <img src="v14/assets/lux_06_msg183.jpg" alt="Деталь ванной комнаты уровня Люкс" />
+                    <figcaption>деталь</figcaption>
+                  </figure>
+                </div>
+              </div>
+              <button class="tariff-gallery__nav tariff-gallery__nav--prev" type="button" data-gallery-prev aria-label="Предыдущее фото">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 18-6-6 6-6" /></svg>
+              </button>
+              <button class="tariff-gallery__nav tariff-gallery__nav--next" type="button" data-gallery-next aria-label="Следующее фото">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 6 6 6-6 6" /></svg>
+              </button>
+              <div class="tariff-gallery__dots" aria-label="Фото в галерее">
+                <button class="is-active" type="button" data-gallery-dot="0" aria-label="Фото 1"></button>
+                <button type="button" data-gallery-dot="1" aria-label="Фото 2"></button>
+                <button type="button" data-gallery-dot="2" aria-label="Фото 3"></button>
+                <button type="button" data-gallery-dot="3" aria-label="Фото 4"></button>
+                <button type="button" data-gallery-dot="4" aria-label="Фото 5"></button>
+                <button type="button" data-gallery-dot="5" aria-label="Фото 6"></button>
+              </div>
+            </div>
+            <div class="tariff-card__body">
+              <h3>Люкс</h3>
+              <strong>от 29 000 ₽/м²</strong>
+              <p class="tariff-card__composition">Дизайн + материалы + работа</p>
+              <p>Если важен не просто ремонт, а цельный интерьер: дизайн-проект, индивидуальная комплектация и сложные решения под итоговый вид квартиры.</p>
+              <ul class="tariff-card__list">
+                <li>работы по дизайн-проекту или индивидуальному ТЗ;</li>
+                <li>чистовые материалы и комплектация под проект;</li>
+                <li>сложные узлы, световые сценарии и авторские решения.</li>
+              </ul>
+            </div>
+          </article>
+        </div>
+      </section>
 
-        <article class="version-card">
-          <span>v1</span>
-          <h2>Первый кликабельный прототип</h2>
-          <p>Базовая структура: квиз, расчет стоимости, тарифы, материалы, процесс и форма заявки.</p>
-          <a href="v1/">Открыть v1</a>
-        </article>
+      <section class="proof section" id="proof">
+        <div class="section-head">
+          <h2>Не уверен, какой уровень выбрать?</h2>
+          <p>Посмотри на примеры и выбери тот результат, который ближе к твоей квартире, бюджету и планам на ремонт.</p>
+        </div>
+        <div class="case-grid">
+          <article class="case-card">
+            <img src="v14/assets/standard_07_msg221.jpg" alt="Пример объекта уровня Стандарт" />
+            <div>
+              <span>Стандарт</span>
+              <h3>Когда нужен понятный ремонт без лишних решений</h3>
+              <p>Подходит, если важно быстро получить чистую, аккуратную квартиру и не переплачивать за сложные материалы.</p>
+            </div>
+          </article>
+          <article class="case-card">
+            <img src="v14/assets/comfort_01_msg170.jpg" alt="Пример объекта уровня Комфорт" />
+            <div>
+              <span>Комфорт</span>
+              <h3>Когда хочешь жить красиво и спокойно</h3>
+              <p>Больше выбора по материалам и деталям: результат выглядит теплее, дороже и лучше подходит для жизни семьи.</p>
+            </div>
+          </article>
+          <article class="case-card">
+            <img src="v14/assets/lux_03_msg180.jpg" alt="Пример объекта уровня Люкс" />
+            <div>
+              <span>Люкс</span>
+              <h3>Когда нужен индивидуальный интерьер</h3>
+              <p>Для квартир, где важны дизайн, сценарии света, сложные узлы и единый визуальный результат.</p>
+            </div>
+          </article>
+        </div>
+      </section>
 
-        <article class="version-card">
-          <span>v2</span>
-          <h2>Верстка ближе к макетам</h2>
-          <p>Плотная первая витрина, квиз справа, тарифная полоса, новые визуалы уровней ремонта и блок каталогов.</p>
-          <a href="v2/">Открыть v2</a>
-        </article>
+      <section class="process section" id="process">
+        <div class="section-head">
+          <h2>Как проходит работа</h2>
+          <p>Сайт дает быстрый ориентир. Точная смета появляется после замера, проверки объекта и согласования материалов.</p>
+        </div>
+        <ol class="process-list">
+          <li><span>1</span><strong>Заявка</strong><p>Указываешь тип квартиры, площадь и уровень ремонта.</p></li>
+          <li><span>2</span><strong>Замер</strong><p>Смотрим стены, полы, электрику, мокрые зоны и демонтаж.</p></li>
+          <li><span>3</span><strong>Материалы</strong><p>Показываем варианты плитки, пола, дверей, сантехники и света под тариф.</p></li>
+          <li><span>4</span><strong>Смета</strong><p>Фиксируем работы, материалы, сроки, договор и график оплат.</p></li>
+          <li><span>5</span><strong>Ремонт</strong><p>Ведем объект по этапам, сдаем готовую квартиру и гарантийные документы.</p></li>
+        </ol>
+      </section>
 
-        <article class="version-card">
-          <span>v3</span>
-          <h2>Правки по Telegram</h2>
-          <p>Усилены уровни ремонта, исправлена логика каталогов на дом, добавлены MAX и WhatsApp, Люкс вынесен как зона детализации.</p>
-          <a href="v3/">Открыть v3</a>
-        </article>
+      <section class="materials section" id="materials">
+        <div class="materials__content">
+          <h2>Материалы входят в стоимость ремонта</h2>
+          <p>
+            Ты не остаешься один с выбором плитки, пола, дверей и света. Можно
+            посмотреть каталоги заранее, а точный комплект подберем после заявки
+            или на замере.
+          </p>
+          <div class="catalog-links" aria-label="Каталоги материалов">
+            <a href="v14/assets/tile_standard_msg020.pdf" download>Плитка Стандарт</a>
+            <a href="v14/assets/laminate_standard_msg023.pdf" download>Ламинат Стандарт</a>
+            <a href="v14/assets/tile_comfort_msg022.pdf" download>Плитка Комфорт</a>
+            <a href="v14/assets/laminate_comfort_msg021.pdf" download>Ламинат Комфорт</a>
+            <a href="v14/assets/doors_ecoshpon_msg024.pdf" download>Двери ЭкоШпон</a>
+          </div>
+          <button class="primary-action primary-action--dark" type="button" data-quiz-open>
+            Оставить номер и получить расчет
+          </button>
+        </div>
+        <div class="materials-grid" aria-label="Что входит в расчет">
+          <div><strong>Черновые материалы</strong><span>смеси, грунты, расходники и подготовка основания</span></div>
+          <div><strong>Пол и стены</strong><span>напольные покрытия, обои, краска или другие решения по тарифу</span></div>
+          <div><strong>Санузлы</strong><span>плитка, сантехника, мокрые зоны и аккуратные узлы</span></div>
+          <div><strong>Свет и двери</strong><span>потолки, освещение, двери и комплектация по смете</span></div>
+        </div>
+      </section>
 
-        <article class="version-card">
-          <span>v4</span>
-          <h2>Выбор уровня и быстрый расчет</h2>
-          <p>Первый экран усилен преимуществами и контактами, уровни ремонта подняты выше, расчет стартует от выбранного тарифа.</p>
-          <a href="v4/">Открыть v4</a>
-        </article>
-
-        <article class="version-card">
-          <span>v5</span>
-          <h2>Сайт-квиз как интерактивная презентация</h2>
-          <p>Квиз ведет по типу квартиры, площади и уровню ремонта, показывает материалы и собирает заявку только с телефоном.</p>
-          <a href="v5/">Открыть v5</a>
-        </article>
-
-        <article class="version-card">
-          <span>v6</span>
-          <h2>Квиз на одном экране</h2>
-          <p>Фиксированный mobile-first квиз без прыжков: фото-выборы, компактный прогресс, короткие тексты и финал только с телефоном.</p>
-          <a href="v6/">Открыть v6</a>
-        </article>
-
-        <article class="version-card">
-          <span>v7</span>
-          <h2>Сайт с квизом в поп-апе</h2>
-          <p>Контентная страница прогревает клиента, а рабочий квиз открывается поверх сайта как iOS-style всплывающее окно.</p>
-          <a href="v7/">Открыть v7</a>
-        </article>
-
-        <article class="version-card">
-          <span>v8</span>
-          <h2>Оригинальные фото из VK</h2>
-          <p>Сгенерированные изображения заменены на реальные фотографии объектов ВЕРХ ремонта из VK: hero, тарифы и фото-выборы квиза.</p>
-          <a href="v8/">Открыть v8</a>
-        </article>
-
-        <article class="version-card">
-          <span>v9</span>
-          <h2>Критичная правка мобильной воронки</h2>
-          <p>Первый экран получил быстрый ценовой якорь, нижняя CTA больше не дублируется на старте, а поп-ап квиза стал компактнее на телефоне.</p>
-          <a href="v9/">Открыть v9</a>
-        </article>
-
-        <article class="version-card">
-          <span>v10</span>
-          <h2>Расчет после телефона</h2>
-          <p>Квиз не показывает сумму до контакта: после телефона идет короткий лоудер и открывается расчет. Фото типов квартир и уровней отделки разведены сильнее.</p>
-          <a href="v10/">Открыть v10</a>
-        </article>
-
-        <article class="version-card">
-          <span>v11</span>
-          <h2>Галереи уровней отделки</h2>
-          <p>В блоке «Три уровня отделки» добавлены галереи для Стандарта, Комфорта и Люкса: свайп, стрелки, точки и мягкое автолистание в видимой зоне.</p>
-          <a href="v11/">Открыть v11</a>
-        </article>
-
-        <article class="version-card">
-          <span>v12</span>
-          <h2>Исправлен ввод площади</h2>
-          <p>В квизе поле своей площади больше не сбрасывается на минимальные 20 м²: можно стереть значение и набрать 41 или 41,5.</p>
-          <a href="v12/">Открыть v12</a>
-        </article>
-
-        <article class="version-card">
-          <span>v13</span>
-          <h2>Правки по замечаниям и реальные фото</h2>
-          <p>Переписаны тарифы, материалы, CTA и логика доверия; в галереи добавлены реальные фото Стандарта, Комфорта и Люкса из медиакаталога.</p>
-          <a href="v13/">Открыть v13</a>
-        </article>
-
-        <article class="version-card version-card--current">
-          <span>v14</span>
-          <h2>Маркетинговые тексты и график платежей</h2>
-          <p>Переписаны тексты в более клиентском тоне, добавлены каталоги материалов, убрана нижняя плашка квиза и добавлен график платежей 30/30/20/20 после телефона.</p>
-          <a href="v14/">Открыть v14</a>
-        </article>
+      <section class="site-cta" id="contacts">
+        <h2>Хочешь понять, во сколько выйдет ремонт?</h2>
+        <p>Пройди короткий опрос: выбери квартиру, метраж и желаемый результат. После номера покажем ориентир стоимости и примерный график платежей.</p>
+        <div class="site-cta__actions">
+          <button class="primary-action" type="button" data-quiz-open>Оставить номер и получить расчет</button>
+          <a class="secondary-action secondary-action--light" href="tel:+79182383059">Позвонить</a>
+        </div>
+        <p class="site-cta__links">
+          Дополнительно: <a href="https://t.me/verh_rem" target="_blank" rel="noreferrer">Telegram</a>
+          · <a href="https://max.ru/join/xVCYmnoBVajOlPHV-udrKsLdipj2nwOdZ73CjM64WbY" target="_blank" rel="noreferrer">MAX</a>
+        </p>
       </section>
     </main>
+
+    <div class="mobile-sticky-cta">
+      <button type="button" data-quiz-open>Получить расчет</button>
+    </div>
+
+    <div class="quiz-modal" id="quiz-modal" aria-hidden="true">
+      <div class="quiz-backdrop" data-quiz-close></div>
+      <section
+        class="quiz-sheet"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="quiz-title"
+        aria-describedby="quiz-description"
+      >
+        <div class="sheet-handle" aria-hidden="true"></div>
+        <button class="sheet-close" type="button" data-quiz-close aria-label="Закрыть квиз">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="m6 6 12 12M18 6 6 18" />
+          </svg>
+        </button>
+
+        <div class="quiz-card" aria-live="polite">
+          <div class="quiz-card__top">
+            <div class="step-counter">
+              <span id="step-count">1 / 5</span>
+              <strong id="step-label">Старт</strong>
+            </div>
+            <div class="progress-dots" aria-label="Прогресс квиза">
+              <button class="is-active" type="button" data-step-nav="0" aria-label="Шаг 1">1</button>
+              <button type="button" data-step-nav="1" aria-label="Шаг 2" disabled>2</button>
+              <button type="button" data-step-nav="2" aria-label="Шаг 3" disabled>3</button>
+              <button type="button" data-step-nav="3" aria-label="Шаг 4" disabled>4</button>
+              <button type="button" data-step-nav="4" aria-label="Шаг 5" disabled>5</button>
+            </div>
+          </div>
+
+          <div class="slides" id="slides">
+            <article class="slide is-active" data-step="0">
+              <div class="slide-head">
+                <h2 id="quiz-title">Что за квартира?</h2>
+                <p id="quiz-description">Выбери вариант, и сразу пойдем дальше.</p>
+              </div>
+              <div class="photo-choice-grid">
+                <button class="photo-choice is-selected" type="button" data-apartment="Новостройка">
+                  <img src="v14/assets/quiz-newbuild.jpg" alt="Квартира в новостройке до ремонта" />
+                  <span>
+                    <strong>Новостройка</strong>
+                    <small>бетон или предчистовая от застройщика</small>
+                  </span>
+                </button>
+                <button class="photo-choice" type="button" data-apartment="Вторичка">
+                  <img src="v14/assets/quiz-secondary.jpg" alt="Вторичная квартира до ремонта" />
+                  <span>
+                    <strong>Вторичка</strong>
+                    <small>старая отделка, нужен демонтаж</small>
+                  </span>
+                </button>
+              </div>
+            </article>
+
+            <article class="slide" data-step="1">
+              <div class="slide-head">
+                <h2>Сколько метров?</h2>
+                <p>Выбери типовой метраж или впиши свой.</p>
+              </div>
+              <div class="area-grid">
+                <button type="button" data-area="28" data-area-label="Студия">
+                  <strong>Студия</strong>
+                  <span>28 м²</span>
+                </button>
+                <button type="button" data-area="36" data-area-label="1-комн.">
+                  <strong>1-комн.</strong>
+                  <span>36 м²</span>
+                </button>
+                <button class="is-selected" type="button" data-area="58" data-area-label="2-комн.">
+                  <strong>2-комн.</strong>
+                  <span>58 м²</span>
+                </button>
+                <button type="button" data-area="78" data-area-label="3-комн.">
+                  <strong>3-комн.</strong>
+                  <span>78 м²</span>
+                </button>
+              </div>
+              <form class="custom-area" id="area-form">
+                <label for="area-input">Своя площадь, м²</label>
+                <div>
+                  <input
+                    id="area-input"
+                    name="area"
+                    type="text"
+                    inputmode="decimal"
+                    autocomplete="off"
+                    placeholder="например, 41"
+                    value="58"
+                  />
+                  <button type="submit">Ок</button>
+                </div>
+              </form>
+            </article>
+
+            <article class="slide" data-step="2">
+              <div class="slide-head">
+                <h2>Какой хочешь результат?</h2>
+                <p>Выбери, какой ремонт ближе: базовый, комфортный для жизни или индивидуальный.</p>
+              </div>
+              <div class="level-choice-grid">
+                <button class="level-choice" type="button" data-level="standard">
+                  <img src="v14/assets/standard_01_msg184.jpg" alt="Ремонт уровня Стандарт" />
+                  <span><strong>Стандарт</strong><small>материалы + работа · 20 000 ₽/м²</small></span>
+                </button>
+                <button class="level-choice is-selected" type="button" data-level="comfort">
+                  <img src="v14/assets/comfort_01_msg170.jpg" alt="Ремонт уровня Комфорт" />
+                  <span><strong>Комфорт</strong><small>расширенный выбор · 25 000 ₽/м²</small></span>
+                </button>
+                <button class="level-choice" type="button" data-level="lux">
+                  <img src="v14/assets/lux_01_msg178.jpg" alt="Ремонт уровня Люкс" />
+                  <span><strong>Люкс</strong><small>дизайн + материалы + работа · от 29 000 ₽/м²</small></span>
+                </button>
+              </div>
+            </article>
+
+            <article class="slide" data-step="3">
+              <div class="slide-head">
+                <h2>Заявка почти готова</h2>
+                <p>В выбранный вариант уже входит:</p>
+              </div>
+              <ul class="included-list" id="included-list"></ul>
+              <button class="sheet-primary" type="button" data-to-lead>Оставить номер и увидеть сумму</button>
+            </article>
+
+            <article class="slide" data-step="4">
+              <div class="lead-panel">
+                <div class="slide-head">
+                  <h2 id="lead-title">Оставь телефон</h2>
+                  <p id="lead-description">После отправки покажу ориентир стоимости и примерный график платежей.</p>
+                </div>
+                <div class="lead-offer">
+                  <span>быстрый расчет доступен</span>
+                  <strong id="timer">02:00</strong>
+                </div>
+                <form class="lead-form" id="lead-form">
+                  <label for="phone-input">Телефон</label>
+                  <input
+                    id="phone-input"
+                    name="phone"
+                    type="tel"
+                    inputmode="tel"
+                    autocomplete="tel"
+                    placeholder="+7 (___) ___-__-__"
+                    required
+                  />
+                  <button type="submit">Показать расчет</button>
+                </form>
+                <div class="lead-loading" id="lead-loading" hidden>
+                  <span aria-hidden="true"></span>
+                  <strong>Собираю твою заявку</strong>
+                  <p>Площадь, уровень ремонта и материалы уже внутри.</p>
+                </div>
+                <div class="success-message" id="success-message" hidden></div>
+              </div>
+            </article>
+          </div>
+
+        </div>
+      </section>
+    </div>
+
+    <script src="script.js"></script>
   </body>
 </html>
