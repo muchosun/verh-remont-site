@@ -59,7 +59,7 @@ fontButtons.forEach((button) => {
   button.addEventListener("click", () => applyFontPreset(button.dataset.fontOption));
 });
 
-applyFontPreset(localStorage.getItem("verh-ui-font-preset") || document.body.dataset.fontPreset);
+applyFontPreset(document.body.dataset.fontPreset || "onest");
 
 const galleries = [...document.querySelectorAll("[data-gallery]")];
 
