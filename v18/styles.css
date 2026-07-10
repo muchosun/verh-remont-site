@@ -2441,14 +2441,14 @@ html.has-js .process-cta {
   opacity: 0;
   visibility: hidden;
   transform: scale(1.035);
-  transition: transform 360ms ease, visibility 0s linear 360ms;
+  transition: transform 360ms ease;
 }
 
 .pinned-journey__visual img.is-active {
   opacity: 1;
   visibility: visible;
   transform: scale(1);
-  transition: transform 360ms ease, visibility 0s;
+  transition: transform 360ms ease;
 }
 
 .pinned-journey__counter {
