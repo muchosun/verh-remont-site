@@ -106,8 +106,27 @@ function initTariffGalleries() {
     let isPaused = false;
     let swipeStartX = null;
 
+    const loadSlideImage = (index) => {
+      const image = slides[index]?.querySelector("img[data-src]");
+      if (!image || !image.dataset.src) return;
+      image.src = image.dataset.src;
+      image.removeAttribute("data-src");
+    };
+
+    const preloadFollowingImage = () => {
+      if (!isVisible) return;
+      const nextIndex = (currentIndex + 1) % slides.length;
+      const preload = () => loadSlideImage(nextIndex);
+      if ("requestIdleCallback" in window) {
+        window.requestIdleCallback(preload, { timeout: 1200 });
+      } else {
+        window.setTimeout(preload, 240);
+      }
+    };
+
     const setIndex = (nextIndex) => {
       currentIndex = (nextIndex + slides.length) % slides.length;
+      loadSlideImage(currentIndex);
       track.style.transform = `translateX(${-currentIndex * 100}%)`;
       slides.forEach((slide, index) => {
         slide.classList.toggle("is-active", index === currentIndex);
@@ -118,6 +137,7 @@ function initTariffGalleries() {
         dot.classList.toggle("is-active", isActive);
         dot.setAttribute("aria-current", isActive ? "true" : "false");
       });
+      preloadFollowingImage();
     };
 
     const stopAutoplay = () => {
@@ -191,6 +211,10 @@ function initTariffGalleries() {
     if ("IntersectionObserver" in window) {
       const observer = new IntersectionObserver((entries) => {
         isVisible = entries.some((entry) => entry.isIntersecting);
+        if (isVisible) {
+          loadSlideImage(currentIndex);
+          preloadFollowingImage();
+        }
         startAutoplay();
       }, { threshold: 0.45 });
       observer.observe(gallery);
