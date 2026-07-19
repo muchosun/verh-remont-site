@@ -13,7 +13,7 @@
     <link rel="preload" as="font" href="assets/fonts/onest-cyrillic.woff2" type="font/woff2" crossorigin />
     <link rel="preload" as="font" href="assets/fonts/onest-latin.woff2" type="font/woff2" crossorigin />
     <link rel="preload" as="image" href="v14/assets/web/vk-hero.webp" type="image/webp" fetchpriority="high" />
-    <link rel="stylesheet" href="styles.css?v=20260719-16" />
+    <link rel="stylesheet" href="styles.css?v=20260719-17" />
     <!-- Yandex.Metrika counter -->
     <script type="text/javascript">
       (function (m, e, t, r, i, k, a) {
@@ -53,7 +53,6 @@
         <a href="#tariffs">Тарифы</a>
         <a href="#payments">Платежи</a>
         <a href="#projects">Объекты</a>
-        <a href="#reviews">Отзывы</a>
         <a href="#contacts">Контакты</a>
       </nav>
 
@@ -64,6 +63,7 @@
       <section class="hero" id="top">
         <div class="hero__media" aria-hidden="true">
           <img src="v14/assets/web/vk-hero.webp" alt="" decoding="async" fetchpriority="high" />
+          <img class="photo-watermark" src="assets/favicon-verh.png" alt="" aria-hidden="true" />
         </div>
         <div class="hero__content">
           <h1>Ремонт квартир под ключ в Краснодаре</h1>
@@ -87,7 +87,6 @@
       <section class="tariffs section" id="tariffs">
         <div class="section-head">
           <h2>Три уровня ремонта</h2>
-          <p>Выбери нужный результат.</p>
         </div>
         <div class="tariff-grid">
           <article class="tariff-card tariff-card--base">
@@ -95,12 +94,12 @@
             <figure class="tariff-card__visual">
               <img src="v10/assets/finish-standard.jpg" alt="Визуальный ориентир ремонта уровня Стандарт" loading="lazy" decoding="async" />
               <figcaption>Базовый минимум</figcaption>
+              <img class="photo-watermark" src="assets/favicon-verh.png" alt="" aria-hidden="true" />
             </figure>
             <div class="tariff-card__body">
               <h3>Стандарт</h3>
               <strong>20 000 ₽/м²</strong>
-              <p class="tariff-card__composition">Всё нужное для готовой квартиры</p>
-              <p>Подойдёт, чтобы заехать самому, подготовить квартиру к сдаче или обновить вторичку.</p>
+              <p class="tariff-card__composition">Готовый ремонт для заезда или сдачи</p>
               <ul class="tariff-card__list">
                 <li>подготовка, черновые работы и материалы;</li>
                 <li>плитка, пол, стены, двери и потолки;</li>
@@ -114,16 +113,16 @@
             <figure class="tariff-card__visual">
               <img src="v10/assets/finish-comfort.jpg" alt="Визуальный ориентир ремонта уровня Комфорт" loading="lazy" decoding="async" />
               <figcaption>Комфорт для жизни</figcaption>
+              <img class="photo-watermark" src="assets/favicon-verh.png" alt="" aria-hidden="true" />
             </figure>
             <div class="tariff-card__body">
               <h3>Комфорт</h3>
               <strong>25 000 ₽/м²</strong>
-              <p class="tariff-card__composition">Больше выбора в отделке и деталях</p>
-              <p>Для квартиры, в которой хочется жить каждый день: больше свободы в отделке, свете и деталях.</p>
+              <p class="tariff-card__composition">Больше деталей для комфортной жизни</p>
               <ul class="tariff-card__list">
-                <li>подготовка, черновые работы и материалы;</li>
-                <li>расширенный выбор плитки, пола и стен;</li>
-                <li>сантехника, свет, двери, ниши и дополнительная электрика.</li>
+                <li>крупноформатная плитка, ламинат 33 класса и моющиеся обои;</li>
+                <li>двери, сантехника, свет и карнизы;</li>
+                <li>дополнительная электрика, ниши и потолки.</li>
               </ul>
               <button class="tariff-card__action" type="button" data-tariff-open="comfort">Выбрать Комфорт</button>
             </div>
@@ -133,12 +132,12 @@
             <figure class="tariff-card__visual">
               <img src="v10/assets/finish-lux.jpg" alt="Визуальный ориентир ремонта уровня Люкс" loading="lazy" decoding="async" />
               <figcaption>Индивидуальный проект</figcaption>
+              <img class="photo-watermark" src="assets/favicon-verh.png" alt="" aria-hidden="true" />
             </figure>
             <div class="tariff-card__body">
               <h3>Люкс</h3>
               <strong>от 29 000 ₽/м²</strong>
-              <p class="tariff-card__composition">Ремонт по индивидуальному проекту</p>
-              <p>Для квартиры с характером: подберём состав работ, материалы и детали под твой проект.</p>
+              <p class="tariff-card__composition">Индивидуальный ремонт по твоему проекту</p>
               <ul class="tariff-card__list">
                 <li>работы по дизайн-проекту или твоему ТЗ;</li>
                 <li>материалы и комплектация под результат;</li>
@@ -181,7 +180,6 @@
             <span class="section-kicker">Реальные объекты</span>
             <h2>Посмотри, как выглядит готовый ремонт</h2>
           </div>
-          <p>После этапов важнее всего увидеть результат. Здесь реальные квартиры ВЕРХ ремонта: без рендеров и постановочных интерьеров.</p>
         </div>
 
         <div class="project-gallery" data-project-gallery data-project-assets-prefix="assets/projects">
@@ -202,23 +200,8 @@
         <p class="projects__privacy" id="projects-privacy"><strong>Адреса квартир не публикуем.</strong> Площадь, ЖК и детали объекта добавим только после согласования с собственниками.</p>
       </section>
 
-      <section class="reviews-demo section" id="reviews">
-        <div class="section-head reviews-demo__head">
-          <div>
-            <span class="section-kicker">Отзывы клиентов</span>
-            <h2>Здесь будут только подтверждённые отзывы</h2>
-          </div>
-          <p>Собираем отзывы в Яндекс Картах и переносим на сайт только с согласия клиентов. Демонстрационные отзывы и сгенерированные аватары убрали.</p>
-        </div>
-        <div class="reviews-pending" role="note">
-          <strong>Карточка Яндекс Бизнеса готовится</strong>
-          <span>После публикации первых подтверждённых отзывов добавим ссылку или официальный виджет.</span>
-        </div>
-      </section>
-
       <section class="site-cta" id="contacts">
         <h2>Готов прикинуть бюджет своей квартиры?</h2>
-          <p>Выбери квартиру, метраж и желаемый результат. После номера покажем предварительный расчёт и график платежей.</p>
         <div class="site-cta__actions">
           <button class="primary-action" type="button" data-quiz-open>Получить точный расчёт за минуту</button>
           <a class="secondary-action secondary-action--light call-action" href="tel:+79182383059" data-call-button data-phone-label="+7 (918) 238-30-59">Позвонить</a>
@@ -278,6 +261,7 @@
               <div class="photo-choice-grid">
                 <button class="photo-choice is-selected" type="button" data-apartment="Новостройка">
                   <img src="v14/assets/web/quiz-newbuild.webp" alt="Квартира в новостройке до ремонта" loading="lazy" decoding="async" />
+                  <img class="photo-watermark" src="assets/favicon-verh.png" alt="" aria-hidden="true" />
                   <span>
                     <strong>Новостройка</strong>
                     <small>бетон или предчистовая от застройщика</small>
@@ -285,6 +269,7 @@
                 </button>
                 <button class="photo-choice" type="button" data-apartment="Вторичка">
                   <img src="v14/assets/web/quiz-secondary.webp" alt="Вторичная квартира до ремонта" loading="lazy" decoding="async" />
+                  <img class="photo-watermark" src="assets/favicon-verh.png" alt="" aria-hidden="true" />
                   <span>
                     <strong>Вторичка</strong>
                     <small>старая отделка: в расчёт добавим 100 000 ₽ на демонтаж</small>
@@ -341,14 +326,17 @@
               <div class="level-choice-grid">
                 <button class="level-choice" type="button" data-level="standard">
                   <img src="v14/assets/web/standard_01_msg184.webp" alt="Ремонт уровня Стандарт" loading="lazy" decoding="async" />
+                  <img class="photo-watermark" src="assets/favicon-verh.png" alt="" aria-hidden="true" />
                   <span><strong>Стандарт</strong><small>аккуратный ремонт · 20 000 ₽/м²</small></span>
                 </button>
                 <button class="level-choice is-selected" type="button" data-level="comfort">
                   <img src="v14/assets/web/comfort_01_msg170.webp" alt="Ремонт уровня Комфорт" loading="lazy" decoding="async" />
+                  <img class="photo-watermark" src="assets/favicon-verh.png" alt="" aria-hidden="true" />
                   <span><strong>Комфорт</strong><small>больше выбора для жизни · 25 000 ₽/м²</small></span>
                 </button>
                 <button class="level-choice" type="button" data-level="lux">
                   <img src="v14/assets/web/lux_01_msg178.webp" alt="Ремонт уровня Люкс" loading="lazy" decoding="async" />
+                  <img class="photo-watermark" src="assets/favicon-verh.png" alt="" aria-hidden="true" />
                   <span><strong>Люкс</strong><small>индивидуальное решение · от 29 000 ₽/м²</small></span>
                 </button>
               </div>
@@ -401,6 +389,6 @@
     </div>
 
     <script src="https://unpkg.com/lucide@1.25.0/dist/umd/lucide.js"></script>
-    <script src="script.js?v=20260719-22"></script>
+    <script src="script.js?v=20260719-23"></script>
   </body>
 </html>
