@@ -317,7 +317,7 @@ function initProjectGallery() {
       .map((item, index) => `
         <article class="project-gallery__card" role="listitem">
           <img src="${sourceFor(item)}" alt="${item.tier}: ${item.title}. Реальный объект ВЕРХ ремонта" loading="${index < 4 ? "eager" : "lazy"}" decoding="async" draggable="false" />
-          <img class="photo-watermark" src="assets/favicon-verh.png" alt="" aria-hidden="true" draggable="false" />
+          <span class="photo-watermark" aria-hidden="true">ВЕРХ</span>
           <div class="project-gallery__card-caption">
             <span>${item.tier}</span>
             <strong>${item.title}</strong>
