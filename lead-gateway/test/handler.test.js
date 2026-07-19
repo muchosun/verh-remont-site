@@ -107,13 +107,11 @@ test("normalizes, recalculates and sends a lead to MAX", async () => {
   assert.match(message, /\[Юрий Яхутль\]\(max:\/\/user\/202\)/);
   assert.match(message, /1\s?037\s?500 ₽/);
   assert.deepEqual(payload.attachments, [{
-    type: "inline_keyboard",
+    type: "contact",
     payload: {
-      buttons: [[{
-        type: "link",
-        text: "Позвонить",
-        url: "https://verhremont.ru/call/#79991234567",
-      }]],
+      name: `Клиент по заявке #${response.leadId.slice(0, 8)}`,
+      vcf_phone: "TEL;TYPE=CELL:+79991234567",
+      vcf_info: `BEGIN:VCARD\r\nVERSION:3.0\r\nFN:Клиент по заявке #${response.leadId.slice(0, 8)}\r\nTEL;TYPE=CELL:+79991234567\r\nEND:VCARD\r\n`,
     },
   }]);
 });

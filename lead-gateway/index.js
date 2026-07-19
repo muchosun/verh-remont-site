@@ -78,20 +78,28 @@ function formatPhoneTarget(phone) {
   return String(phone).replace(/\D/g, "");
 }
 
-function formatCallPageUrl(phone) {
-  const phoneDigits = formatPhoneTarget(phone);
-  return new URL(`/call/#${phoneDigits}`, allowedOrigin()).toString();
+function formatContactName(lead) {
+  return `Клиент по заявке #${lead.id.slice(0, 8)}`;
 }
 
-function formatCallKeyboard(phone) {
+function formatContactAttachment(lead) {
+  const name = formatContactName(lead);
+  const phone = `+${formatPhoneTarget(lead.phone)}`;
+  const vcfInfo = [
+    "BEGIN:VCARD",
+    "VERSION:3.0",
+    `FN:${name}`,
+    `TEL;TYPE=CELL:${phone}`,
+    "END:VCARD",
+    "",
+  ].join("\r\n");
+
   return [{
-    type: "inline_keyboard",
+    type: "contact",
     payload: {
-      buttons: [[{
-        type: "link",
-        text: "Позвонить",
-        url: formatCallPageUrl(phone),
-      }]],
+      name,
+      vcf_phone: `TEL;TYPE=CELL:${phone}`,
+      vcf_info: vcfInfo,
     },
   }];
 }
@@ -201,7 +209,7 @@ async function sendToMax(lead, maxRequest = requestMax) {
     },
     body: JSON.stringify({
       text: formatMaxMessage(lead),
-      attachments: formatCallKeyboard(lead.phone),
+      attachments: formatContactAttachment(lead),
       format: "markdown",
       notify: true,
       disable_link_preview: true,
