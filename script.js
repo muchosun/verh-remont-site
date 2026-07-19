@@ -230,6 +230,17 @@ function initTariffGalleries() {
   });
 }
 
+const freshTelegramProjectSeries = [
+  ["comfort", "Комфорт", [305, 306, 307, 308, 329, 330, 331, 332, 333, 340, 341, 342, 343, 344, 345, 346, 347, 348, 349, 350, 351]],
+  ["lux", "Люкс", [309, 310, 311, 312, 313, 314, 315, 316, 317, 318, 319, 320, 321, 322, 323, 324, 325, 326, 327, 328]],
+  ["standard", "Стандарт", [334, 335, 336, 337, 338, 339, 352, 353, 354, 355, 356, 357, 358, 359, 360, 361, 362, 363, 364]],
+].flatMap(([category, tier, messageIds]) => messageIds.map((messageId, index) => [
+  category,
+  tier,
+  `Готовая квартира · ${String(index + 1).padStart(2, "0")}`,
+  `${category}/${category}_fresh_20260718_msg${messageId}.webp`,
+]));
+
 const projectGalleryItems = [
   ["standard", "Стандарт", "Кухня-гостиная", "standard/standard_01_msg184.webp"],
   ["standard", "Стандарт", "Коридор", "standard/standard_02_msg185.webp"],
@@ -269,6 +280,7 @@ const projectGalleryItems = [
     `Свет и потолок · ${String(index + 1).padStart(2, "0")}`,
     `details/unclassified_${String(index + 1).padStart(2, "0")}_msg${190 + index}.webp`,
   ]),
+  ...freshTelegramProjectSeries,
 ].map(([category, tier, title, path]) => ({ category, tier, title, path }));
 
 function initProjectGallery() {
@@ -292,6 +304,7 @@ function initProjectGallery() {
   let activeCategory = "all";
   let activeIndex = 0;
   let swipeStart = null;
+  let renderedCategory = null;
 
   const getItems = () => projectGalleryItems.filter((item) => activeCategory === "all" || item.category === activeCategory);
   const sourceFor = (item) => `${assetsPrefix}/${item.path}`;
@@ -312,6 +325,15 @@ function initProjectGallery() {
         </button>
       `)
       .join("");
+    renderedCategory = activeCategory;
+  };
+
+  const updateActiveThumb = () => {
+    thumbs.querySelectorAll("[data-project-thumb]").forEach((thumb, index) => {
+      const isActive = index === activeIndex;
+      thumb.classList.toggle("is-active", isActive);
+      thumb.toggleAttribute("aria-current", isActive);
+    });
   };
 
   const preloadNeighbours = () => {
@@ -338,7 +360,11 @@ function initProjectGallery() {
       meta.textContent = `${item.tier} · реальный объект`;
       title.textContent = item.title;
       count.textContent = `${activeIndex + 1} / ${items.length}`;
-      renderThumbs();
+      if (renderedCategory !== activeCategory) {
+        renderThumbs();
+      } else {
+        updateActiveThumb();
+      }
       const activeThumb = thumbs.querySelector(".project-gallery__thumb.is-active");
       if (scrollThumb) {
         activeThumb?.scrollIntoView({
@@ -398,11 +424,15 @@ function initProjectGallery() {
     setSlide(activeIndex + (distanceX < 0 ? 1 : -1));
   };
 
+  const restoreSwipeScroll = (top) => {
+    if (Math.abs(window.scrollY - top) > 1) window.scrollTo(0, top);
+  };
+
   media.addEventListener("dragstart", (event) => event.preventDefault());
 
   media.addEventListener("pointerdown", (event) => {
     if (event.target.closest("button") || (event.button !== undefined && event.button !== 0)) return;
-    swipeStart = { x: event.clientX, y: event.clientY, pointerId: event.pointerId };
+    swipeStart = { x: event.clientX, y: event.clientY, pointerId: event.pointerId, scrollY: window.scrollY, isHorizontal: false };
     media.setPointerCapture?.(event.pointerId);
   });
 
@@ -410,14 +440,22 @@ function initProjectGallery() {
     if (!swipeStart || event.pointerId !== swipeStart.pointerId) return;
     const distanceX = event.clientX - swipeStart.x;
     const distanceY = event.clientY - swipeStart.y;
-    if (Math.abs(distanceX) > 10 && Math.abs(distanceX) > Math.abs(distanceY)) event.preventDefault();
+    if (Math.abs(distanceX) > 10 && Math.abs(distanceX) > Math.abs(distanceY)) {
+      swipeStart.isHorizontal = true;
+      event.preventDefault();
+      restoreSwipeScroll(swipeStart.scrollY);
+    }
   }, { passive: false });
 
   media.addEventListener("pointerup", (event) => {
     if (!swipeStart || event.pointerId !== swipeStart.pointerId) return;
-    const { x, y } = swipeStart;
+    const { x, y, scrollY, isHorizontal } = swipeStart;
     swipeStart = null;
     if (media.hasPointerCapture?.(event.pointerId)) media.releasePointerCapture(event.pointerId);
+    if (isHorizontal) {
+      restoreSwipeScroll(scrollY);
+      window.requestAnimationFrame(() => restoreSwipeScroll(scrollY));
+    }
     moveWithSwipe(event.clientX - x, event.clientY - y);
   });
 
