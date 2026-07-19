@@ -3849,3 +3849,103 @@ html.has-js .process-cta {
     animation: none;
   }
 }
+
+/* v25.4: compact, scannable payment sequence */
+.payment-section .payment-schedule {
+  grid-template-columns: minmax(210px, 0.48fr) minmax(0, 1fr);
+  align-items: center;
+  gap: clamp(28px, 5vw, 72px);
+  border: 0;
+  padding: clamp(28px, 3vw, 38px) 0;
+}
+
+.payment-schedule__head {
+  gap: 8px;
+}
+
+.payment-schedule__head span {
+  color: #f0c66d;
+  font-size: 13px;
+  font-weight: 750;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+.payment-schedule__head p {
+  max-width: 300px;
+  color: #fff8ea;
+  font-size: clamp(18px, 1.65vw, 22px);
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.payment-schedule__list {
+  counter-reset: payment-step;
+  align-self: stretch;
+  border-top: 1px solid rgba(255, 248, 234, 0.16);
+  border-bottom: 1px solid rgba(255, 248, 234, 0.16);
+  padding: 9px 0;
+}
+
+.payment-schedule__list li {
+  position: relative;
+  min-height: 66px;
+  gap: 6px;
+  padding: 11px 12px 10px 36px;
+  counter-increment: payment-step;
+}
+
+.payment-schedule__list li::before {
+  content: "0" counter(payment-step);
+  position: absolute;
+  top: 15px;
+  left: 14px;
+  color: #f0c66d;
+  font-size: 10px;
+  font-weight: 750;
+  line-height: 1;
+}
+
+.payment-schedule__list strong {
+  color: #fff8ea;
+  font-size: clamp(26px, 2.45vw, 34px);
+  font-weight: 750;
+}
+
+.payment-schedule__list span {
+  color: rgba(255, 248, 234, 0.76);
+  font-size: 12px;
+  font-weight: 650;
+  line-height: 1.25;
+}
+
+@media (max-width: 720px) {
+  .payment-section .payment-schedule {
+    grid-template-columns: 1fr;
+    gap: 18px;
+    padding: 0;
+  }
+
+  .payment-schedule__head p {
+    max-width: none;
+    font-size: 19px;
+  }
+
+  .payment-schedule__list {
+    padding: 7px 0;
+  }
+
+  .payment-schedule__list li {
+    min-height: 62px;
+    padding: 10px 10px 10px 32px;
+  }
+
+  .payment-schedule__list li::before {
+    top: 14px;
+    left: 12px;
+  }
+
+  .payment-schedule__list li:nth-child(3) {
+    border-left: 0;
+  }
+}
