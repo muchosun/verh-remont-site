@@ -13,7 +13,7 @@
     <link rel="preload" as="font" href="assets/fonts/onest-cyrillic.woff2" type="font/woff2" crossorigin />
     <link rel="preload" as="font" href="assets/fonts/onest-latin.woff2" type="font/woff2" crossorigin />
     <link rel="preload" as="image" href="v14/assets/web/vk-hero.webp" type="image/webp" fetchpriority="high" />
-    <link rel="stylesheet" href="styles.css?v=20260719-2" />
+    <link rel="stylesheet" href="styles.css?v=20260719-3" />
     <!-- Yandex.Metrika counter -->
     <script type="text/javascript">
       (function (m, e, t, r, i, k, a) {
@@ -87,18 +87,19 @@
       <section class="tariffs section" id="tariffs">
         <div class="section-head">
           <h2>Три уровня ремонта</h2>
-          <p>Выбери, какой результат нужен: спокойный базовый, комфортный для жизни или индивидуальный.</p>
+          <p>Выбери результат: базовый ремонт, комфорт для жизни или индивидуальный проект.</p>
         </div>
         <div class="tariff-grid">
-          <article class="tariff-card">
+          <article class="tariff-card tariff-card--base">
+            <span class="tariff-card__badge tariff-card__badge--base">Базовый ремонт</span>
             <figure class="tariff-card__visual">
               <img src="v10/assets/finish-standard.jpg" alt="Визуальный ориентир ремонта уровня Стандарт" loading="lazy" decoding="async" />
-              <figcaption>Спокойный базовый уровень</figcaption>
+              <figcaption>Базовый ремонт</figcaption>
             </figure>
             <div class="tariff-card__body">
               <h3>Стандарт</h3>
               <strong>20 000 ₽/м²</strong>
-              <p class="tariff-card__composition">Аккуратный результат без лишнего</p>
+              <p class="tariff-card__composition">Всё нужное для готовой квартиры</p>
               <p>Подойдёт, чтобы заехать самому, подготовить квартиру к сдаче или обновить вторичку.</p>
               <ul class="tariff-card__list">
                 <li>подготовка, черновые работы и материалы;</li>
@@ -108,16 +109,16 @@
               <button class="tariff-card__action" type="button" data-tariff-open="standard">Выбрать Стандарт</button>
             </div>
           </article>
-          <article class="tariff-card tariff-card--accent">
-            <span class="tariff-card__badge">Чаще выбирают</span>
+          <article class="tariff-card tariff-card--accent tariff-card--featured">
+            <span class="tariff-card__badge tariff-card__badge--popular">Чаще выбирают</span>
             <figure class="tariff-card__visual">
               <img src="v10/assets/finish-comfort.jpg" alt="Визуальный ориентир ремонта уровня Комфорт" loading="lazy" decoding="async" />
-              <figcaption>Больше деталей для жизни</figcaption>
+              <figcaption>Комфорт для жизни</figcaption>
             </figure>
             <div class="tariff-card__body">
               <h3>Комфорт</h3>
               <strong>25 000 ₽/м²</strong>
-              <p class="tariff-card__composition">Больше выбора для жизни</p>
+              <p class="tariff-card__composition">Больше выбора в отделке и деталях</p>
               <p>Для квартиры, в которой хочется жить каждый день: больше свободы в отделке, свете и деталях.</p>
               <ul class="tariff-card__list">
                 <li>подготовка, черновые работы и материалы;</li>
@@ -127,15 +128,16 @@
               <button class="tariff-card__action" type="button" data-tariff-open="comfort">Выбрать Комфорт</button>
             </div>
           </article>
-          <article class="tariff-card">
+          <article class="tariff-card tariff-card--bonus">
+            <span class="tariff-card__badge tariff-card__badge--bonus">Дизайн-проект в подарок</span>
             <figure class="tariff-card__visual">
               <img src="v10/assets/finish-lux.jpg" alt="Визуальный ориентир ремонта уровня Люкс" loading="lazy" decoding="async" />
-              <figcaption>Индивидуальный интерьер</figcaption>
+              <figcaption>Индивидуальный проект</figcaption>
             </figure>
             <div class="tariff-card__body">
               <h3>Люкс</h3>
               <strong>от 29 000 ₽/м²</strong>
-              <p class="tariff-card__composition">Индивидуальное решение</p>
+              <p class="tariff-card__composition">Ремонт по индивидуальному проекту</p>
               <p>Для квартиры с характером: подберём состав работ, материалы и детали под твой проект.</p>
               <ul class="tariff-card__list">
                 <li>работы по дизайн-проекту или твоему ТЗ;</li>
