@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="noindex, nofollow">
+    <meta name="referrer" content="no-referrer">
+    <title>Позвонить клиенту | ВЕРХ РЕМОНТ</title>
+    <style>
+      :root {
+        color-scheme: dark;
+        font-family: Arial, sans-serif;
+      }
+
+      * { box-sizing: border-box; }
+
+      body {
+        display: grid;
+        min-height: 100svh;
+        margin: 0;
+        place-items: center;
+        background: #151412;
+        color: #f8f7f4;
+      }
+
+      main {
+        width: min(100% - 32px, 420px);
+        padding: 32px;
+        border: 1px solid #3a3733;
+        background: #211f1c;
+      }
+
+      .brand {
+        margin: 0 0 28px;
+        color: #f07837;
+        font-size: 14px;
+        font-weight: 700;
+        letter-spacing: 0;
+      }
+
+      h1 {
+        margin: 0;
+        font-size: 28px;
+        line-height: 1.1;
+      }
+
+      p {
+        margin: 14px 0 0;
+        color: #c8c3bc;
+        font-size: 16px;
+        line-height: 1.45;
+      }
+
+      .phone {
+        color: #f8f7f4;
+        font-weight: 700;
+      }
+
+      a {
+        display: block;
+        margin-top: 28px;
+        padding: 14px 18px;
+        background: #f07837;
+        color: #151412;
+        font-size: 16px;
+        font-weight: 700;
+        text-align: center;
+        text-decoration: none;
+      }
+
+      .invalid { display: none; }
+      body[data-state="invalid"] .valid { display: none; }
+      body[data-state="invalid"] .invalid { display: block; }
+    </style>
+  </head>
+  <body data-state="loading">
+    <main>
+      <p class="brand">ВЕРХ РЕМОНТ</p>
+      <div class="valid">
+        <h1>Открываем вызов</h1>
+        <p>Клиент: <span class="phone" id="phone"></span></p>
+        <p>Если звонок не открылся автоматически, нажми кнопку.</p>
+        <a id="call-link" href="#">Позвонить</a>
+      </div>
+      <div class="invalid">
+        <h1>Номер не найден</h1>
+        <p>Вернись к заявке и открой звонок ещё раз.</p>
+      </div>
+    </main>
+    <script>
+      (() => {
+        const digits = window.location.hash.slice(1).replace(/\D/g, "");
+        const validPhone = /^7\d{10}$/.test(digits);
+
+        if (!validPhone) {
+          document.body.dataset.state = "invalid";
+          return;
+        }
+
+        const phone = `+7 (${digits.slice(1, 4)}) ${digits.slice(4, 7)}-${digits.slice(7, 9)}-${digits.slice(9, 11)}`;
+        const target = `tel:+${digits}`;
+        document.getElementById("phone").textContent = phone;
+        document.getElementById("call-link").href = target;
+        document.body.dataset.state = "ready";
+
+        // The original button tap may still be a trusted user gesture on mobile.
+        window.requestAnimationFrame(() => window.location.assign(target));
+        window.history.replaceState(null, "", window.location.pathname);
+      })();
+    </script>
+  </body>
+</html>

@@ -75,7 +75,12 @@ function formatMoney(value) {
 }
 
 function formatPhoneTarget(phone) {
-  return `tel:+${String(phone).replace(/\D/g, "")}`;
+  return String(phone).replace(/\D/g, "");
+}
+
+function formatCallPageUrl(phone) {
+  const phoneDigits = formatPhoneTarget(phone);
+  return new URL(`/call/#${phoneDigits}`, allowedOrigin()).toString();
 }
 
 function formatCallKeyboard(phone) {
@@ -85,7 +90,7 @@ function formatCallKeyboard(phone) {
       buttons: [[{
         type: "link",
         text: "Позвонить",
-        url: formatPhoneTarget(phone),
+        url: formatCallPageUrl(phone),
       }]],
     },
   }];

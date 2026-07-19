@@ -112,7 +112,7 @@ test("normalizes, recalculates and sends a lead to MAX", async () => {
       buttons: [[{
         type: "link",
         text: "Позвонить",
-        url: "tel:+79991234567",
+        url: "https://verhremont.ru/call/#79991234567",
       }]],
     },
   }]);
