@@ -3718,3 +3718,40 @@ html.has-js .process-cta {
     transition: none;
   }
 }
+
+/* v25.1: keep the tariff set visually consistent */
+.tariff-card--featured,
+.tariff-card--bonus {
+  background:
+    linear-gradient(180deg, rgba(255, 248, 234, 0.045), rgba(255, 248, 234, 0.015)),
+    var(--surface);
+  box-shadow: var(--shadow);
+}
+
+.tariff-card--featured {
+  border-color: rgba(240, 198, 109, 0.84);
+}
+
+.tariff-card--bonus {
+  border-color: rgba(255, 248, 234, 0.18);
+}
+
+.tariff-card__badge--base,
+.tariff-card__badge--popular,
+.tariff-card__badge--bonus {
+  border-color: rgba(255, 248, 234, 0.3);
+  background: rgba(7, 7, 7, 0.8);
+  box-shadow: none;
+}
+
+.tariff-card__badge--popular,
+.tariff-card__badge--bonus {
+  border-color: rgba(240, 198, 109, 0.72);
+  color: #f0c66d;
+}
+
+.tariff-card--featured .tariff-card__action {
+  border-color: rgba(240, 198, 109, 0.66);
+  background: transparent;
+  color: #fff8ea;
+}
