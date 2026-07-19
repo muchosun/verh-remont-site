@@ -88,6 +88,8 @@ const timerElement = document.querySelector("#timer");
 const stickyBreakpoint = window.matchMedia("(max-width: 720px)");
 const tariffGalleries = [...document.querySelectorAll("[data-tariff-gallery]")];
 const contactsSection = document.querySelector("#contacts");
+const callButtons = [...document.querySelectorAll("[data-call-button]")];
+const mobileCallButton = document.querySelector("[data-mobile-call]");
 
 let lastQuizTrigger = null;
 let timerId = null;
@@ -348,6 +350,36 @@ function initProjectGallery() {
 
   updateFilters();
   renderCards();
+}
+
+function trackMetricGoal(goal) {
+  if (typeof window.ym === "function") window.ym(110859289, "reachGoal", goal);
+}
+
+function initCallActions() {
+  callButtons.forEach((button) => {
+    button.addEventListener("click", (event) => {
+      if (!stickyBreakpoint.matches && !button.classList.contains("is-phone-revealed")) {
+        event.preventDefault();
+        const phoneLabel = button.dataset.phoneLabel || button.textContent.trim();
+        button.classList.add("is-phone-revealed");
+        button.textContent = phoneLabel;
+        button.setAttribute("aria-label", `Позвонить по номеру ${phoneLabel}`);
+        trackMetricGoal("phone_reveal");
+        return;
+      }
+
+      trackMetricGoal("phone_call");
+    });
+  });
+}
+
+function initMobileCallAction() {
+  mobileCallButton?.addEventListener("click", () => trackMetricGoal("phone_call"));
+}
+
+function initIcons() {
+  window.lucide?.createIcons();
 }
 
 function formatMoney(value) {
@@ -822,5 +854,8 @@ leadForm.addEventListener("submit", async (event) => {
 
 render();
 initProjectGallery();
+initCallActions();
+initMobileCallAction();
+initIcons();
 setStep(0);
 updateStickyCta();
