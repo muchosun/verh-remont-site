@@ -8,8 +8,8 @@ const tariffs = {
     included: [
       "работа по ремонту квартиры под ключ",
       "черновые материалы и подготовка основания",
-      "плитка, напольное покрытие, обои или краска уровня Стандарт",
-      "двери, потолки, базовая сантехника и свет",
+      "плитка, пол, стены, двери и потолки уровня Стандарт",
+      "базовая сантехника и свет",
       "смета, договор и график этапов",
     ],
   },
@@ -21,7 +21,7 @@ const tariffs = {
       "работа по ремонту квартиры под ключ",
       "черновые материалы и подготовка основания",
       "расширенный выбор плитки, пола и покрытий стен",
-      "сантехника, свет, двери и потолочные решения по смете",
+      "сантехника, свет, двери, ниши и дополнительная электрика",
       "смета, договор и график этапов",
     ],
   },
@@ -30,14 +30,16 @@ const tariffs = {
     price: 29000,
     prefix: "от ",
     included: [
-      "дизайн-проект или индивидуальное техническое задание",
       "работа по ремонту квартиры под ключ",
-      "черновые и чистовые материалы по проекту",
+      "материалы и комплектация под проект",
       "сложные узлы, световые сценарии и комплектация",
       "смета, договор и график этапов",
     ],
   },
 };
+
+const SECONDARY_PRELIMINARY_SURCHARGE = 100000;
+const leadEndpoint = typeof window.VERH_LEAD_ENDPOINT === "string" ? window.VERH_LEAD_ENDPOINT.trim() : "";
 
 const stepLabels = [
   "Старт",
@@ -268,8 +270,12 @@ function getTariff() {
   return tariffs[state.level];
 }
 
+function getSecondarySurcharge() {
+  return state.apartment === "Вторичка" ? SECONDARY_PRELIMINARY_SURCHARGE : 0;
+}
+
 function getEstimate() {
-  return state.area * getTariff().price;
+  return state.area * getTariff().price + getSecondarySurcharge();
 }
 
 function getEstimateText() {
@@ -277,47 +283,31 @@ function getEstimateText() {
   return tariff.prefix ? `${tariff.prefix}${formatMoney(getEstimate())}` : `≈ ${formatMoney(getEstimate())}`;
 }
 
-function formatDate(date, options = { day: "numeric", month: "long" }) {
-  return new Intl.DateTimeFormat("ru-RU", options).format(date);
-}
-
-function addDays(date, days) {
-  const nextDate = new Date(date);
-  nextDate.setDate(nextDate.getDate() + days);
-  return nextDate;
-}
-
 function getPaymentPlan() {
-  const today = new Date();
   const estimate = getEstimate();
   return {
-    readyDate: addDays(today, 60),
     items: [
       {
         percent: 30,
         title: "Старт",
-        date: today,
         amount: estimate * 0.3,
         note: "после замера и договора",
       },
       {
         percent: 30,
         title: "Черновой этап",
-        date: addDays(today, 14),
         amount: estimate * 0.3,
-        note: "когда понятен объем работ",
+        note: "после согласования черновых работ",
       },
       {
         percent: 20,
         title: "Чистовая отделка",
-        date: addDays(today, 35),
         amount: estimate * 0.2,
-        note: "перед укладкой материалов",
+        note: "перед чистовыми работами и монтажом",
       },
       {
         percent: 20,
-        title: "Сдача",
-        date: addDays(today, 60),
+        title: "Приемка",
         amount: estimate * 0.2,
         note: "после приемки квартиры",
       },
@@ -330,8 +320,8 @@ function getPaymentPlanHtml() {
   return `
     <div class="payment-plan">
       <div class="payment-plan__head">
-        <span>Примерный график платежей</span>
-        <strong>Ориентир готовности: ${formatDate(plan.readyDate, { month: "long", year: "numeric" })}</strong>
+        <span>График платежей 30/30/20/20</span>
+        <strong>Срок работ закрепим после замера</strong>
       </div>
       <ol class="payment-plan__list">
         ${plan.items
@@ -340,14 +330,14 @@ function getPaymentPlanHtml() {
               <span class="payment-plan__percent">${item.percent}%</span>
               <div>
                 <strong>${item.title}</strong>
-                <small>${formatDate(item.date)} · ${formatMoney(item.amount)}</small>
+                <small>${formatMoney(item.amount)}</small>
                 <em>${item.note}</em>
               </div>
             </li>
           `)
           .join("")}
       </ol>
-      <p>Это предварительная разбивка. Финальные даты и платежи закрепим в договоре после замера.</p>
+      <p>Это предварительная разбивка. Даты, платежи и срок работ закрепим в договоре после замера.</p>
     </div>
   `;
 }
@@ -372,7 +362,7 @@ function resetLeadResult() {
   resetTimer();
   leadPanel.classList.remove("is-success");
   leadTitle.textContent = "Оставь телефон";
-  leadDescription.textContent = "После отправки покажу ориентир стоимости и примерный график платежей.";
+  leadDescription.textContent = "После отправки покажу предварительную стоимость и график платежей.";
   leadForm.hidden = false;
   leadOffer.hidden = false;
   leadLoading.hidden = true;
@@ -441,11 +431,11 @@ function renderSummary() {
   const tariff = getTariff();
   summaryLine.textContent = `${state.apartment} · ${formatArea(state.area)} · ${tariff.title}`;
   if (state.leadSubmitted) {
-    summaryEstimateLabel.textContent = "Ориентир";
+    summaryEstimateLabel.textContent = "Предварительный расчёт";
     summaryEstimate.textContent = getEstimateText();
     return;
   }
-  summaryEstimateLabel.textContent = "Расчет";
+  summaryEstimateLabel.textContent = "Предварительный расчёт";
   summaryEstimate.textContent = state.step === 4 ? "после номера" : "после телефона";
 }
 
@@ -527,6 +517,39 @@ function formatPhone(value) {
   return `+7 (${parts[0]}) ${parts[1]}-${parts[2]}-${parts[3]}`;
 }
 
+function createLeadPayload() {
+  return {
+    apartment: state.apartment,
+    area: state.area,
+    areaLabel: state.areaLabel,
+    level: state.level,
+    levelTitle: getTariff().title,
+    pricePerMeter: getTariff().price,
+    secondarySurcharge: getSecondarySurcharge(),
+    preliminaryEstimate: getEstimate(),
+    phone: state.leadPhone,
+    source: window.location.href,
+    submittedAt: new Date().toISOString(),
+  };
+}
+
+async function sendLeadToMax(payload) {
+  if (!leadEndpoint) return { status: "not-configured" };
+
+  const response = await fetch(leadEndpoint, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload),
+  });
+
+  if (!response.ok) throw new Error(`Lead endpoint responded with ${response.status}`);
+  return { status: "sent" };
+}
+
+function waitFor(milliseconds) {
+  return new Promise((resolve) => window.setTimeout(resolve, milliseconds));
+}
+
 function startTimer() {
   if (state.timerStarted) return;
   state.timerStarted = true;
@@ -545,6 +568,16 @@ function startTimer() {
 
 quizOpenButtons.forEach((button) => {
   button.addEventListener("click", () => openQuiz(button));
+});
+
+document.querySelectorAll("[data-tariff-open]").forEach((button) => {
+  button.addEventListener("click", () => {
+    state.level = button.dataset.tariffOpen;
+    resetLeadResult();
+    render();
+    setStep(1);
+    openQuiz(button);
+  });
 });
 
 quizCloseButtons.forEach((button) => {
@@ -627,7 +660,7 @@ phoneInput.addEventListener("input", () => {
   phoneInput.value = formatPhone(phoneInput.value);
 });
 
-leadForm.addEventListener("submit", (event) => {
+leadForm.addEventListener("submit", async (event) => {
   event.preventDefault();
   const digits = phoneInput.value.replace(/\D/g, "");
   if (digits.length < 11) {
@@ -648,26 +681,50 @@ leadForm.addEventListener("submit", (event) => {
   }
   render();
 
-  state.leadLoadingId = window.setTimeout(() => {
-    state.leadLoadingId = null;
+  try {
+    const [delivery] = await Promise.all([
+      sendLeadToMax(createLeadPayload()),
+      waitFor(1200),
+    ]);
+
     state.leadSubmitted = true;
     leadPanel.classList.add("is-success");
-    leadTitle.textContent = "Расчет готов";
-    leadDescription.textContent = "Ниже ориентир стоимости и примерный график платежей 30/30/20/20.";
+    leadTitle.textContent = "Предварительный расчёт готов";
+    leadDescription.textContent = "Ниже ориентир стоимости и график платежей 30/30/20/20.";
     leadLoading.hidden = true;
     successMessage.hidden = false;
+    const secondaryNote = getSecondarySurcharge()
+      ? `<span>В расчёт включены ${formatMoney(getSecondarySurcharge())} на демонтаж для вторички. Итоговую смету уточним после осмотра квартиры.</span>`
+      : "";
+    const deliveryNote = delivery.status === "sent"
+      ? "<span>Заявка отправлена в рабочую группу. Игорь свяжется с тобой, чтобы согласовать замер.</span>"
+      : "<span class=\"delivery-note\">Тестовая версия: доставка заявок в MAX подключается отдельно. Расчёт работает, но номер пока не отправляется в рабочую группу.</span>";
     successMessage.innerHTML = `
-      <strong>Готово. Ориентир: ${getEstimateText()}.</strong>
+      <strong>Предварительный расчёт: ${getEstimateText()}.</strong>
       <span>${state.apartment}, ${formatArea(state.area)}, ${getTariff().title}. Это предварительный расчет, точную смету закрепим после замера.</span>
-      <span>Телефон: ${state.leadPhone}. Команда свяжется, согласует замер и покажет материалы под твой бюджет.</span>
+      ${secondaryNote}
+      ${deliveryNote}
       ${getPaymentPlanHtml()}
     `;
     render();
-  }, 1200);
+  } catch (error) {
+    state.leadSubmitted = true;
+    leadPanel.classList.add("is-success");
+    leadTitle.textContent = "Предварительный расчёт готов";
+    leadDescription.textContent = "Показываем ориентир и график платежей ниже.";
+    leadLoading.hidden = true;
+    successMessage.hidden = false;
+    successMessage.innerHTML = `
+      <strong>Предварительный расчёт: ${getEstimateText()}.</strong>
+      <span>${state.apartment}, ${formatArea(state.area)}, ${getTariff().title}. Точную смету закрепим после замера.</span>
+      <span class="delivery-note">Не удалось передать заявку в рабочую группу. Позвони нам по номеру на сайте, чтобы согласовать замер.</span>
+      ${getPaymentPlanHtml()}
+    `;
+    render();
+  }
 });
 
 render();
-initTariffGalleries();
 initProjectRails();
 setStep(0);
 updateStickyCta();
