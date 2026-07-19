@@ -230,28 +230,187 @@ function initTariffGalleries() {
   });
 }
 
-function initProjectRails() {
+const projectGalleryItems = [
+  ["standard", "Стандарт", "Кухня-гостиная", "standard/standard_01_msg184.webp"],
+  ["standard", "Стандарт", "Коридор", "standard/standard_02_msg185.webp"],
+  ["standard", "Стандарт", "Санузел", "standard/standard_03_msg186.webp"],
+  ["standard", "Стандарт", "Комната", "standard/standard_04_msg187.webp"],
+  ["standard", "Стандарт", "Ванная", "standard/standard_05_msg188.webp"],
+  ["standard", "Стандарт", "Пол", "standard/standard_06_msg189.webp"],
+  ["standard", "Стандарт", "Комната", "standard/standard_07_msg221.webp"],
+  ["standard", "Стандарт", "Спальня", "standard/standard_08_msg222.webp"],
+  ["standard", "Стандарт", "Комната", "standard/standard_09_msg223.webp"],
+  ["standard", "Стандарт", "Комната", "standard/standard_10_msg224.webp"],
+  ["standard", "Стандарт", "Санузел", "standard/standard_11_msg225.webp"],
+  ["standard", "Стандарт", "Балкон", "standard/standard_12_msg226.webp"],
+  ["comfort", "Комфорт", "Кухня-гостиная", "comfort/comfort_01_msg170.webp"],
+  ["comfort", "Комфорт", "Зеркала", "comfort/comfort_02_msg171.webp"],
+  ["comfort", "Комфорт", "Душевая", "comfort/comfort_03_msg172.webp"],
+  ["comfort", "Комфорт", "Кухня", "comfort/comfort_04_msg173.webp"],
+  ["comfort", "Комфорт", "Комната", "comfort/comfort_05_msg174.webp"],
+  ["comfort", "Комфорт", "Санузел", "comfort/comfort_06_msg175.webp"],
+  ["comfort", "Комфорт", "Ванная", "comfort/comfort_07_msg176.webp"],
+  ["comfort", "Комфорт", "Санузел", "comfort/comfort_08_msg214.webp"],
+  ["comfort", "Комфорт", "Ванная", "comfort/comfort_09_msg215.webp"],
+  ["comfort", "Комфорт", "Санузел", "comfort/comfort_10_msg216.webp"],
+  ["comfort", "Комфорт", "Кухня", "comfort/comfort_11_msg217.webp"],
+  ["comfort", "Комфорт", "Спальня", "comfort/comfort_12_msg218.webp"],
+  ["comfort", "Комфорт", "Спальня", "comfort/comfort_13_msg219.webp"],
+  ["comfort", "Комфорт", "Комната", "comfort/comfort_14_msg220.webp"],
+  ["lux", "Люкс", "Спальня", "lux/lux_01_msg178.webp"],
+  ["lux", "Люкс", "Панорамные окна", "lux/lux_02_msg179.webp"],
+  ["lux", "Люкс", "Гостиная", "lux/lux_03_msg180.webp"],
+  ["lux", "Люкс", "Кухня-гостиная", "lux/lux_04_msg181.webp"],
+  ["lux", "Люкс", "Санузел", "lux/lux_05_msg182.webp"],
+  ["lux", "Люкс", "Ванная", "lux/lux_06_msg183.webp"],
+  ...Array.from({ length: 24 }, (_, index) => [
+    "details",
+    "Свет и детали",
+    `Свет и потолок · ${String(index + 1).padStart(2, "0")}`,
+    `details/unclassified_${String(index + 1).padStart(2, "0")}_msg${190 + index}.webp`,
+  ]),
+].map(([category, tier, title, path]) => ({ category, tier, title, path }));
+
+function initProjectGallery() {
+  const gallery = document.querySelector("[data-project-gallery]");
+  if (!gallery) return;
+
   const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+  const assetsPrefix = (gallery.dataset.projectAssetsPrefix || "assets/projects").replace(/\/$/, "");
+  const image = gallery.querySelector("[data-project-image]");
+  const meta = gallery.querySelector("[data-project-meta]");
+  const title = gallery.querySelector("[data-project-title]");
+  const count = gallery.querySelector("[data-project-count]");
+  const thumbs = gallery.querySelector("[data-project-thumbs]");
+  const media = gallery.querySelector("[data-project-swipe]");
+  const prevButton = gallery.querySelector("[data-project-prev]");
+  const nextButton = gallery.querySelector("[data-project-next]");
+  const filters = [...gallery.querySelectorAll("[data-project-filter]")];
 
-  document.querySelectorAll("[data-project-rail]").forEach((rail) => {
-    const viewport = rail.querySelector(".project-rail__viewport");
-    const track = rail.querySelector(".project-rail__track");
-    const firstCard = rail.querySelector("[data-rail-item]");
-    const prevButton = rail.querySelector("[data-rail-prev]");
-    const nextButton = rail.querySelector("[data-rail-next]");
+  if (!image || !meta || !title || !count || !thumbs || !media) return;
 
-    if (!viewport || !track || !firstCard) return;
+  let activeCategory = "all";
+  let activeIndex = 0;
+  let swipeStartX = null;
 
-    const moveRail = (direction) => {
-      viewport.scrollBy({
-        left: direction * (firstCard.offsetWidth + Number.parseFloat(getComputedStyle(track).gap || "0")),
-        behavior: reduceMotion.matches ? "auto" : "smooth",
-      });
+  const getItems = () => projectGalleryItems.filter((item) => activeCategory === "all" || item.category === activeCategory);
+  const sourceFor = (item) => `${assetsPrefix}/${item.path}`;
+
+  const updateFilters = () => {
+    filters.forEach((filter) => {
+      const isActive = filter.dataset.projectFilter === activeCategory;
+      filter.classList.toggle("is-active", isActive);
+      filter.setAttribute("aria-selected", String(isActive));
+    });
+  };
+
+  const renderThumbs = () => {
+    thumbs.innerHTML = getItems()
+      .map((item, index) => `
+        <button class="project-gallery__thumb${index === activeIndex ? " is-active" : ""}" type="button" data-project-thumb="${index}" aria-label="Открыть: ${item.tier}, ${item.title}"${index === activeIndex ? " aria-current=\"true\"" : ""}>
+          <img src="${sourceFor(item)}" alt="" loading="lazy" decoding="async" />
+        </button>
+      `)
+      .join("");
+  };
+
+  const preloadNeighbours = () => {
+    const items = getItems();
+    if (items.length < 2) return;
+    [1, -1].forEach((offset) => {
+      const nextItem = items[(activeIndex + offset + items.length) % items.length];
+      const preload = new Image();
+      preload.src = sourceFor(nextItem);
+    });
+  };
+
+  const setSlide = (nextIndex, { scrollThumb = true } = {}) => {
+    const items = getItems();
+    if (!items.length) return;
+
+    activeIndex = (nextIndex + items.length) % items.length;
+    const item = items[activeIndex];
+    const applySlide = () => {
+      image.classList.add("is-changing");
+      image.src = sourceFor(item);
+      image.alt = `${item.tier}: ${item.title}. Реальный объект ВЕРХ ремонта`;
+      image.dataset.projectPath = item.path;
+      meta.textContent = `${item.tier} · реальный объект`;
+      title.textContent = item.title;
+      count.textContent = `${activeIndex + 1} / ${items.length}`;
+      renderThumbs();
+      const activeThumb = thumbs.querySelector(".project-gallery__thumb.is-active");
+      if (scrollThumb) {
+        activeThumb?.scrollIntoView({
+          behavior: reduceMotion.matches ? "auto" : "smooth",
+          block: "nearest",
+          inline: "nearest",
+        });
+      }
+      window.setTimeout(() => image.classList.remove("is-changing"), reduceMotion.matches ? 0 : 180);
+      preloadNeighbours();
     };
 
-    prevButton?.addEventListener("click", () => moveRail(-1));
-    nextButton?.addEventListener("click", () => moveRail(1));
+    if (image.dataset.projectPath === item.path) {
+      applySlide();
+      return;
+    }
+
+    const preload = new Image();
+    preload.onload = applySlide;
+    preload.onerror = applySlide;
+    preload.src = sourceFor(item);
+  };
+
+  const switchCategory = (category) => {
+    activeCategory = category;
+    activeIndex = 0;
+    updateFilters();
+    setSlide(0, { scrollThumb: false });
+  };
+
+  filters.forEach((filter) => {
+    filter.addEventListener("click", () => switchCategory(filter.dataset.projectFilter || "all"));
   });
+
+  thumbs.addEventListener("click", (event) => {
+    const thumb = event.target.closest("[data-project-thumb]");
+    if (!thumb) return;
+    setSlide(Number(thumb.dataset.projectThumb));
+  });
+
+  prevButton?.addEventListener("click", () => setSlide(activeIndex - 1));
+  nextButton?.addEventListener("click", () => setSlide(activeIndex + 1));
+
+  media.addEventListener("keydown", (event) => {
+    if (event.key === "ArrowLeft") {
+      event.preventDefault();
+      setSlide(activeIndex - 1);
+    }
+    if (event.key === "ArrowRight") {
+      event.preventDefault();
+      setSlide(activeIndex + 1);
+    }
+  });
+
+  media.addEventListener("pointerdown", (event) => {
+    swipeStartX = event.clientX;
+  });
+
+  media.addEventListener("pointerup", (event) => {
+    if (swipeStartX === null) return;
+    const distance = event.clientX - swipeStartX;
+    swipeStartX = null;
+    if (Math.abs(distance) < 44) return;
+    setSlide(activeIndex + (distance < 0 ? 1 : -1));
+  });
+
+  media.addEventListener("pointercancel", () => {
+    swipeStartX = null;
+  });
+
+  updateFilters();
+  setSlide(0, { scrollThumb: false });
 }
 
 function formatMoney(value) {
@@ -725,6 +884,6 @@ leadForm.addEventListener("submit", async (event) => {
 });
 
 render();
-initProjectRails();
+initProjectGallery();
 setStep(0);
 updateStickyCta();
