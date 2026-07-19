@@ -8,6 +8,10 @@ const originalEnvironment = {
   MAX_BOT_TOKEN: process.env.MAX_BOT_TOKEN,
   MAX_CHAT_ID: process.env.MAX_CHAT_ID,
   MAX_API_BASE: process.env.MAX_API_BASE,
+  MAX_IGOR_USER_ID: process.env.MAX_IGOR_USER_ID,
+  MAX_IGOR_NAME: process.env.MAX_IGOR_NAME,
+  MAX_YURIY_USER_ID: process.env.MAX_YURIY_USER_ID,
+  MAX_YURIY_NAME: process.env.MAX_YURIY_NAME,
 };
 
 function restoreEnvironment() {
@@ -77,6 +81,10 @@ test("validates the lead before attempting delivery", async () => {
 test("normalizes, recalculates and sends a lead to MAX", async () => {
   process.env.MAX_BOT_TOKEN = "test-token";
   process.env.MAX_CHAT_ID = "987654";
+  process.env.MAX_IGOR_USER_ID = "101";
+  process.env.MAX_IGOR_NAME = "Игорь Тестов";
+  process.env.MAX_YURIY_USER_ID = "202";
+  process.env.MAX_YURIY_NAME = "Юрий Юхультль";
   const calls = [];
   const testHandler = createHandler({ maxRequest: async (url, options) => {
     calls.push({ url: String(url), options });
@@ -93,7 +101,9 @@ test("normalizes, recalculates and sends a lead to MAX", async () => {
   assert.equal(calls.length, 1);
   assert.equal(calls[0].url, "https://platform-api2.max.ru/messages?chat_id=987654");
   assert.equal(calls[0].options.headers.Authorization, "test-token");
-  assert.match(message, /\+7 \(999\) 123-45-67/);
+  assert.match(message, /\[\+7 \(999\) 123-45-67\]\(tel:\+79991234567\)/);
+  assert.match(message, /\[Игорь Тестов\]\(max:\/\/user\/101\)/);
+  assert.match(message, /\[Юрий Юхультль\]\(max:\/\/user\/202\)/);
   assert.match(message, /1\s?037\s?500 ₽/);
 });
 

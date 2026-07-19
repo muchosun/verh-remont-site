@@ -20,6 +20,7 @@
 
 - `MAX_BOT_TOKEN` и `MAX_CHAT_ID` задаются только как переменные окружения Cloud Function. Их нельзя добавлять в `index.html`, `script.js`, GitHub Secrets для Pages или Telegram.
 - Для обращения к `platform-api2.max.ru` функция использует официальный корневой и выпускающий TLS-сертификаты Минцифры из `certs/russiantrustedca.pem`. Проверка TLS не отключается.
+- Телефон в сообщении отправляется как ссылка `tel:`. Для упоминаний ответственных заполните `MAX_IGOR_USER_ID`, `MAX_IGOR_NAME`, `MAX_YURIY_USER_ID` и `MAX_YURIY_NAME`. Имя должно полностью совпадать с именем профиля MAX, а ID — быть числовым. Если переменные не заполнены, заявка всё равно будет доставлена, но без упоминаний.
 - Функция не записывает номер телефона в логи. В логах остаётся только технический ID доставки.
 - API Gateway должен быть единственной публичной точкой. Самой функции не выдавать публичный доступ.
 - Перед запуском платного трафика включить SmartCaptcha в API Gateway либо в самой форме. Проверка `Origin` и скрытое поле-ловушка уже есть, но они не заменяют защиту от ботов.
@@ -34,6 +35,8 @@
    - `MAX_API_BASE=https://platform-api2.max.ru`;
    - `MAX_BOT_TOKEN` — токен чат-бота MAX;
    - `MAX_CHAT_ID` — ID общего рабочего чата MAX, куда бот уже добавлен.
+   - `MAX_IGOR_USER_ID` и `MAX_IGOR_NAME` — ID и полное имя Игоря в MAX;
+   - `MAX_YURIY_USER_ID` и `MAX_YURIY_NAME` — ID и полное имя Юрия Юхультля в MAX.
 4. Создать API Gateway по `openapi.template.yaml`, заменив `<FUNCTION_ID>` и `<SERVICE_ACCOUNT_ID>` на реальные идентификаторы. У API Gateway должно быть только два маршрута: `/v1/leads` и `/health`.
 5. Привязать к API Gateway поддомен, например `leads.verhremont.ru`, с HTTPS-сертификатом.
 6. Открыть `https://leads.verhremont.ru/health`: ожидаемый ответ `{"status":"ok"}`.
@@ -87,5 +90,13 @@ curl -i -X POST https://leads.verhremont.ru/v1/leads \
 ```
 
 Ожидаемый результат: `201`, затем одно сообщение в MAX. При `400` исправляется payload, при `403` проверяется домен в `LEAD_ORIGIN`, при `502` — токен бота, ID чата и доступ бота к рабочему чату.
+
+Для получения ID ответственных у бота должны быть права администратора рабочего чата. После выдачи прав выполните:
+
+```bash
+GET /chats/{chatId}/members
+```
+
+Метод вернёт `user_id`, `first_name` и `last_name` участников. Упоминание формируется в виде `[Имя Фамилия](max://user/user_id)`.
 
 Официальные справки: [обработчик Node.js в Cloud Functions](https://yandex.cloud/ru/docs/functions/lang/nodejs/handler), [интеграция API Gateway с Cloud Functions](https://yandex.cloud/ru/docs/api-gateway/concepts/extensions/cloud-functions), [отправка сообщений MAX](https://dev.max.ru/docs-api/methods/POST/messages).

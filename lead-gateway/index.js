@@ -74,6 +74,23 @@ function formatMoney(value) {
   return `${new Intl.NumberFormat("ru-RU").format(value)} ₽`;
 }
 
+function formatPhoneLink(phone) {
+  const digits = String(phone).replace(/\D/g, "");
+  return `[${phone}](tel:+${digits})`;
+}
+
+function formatMentions() {
+  const recipients = [
+    { id: process.env.MAX_IGOR_USER_ID, name: process.env.MAX_IGOR_NAME },
+    { id: process.env.MAX_YURIY_USER_ID, name: process.env.MAX_YURIY_NAME },
+  ];
+
+  return recipients
+    .map(({ id, name }) => ({ id: String(id || "").trim(), name: String(name || "").trim() }))
+    .filter(({ id, name }) => /^-?\d+$/.test(id) && name)
+    .map(({ id, name }) => `[${name}](max://user/${id})`);
+}
+
 function normalizeSource(rawSource, origin) {
   try {
     const url = new URL(String(rawSource || ""));
@@ -127,10 +144,11 @@ function validateLead(payload, origin) {
 }
 
 function formatMaxMessage(lead) {
+  const mentions = formatMentions();
   const lines = [
     "Новая заявка с сайта ВЕРХ ремонт",
     `Заявка: #${lead.id.slice(0, 8)}`,
-    `Телефон: ${lead.phone}`,
+    `Телефон: ${formatPhoneLink(lead.phone)}`,
     `Квартира: ${lead.apartment}`,
     `Площадь: ${formatArea(lead.area)}${lead.areaLabel ? ` (${lead.areaLabel})` : ""}`,
     `Результат: ${lead.levelTitle}`,
@@ -141,6 +159,7 @@ function formatMaxMessage(lead) {
     lines.push(`Включён демонтаж для вторички: ${formatMoney(lead.secondarySurcharge)}`);
   }
 
+  if (mentions.length) lines.push(`Ответственные: ${mentions.join(" ")}`);
   lines.push(`Страница: ${lead.source}`);
   return lines.join("\n").slice(0, MAX_MESSAGE_LIMIT);
 }
