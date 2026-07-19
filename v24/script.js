@@ -296,7 +296,6 @@ function initProjectGallery() {
   if (!count || !track) return;
 
   let activeCategory = "all";
-  let dragState = null;
 
   const getItems = () => projectGalleryItems.filter((item) => activeCategory === "all" || item.category === activeCategory);
   const sourceFor = (item) => `${assetsPrefix}/${item.path}`;
@@ -323,7 +322,7 @@ function initProjectGallery() {
         </article>
       `)
       .join("");
-    track.scrollTo({ left: 0, behavior: reduceMotion.matches ? "auto" : "smooth" });
+    track.scrollLeft = 0;
   };
 
   const switchCategory = (category) => {
@@ -346,57 +345,6 @@ function initProjectGallery() {
       track.scrollBy({ left: track.clientWidth * 0.84, behavior: reduceMotion.matches ? "auto" : "smooth" });
     }
   });
-
-  const restorePagePosition = (top) => {
-    if (Math.abs(window.scrollY - top) > 1) window.scrollTo(0, top);
-  };
-
-  const finishDrag = (event) => {
-    if (!dragState || event.pointerId !== dragState.pointerId) return;
-    const { isHorizontal, pageScrollY } = dragState;
-    dragState = null;
-    if (track.hasPointerCapture?.(event.pointerId)) track.releasePointerCapture(event.pointerId);
-    if (!isHorizontal) return;
-    restorePagePosition(pageScrollY);
-    window.requestAnimationFrame(() => {
-      track.classList.remove("is-dragging");
-      restorePagePosition(pageScrollY);
-    });
-    window.setTimeout(() => restorePagePosition(pageScrollY), 120);
-  };
-
-  track.addEventListener("dragstart", (event) => event.preventDefault());
-
-  track.addEventListener("pointerdown", (event) => {
-    if (event.button !== undefined && event.button !== 0) return;
-    dragState = {
-      x: event.clientX,
-      y: event.clientY,
-      startScrollLeft: track.scrollLeft,
-      pageScrollY: window.scrollY,
-      pointerId: event.pointerId,
-      isHorizontal: false,
-    };
-    track.setPointerCapture?.(event.pointerId);
-  });
-
-  track.addEventListener("pointermove", (event) => {
-    if (!dragState || event.pointerId !== dragState.pointerId) return;
-    const distanceX = event.clientX - dragState.x;
-    const distanceY = event.clientY - dragState.y;
-    if (!dragState.isHorizontal) {
-      if (Math.abs(distanceX) < 10) return;
-      if (Math.abs(distanceX) <= Math.abs(distanceY)) return;
-      dragState.isHorizontal = true;
-      track.classList.add("is-dragging");
-    }
-    event.preventDefault();
-    track.scrollLeft = dragState.startScrollLeft - distanceX;
-    restorePagePosition(dragState.pageScrollY);
-  }, { passive: false });
-
-  track.addEventListener("pointerup", finishDrag);
-  track.addEventListener("pointercancel", finishDrag);
 
   updateFilters();
   renderCards();
