@@ -3767,3 +3767,85 @@ html.has-js .process-cta {
     padding: 6px 9px;
   }
 }
+
+/* v25.3: restrained visual priority for the recommended and bonus tiers */
+.tariff-card--featured {
+  background:
+    linear-gradient(145deg, rgba(240, 198, 109, 0.11), rgba(255, 248, 234, 0.025) 45%, rgba(255, 248, 234, 0.012)),
+    var(--surface);
+  border-color: rgba(240, 198, 109, 0.9);
+  box-shadow: 0 18px 48px rgba(0, 0, 0, 0.32), inset 0 1px 0 rgba(255, 232, 177, 0.2);
+}
+
+.tariff-card--featured .tariff-card__visual::before {
+  background:
+    linear-gradient(112deg, transparent 42%, rgba(255, 231, 173, 0.2) 50%, transparent 58%),
+    linear-gradient(180deg, rgba(7, 7, 7, 0.5), transparent 32%);
+  background-position: 150% 0, 0 0;
+  background-size: 220% 100%, 100% 100%;
+  animation: tariff-recommendation-sheen 10s ease-in-out infinite;
+}
+
+.tariff-card__badge--popular {
+  border-color: rgba(255, 223, 148, 0.92);
+  background: linear-gradient(108deg, #d7a849 0%, #f4d285 48%, #d7a849 100%);
+  background-size: 180% 100%;
+  color: #17110a;
+  animation: tariff-badge-shift 10s ease-in-out infinite;
+}
+
+.tariff-card--featured .tariff-card__action {
+  border-color: rgba(240, 198, 109, 0.9);
+  background: rgba(240, 198, 109, 0.1);
+  color: #ffe7b0;
+}
+
+.tariff-card--bonus {
+  background:
+    linear-gradient(145deg, rgba(240, 198, 109, 0.075), rgba(255, 248, 234, 0.018) 52%, rgba(255, 248, 234, 0.012)),
+    var(--surface);
+  border-color: rgba(240, 198, 109, 0.38);
+  box-shadow: var(--shadow), inset 0 1px 0 rgba(255, 248, 234, 0.11);
+}
+
+.tariff-card__badge--bonus {
+  border-color: rgba(240, 198, 109, 0.74);
+  background: rgba(240, 198, 109, 0.11);
+  color: #ffe2a0;
+}
+
+.tariff-card--bonus .tariff-card__action {
+  border-color: rgba(240, 198, 109, 0.76);
+  color: #ffe2a0;
+}
+
+@keyframes tariff-recommendation-sheen {
+  0%,
+  70%,
+  100% {
+    background-position: 150% 0, 0 0;
+  }
+
+  35% {
+    background-position: -55% 0, 0 0;
+  }
+}
+
+@keyframes tariff-badge-shift {
+  0%,
+  70%,
+  100% {
+    background-position: 100% 0;
+  }
+
+  35% {
+    background-position: 0 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tariff-card--featured .tariff-card__visual::before,
+  .tariff-card__badge--popular {
+    animation: none;
+  }
+}
