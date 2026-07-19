@@ -455,6 +455,8 @@ function initProjectGallery() {
     if (isHorizontal) {
       restoreSwipeScroll(scrollY);
       window.requestAnimationFrame(() => restoreSwipeScroll(scrollY));
+      window.setTimeout(() => restoreSwipeScroll(scrollY), 80);
+      window.setTimeout(() => restoreSwipeScroll(scrollY), 180);
     }
     moveWithSwipe(event.clientX - x, event.clientY - y);
   });
