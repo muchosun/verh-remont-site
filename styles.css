@@ -4227,6 +4227,10 @@ html.has-js .process-cta {
     aspect-ratio: 4 / 5;
   }
 
+  .project-gallery__arrow {
+    display: none;
+  }
+
   .project-gallery__viewer figcaption {
     min-height: 108px;
     padding: 17px 18px;
@@ -4236,14 +4240,6 @@ html.has-js .process-cta {
 
   .project-gallery__viewer figcaption strong {
     font-size: 23px;
-  }
-
-  .project-gallery__arrow--prev {
-    left: 12px;
-  }
-
-  .project-gallery__arrow--next {
-    right: 12px;
   }
 
   .project-gallery__thumb {
