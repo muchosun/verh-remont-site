@@ -3611,11 +3611,11 @@ html.has-js .process-cta {
   border-radius: 5px;
   padding: 7px 10px;
   color: #fff8ea;
-  font-size: 10px;
-  font-weight: 750;
+  font-size: 11px;
+  font-weight: 650;
   line-height: 1.1;
   letter-spacing: 0;
-  text-transform: uppercase;
+  text-transform: none;
 }
 
 .tariff-card__badge--base {
@@ -3741,6 +3741,7 @@ html.has-js .process-cta {
 .tariff-card__badge--bonus {
   border-color: rgba(255, 248, 234, 0.3);
   background: rgba(7, 7, 7, 0.8);
+  color: #fff8ea;
   box-shadow: none;
 }
 
