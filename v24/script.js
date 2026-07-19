@@ -291,7 +291,7 @@ function initProjectGallery() {
 
   let activeCategory = "all";
   let activeIndex = 0;
-  let swipeStartX = null;
+  let swipeStart = null;
 
   const getItems = () => projectGalleryItems.filter((item) => activeCategory === "all" || item.category === activeCategory);
   const sourceFor = (item) => `${assetsPrefix}/${item.path}`;
@@ -393,21 +393,52 @@ function initProjectGallery() {
     }
   });
 
+  const moveWithSwipe = (distanceX, distanceY = 0) => {
+    if (Math.abs(distanceX) < 44 || Math.abs(distanceX) <= Math.abs(distanceY)) return;
+    setSlide(activeIndex + (distanceX < 0 ? 1 : -1));
+  };
+
+  media.addEventListener("dragstart", (event) => event.preventDefault());
+
   media.addEventListener("pointerdown", (event) => {
-    swipeStartX = event.clientX;
+    if (event.target.closest("button") || (event.button !== undefined && event.button !== 0)) return;
+    swipeStart = { x: event.clientX, y: event.clientY, pointerId: event.pointerId };
+    media.setPointerCapture?.(event.pointerId);
   });
 
+  media.addEventListener("pointermove", (event) => {
+    if (!swipeStart || event.pointerId !== swipeStart.pointerId) return;
+    const distanceX = event.clientX - swipeStart.x;
+    const distanceY = event.clientY - swipeStart.y;
+    if (Math.abs(distanceX) > 10 && Math.abs(distanceX) > Math.abs(distanceY)) event.preventDefault();
+  }, { passive: false });
+
   media.addEventListener("pointerup", (event) => {
-    if (swipeStartX === null) return;
-    const distance = event.clientX - swipeStartX;
-    swipeStartX = null;
-    if (Math.abs(distance) < 44) return;
-    setSlide(activeIndex + (distance < 0 ? 1 : -1));
+    if (!swipeStart || event.pointerId !== swipeStart.pointerId) return;
+    const { x, y } = swipeStart;
+    swipeStart = null;
+    if (media.hasPointerCapture?.(event.pointerId)) media.releasePointerCapture(event.pointerId);
+    moveWithSwipe(event.clientX - x, event.clientY - y);
   });
 
   media.addEventListener("pointercancel", () => {
-    swipeStartX = null;
+    swipeStart = null;
   });
+
+  if (!("PointerEvent" in window)) {
+    let touchStart = null;
+    media.addEventListener("touchstart", (event) => {
+      const touch = event.changedTouches[0];
+      touchStart = touch ? { x: touch.clientX, y: touch.clientY } : null;
+    }, { passive: true });
+    media.addEventListener("touchend", (event) => {
+      const touch = event.changedTouches[0];
+      if (!touchStart || !touch) return;
+      const { x, y } = touchStart;
+      touchStart = null;
+      moveWithSwipe(touch.clientX - x, touch.clientY - y);
+    }, { passive: true });
+  }
 
   updateFilters();
   setSlide(0, { scrollThumb: false });

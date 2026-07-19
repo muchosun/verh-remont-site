@@ -4067,6 +4067,8 @@ html.has-js .process-cta {
   overflow: hidden;
   background: #060606;
   touch-action: pan-y;
+  user-select: none;
+  -webkit-user-select: none;
 }
 
 .project-gallery__media:focus-visible {
@@ -4079,6 +4081,8 @@ html.has-js .process-cta {
   width: 100%;
   height: 100%;
   object-fit: contain;
+  pointer-events: none;
+  -webkit-user-drag: none;
   transition: opacity 180ms ease;
 }
 
