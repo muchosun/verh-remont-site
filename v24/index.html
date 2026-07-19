@@ -13,7 +13,7 @@
     <link rel="preload" as="font" href="../assets/fonts/onest-cyrillic.woff2" type="font/woff2" crossorigin />
     <link rel="preload" as="font" href="../assets/fonts/onest-latin.woff2" type="font/woff2" crossorigin />
     <link rel="preload" as="image" href="../v14/assets/web/vk-hero.webp" type="image/webp" fetchpriority="high" />
-    <link rel="stylesheet" href="styles.css?v=20260719-9" />
+    <link rel="stylesheet" href="styles.css?v=20260719-10" />
     <!-- Yandex.Metrika counter -->
     <script type="text/javascript">
       (function (m, e, t, r, i, k, a) {
@@ -156,12 +156,22 @@
             <span>Порядок платежей</span>
             <p>Бюджет делим на 4 этапа.</p>
           </div>
-          <ol class="payment-schedule__list">
-            <li><strong>30%</strong><span>договор</span></li>
-            <li><strong>30%</strong><span>черновые работы</span></li>
-            <li><strong>20%</strong><span>чистовая отделка</span></li>
-            <li><strong>20%</strong><span>приёмка</span></li>
-          </ol>
+          <div class="payment-table-wrap">
+            <table class="payment-table">
+              <thead>
+                <tr>
+                  <th scope="col">Этап</th>
+                  <th scope="col">Платёж</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><th scope="row">Договор</th><td>30%</td></tr>
+                <tr><th scope="row">Черновые работы</th><td>30%</td></tr>
+                <tr><th scope="row">Чистовая отделка</th><td>20%</td></tr>
+                <tr><th scope="row">Приёмка</th><td>20%</td></tr>
+              </tbody>
+            </table>
+          </div>
         </div>
       </section>
 

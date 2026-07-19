@@ -3850,7 +3850,7 @@ html.has-js .process-cta {
   }
 }
 
-/* v25.4: compact, scannable payment sequence */
+/* v25.4: compact payment table */
 .payment-section .payment-schedule {
   grid-template-columns: minmax(210px, 0.48fr) minmax(0, 1fr);
   align-items: center;
@@ -3879,44 +3879,62 @@ html.has-js .process-cta {
   line-height: 1.2;
 }
 
-.payment-schedule__list {
-  counter-reset: payment-step;
+.payment-table-wrap {
   align-self: stretch;
-  border-top: 1px solid rgba(255, 248, 234, 0.16);
+  overflow: hidden;
+  border: 1px solid rgba(255, 248, 234, 0.18);
+  border-radius: 6px;
+  background: rgba(255, 248, 234, 0.025);
+}
+
+.payment-table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+
+.payment-table th,
+.payment-table td {
+  padding: 14px 18px;
+  line-height: 1.2;
+}
+
+.payment-table thead th {
   border-bottom: 1px solid rgba(255, 248, 234, 0.16);
-  padding: 9px 0;
+  background: rgba(255, 248, 234, 0.06);
+  color: rgba(255, 248, 234, 0.68);
+  font-size: 11px;
+  font-weight: 700;
+  text-align: left;
 }
 
-.payment-schedule__list li {
-  position: relative;
-  min-height: 66px;
-  gap: 6px;
-  padding: 11px 12px 10px 36px;
-  counter-increment: payment-step;
+.payment-table thead th:last-child,
+.payment-table tbody td {
+  text-align: right;
 }
 
-.payment-schedule__list li::before {
-  content: "0" counter(payment-step);
-  position: absolute;
-  top: 15px;
-  left: 14px;
-  color: #f0c66d;
-  font-size: 10px;
-  font-weight: 750;
-  line-height: 1;
+.payment-table tbody tr + tr {
+  border-top: 1px solid rgba(255, 248, 234, 0.11);
 }
 
-.payment-schedule__list strong {
+.payment-table tbody tr:nth-child(even) {
+  background: rgba(255, 248, 234, 0.025);
+}
+
+.payment-table tbody th {
+  width: 72%;
   color: #fff8ea;
-  font-size: clamp(26px, 2.45vw, 34px);
-  font-weight: 750;
+  font-size: 14px;
+  font-weight: 650;
+  text-align: left;
 }
 
-.payment-schedule__list span {
-  color: rgba(255, 248, 234, 0.76);
-  font-size: 12px;
-  font-weight: 650;
-  line-height: 1.25;
+.payment-table tbody td {
+  width: 28%;
+  color: #f0c66d;
+  font-size: 20px;
+  font-weight: 750;
+  white-space: nowrap;
 }
 
 @media (max-width: 720px) {
@@ -3931,21 +3949,20 @@ html.has-js .process-cta {
     font-size: 19px;
   }
 
-  .payment-schedule__list {
-    padding: 7px 0;
+  .payment-table th,
+  .payment-table td {
+    padding: 13px 14px;
   }
 
-  .payment-schedule__list li {
-    min-height: 62px;
-    padding: 10px 10px 10px 32px;
+  .payment-table thead th {
+    font-size: 10px;
   }
 
-  .payment-schedule__list li::before {
-    top: 14px;
-    left: 12px;
+  .payment-table tbody th {
+    font-size: 13px;
   }
 
-  .payment-schedule__list li:nth-child(3) {
-    border-left: 0;
+  .payment-table tbody td {
+    font-size: 18px;
   }
 }
