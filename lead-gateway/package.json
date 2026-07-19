@@ -1,0 +1,13 @@
+{
+  "name": "verh-remont-lead-gateway",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Yandex Cloud Function for delivering quiz leads to MAX",
+  "main": "index.js",
+  "scripts": {
+    "test": "node --test"
+  },
+  "engines": {
+    "node": ">=22"
+  }
+}

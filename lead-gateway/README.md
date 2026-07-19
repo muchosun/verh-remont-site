@@ -1,0 +1,72 @@
+# Шлюз заявок квиза: Yandex Cloud -> MAX
+
+Этот модуль принимает заявку с квиза ВЕРХ ремонта, проверяет поля и отправляет сообщение в рабочий чат MAX. Он отделён от статичного сайта: секреты не попадают в GitHub Pages, исходный код страницы или Яндекс.Метрику.
+
+## Что принимает и отправляет
+
+`POST /v1/leads` принимает только запросы с `https://verhremont.ru` и только JSON. Функция сама нормализует телефон, пересчитывает предварительный бюджет по утверждённым тарифам и не доверяет сумме, переданной браузером.
+
+В MAX придёт:
+
+- телефон;
+- тип квартиры, площадь и выбранный результат;
+- пересчитанный ориентир бюджета;
+- доплата на демонтаж для вторички, если нужна;
+- путь страницы, с которой оставили заявку.
+
+`GET /health` возвращает технический статус без персональных данных.
+
+## Безопасность
+
+- `MAX_BOT_TOKEN` и `MAX_CHAT_ID` задаются только как переменные окружения Cloud Function. Их нельзя добавлять в `index.html`, `script.js`, GitHub Secrets для Pages или Telegram.
+- Функция не записывает номер телефона в логи. В логах остаётся только технический ID доставки.
+- API Gateway должен быть единственной публичной точкой. Самой функции не выдавать публичный доступ.
+- Перед запуском платного трафика включить SmartCaptcha в API Gateway либо в самой форме. Проверка `Origin` и скрытое поле-ловушка уже есть, но они не заменяют защиту от ботов.
+- Для очереди лидов и повторной доставки при недоступности MAX следующим этапом добавить Yandex Message Queue и YDB. В версии 1 заявка синхронно отправляется в MAX и при ошибке возвращает `502`: так ошибка не скрывается от сайта и Метрики.
+
+## Публикация в Yandex Cloud
+
+1. Создать сервисный аккаунт для API Gateway и выдать ему роль `functions.functionInvoker` на функцию.
+2. Создать Cloud Function на `nodejs22`, загрузить содержимое этой папки и указать точку входа `index.handler`.
+3. В переменных окружения функции указать значения из `.env.example`:
+   - `LEAD_ORIGIN=https://verhremont.ru`;
+   - `MAX_API_BASE=https://platform-api2.max.ru`;
+   - `MAX_BOT_TOKEN` — токен чат-бота MAX;
+   - `MAX_CHAT_ID` — ID общего рабочего чата MAX, куда бот уже добавлен.
+4. Создать API Gateway по `openapi.template.yaml`, заменив `<FUNCTION_ID>` и `<SERVICE_ACCOUNT_ID>` на реальные идентификаторы. У API Gateway должно быть только два маршрута: `/v1/leads` и `/health`.
+5. Привязать к API Gateway поддомен, например `leads.verhremont.ru`, с HTTPS-сертификатом.
+6. Открыть `https://leads.verhremont.ru/health`: ожидаемый ответ `{"status":"ok"}`.
+7. Сделать тестовую заявку через API Gateway. После подтверждения сообщения в MAX добавить в корневой `index.html` сайта единственную публичную настройку:
+
+   ```html
+   <script>
+     window.VERH_LEAD_ENDPOINT = "https://leads.verhremont.ru/v1/leads";
+   </script>
+   ```
+
+   Этот блок должен стоять до подключения `script.js`. Токен и ID чата в сайт не добавляются.
+
+## Локальная проверка
+
+В этой папке:
+
+```bash
+npm test
+```
+
+Тесты не отправляют реальные сообщения, не требуют токена и проверяют CORS, валидацию, пересчёт суммы и формат запроса в MAX.
+
+## Проверка после публикации
+
+```bash
+curl -i https://leads.verhremont.ru/health
+
+curl -i -X POST https://leads.verhremont.ru/v1/leads \
+  -H 'Origin: https://verhremont.ru' \
+  -H 'Content-Type: application/json' \
+  --data '{"apartment":"Новостройка","area":41,"areaLabel":"1-комн.","level":"comfort","phone":"+7 999 123-45-67","source":"https://verhremont.ru/#quiz"}'
+```
+
+Ожидаемый результат: `201`, затем одно сообщение в MAX. При `400` исправляется payload, при `403` проверяется домен в `LEAD_ORIGIN`, при `502` — токен бота, ID чата и доступ бота к рабочему чату.
+
+Официальные справки: [обработчик Node.js в Cloud Functions](https://yandex.cloud/ru/docs/functions/lang/nodejs/handler), [интеграция API Gateway с Cloud Functions](https://yandex.cloud/ru/docs/api-gateway/concepts/extensions/cloud-functions), [отправка сообщений MAX](https://dev.max.ru/docs-api/methods/POST/messages).
