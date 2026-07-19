@@ -3744,12 +3744,6 @@ html.has-js .process-cta {
   box-shadow: none;
 }
 
-.tariff-card__badge--popular,
-.tariff-card__badge--bonus {
-  border-color: rgba(240, 198, 109, 0.72);
-  color: #f0c66d;
-}
-
 .tariff-card--featured .tariff-card__action {
   border-color: rgba(240, 198, 109, 0.66);
   background: transparent;
