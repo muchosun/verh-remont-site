@@ -1,0 +1,411 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>ВЕРХ - сайт v25</title>
+    <meta
+      name="description"
+      content="ВЕРХ: ремонт квартир под ключ в Краснодаре. Выбери уровень ремонта и получи ориентир стоимости для своей квартиры."
+    />
+    <link rel="icon" type="image/png" sizes="1024x1024" href="../assets/favicon-verh.png?v=20260719-2" />
+    <link rel="apple-touch-icon" href="../assets/favicon-verh.png?v=20260719-2" />
+    <link rel="preload" as="font" href="../assets/fonts/onest-cyrillic.woff2" type="font/woff2" crossorigin />
+    <link rel="preload" as="font" href="../assets/fonts/onest-latin.woff2" type="font/woff2" crossorigin />
+    <link rel="preload" as="image" href="../v14/assets/web/vk-hero.webp" type="image/webp" fetchpriority="high" />
+    <link rel="stylesheet" href="styles.css?v=20260719-17" />
+    <!-- Yandex.Metrika counter -->
+    <script type="text/javascript">
+      (function (m, e, t, r, i, k, a) {
+        m[i] = m[i] || function () { (m[i].a = m[i].a || []).push(arguments); };
+        m[i].l = 1 * new Date();
+        for (var j = 0; j < document.scripts.length; j += 1) {
+          if (document.scripts[j].src === r) return;
+        }
+        k = e.createElement(t);
+        a = e.getElementsByTagName(t)[0];
+        k.async = 1;
+        k.src = r;
+        a.parentNode.insertBefore(k, a);
+      })(window, document, "script", "https://mc.yandex.ru/metrika/tag.js?id=110859289", "ym");
+
+      ym(110859289, "init", {
+        ssr: true,
+        webvisor: true,
+        clickmap: true,
+        ecommerce: "dataLayer",
+        referrer: document.referrer,
+        url: location.href,
+        accurateTrackBounce: true,
+        trackLinks: true
+      });
+    </script>
+    <!-- /Yandex.Metrika counter -->
+  </head>
+  <body>
+    <noscript><div><img src="https://mc.yandex.ru/watch/110859289" style="position: absolute; left: -9999px;" alt="" /></div></noscript>
+    <header class="site-header">
+      <a class="brand" href="#top" aria-label="ВЕРХ">
+        <span>ВЕРХ</span>
+      </a>
+
+      <nav class="site-nav" aria-label="Навигация">
+        <a href="#tariffs">Тарифы</a>
+        <a href="#payments">Платежи</a>
+        <a href="#projects">Объекты</a>
+        <a href="#reviews">Отзывы</a>
+        <a href="#contacts">Контакты</a>
+      </nav>
+
+      <button class="header-cta" type="button" data-quiz-open>Рассчитать ремонт</button>
+    </header>
+
+    <main>
+      <section class="hero" id="top">
+        <div class="hero__media" aria-hidden="true">
+          <img src="../v14/assets/web/vk-hero.webp" alt="" decoding="async" fetchpriority="high" />
+        </div>
+        <div class="hero__content">
+          <h1>Ремонт квартир под ключ в Краснодаре</h1>
+          <p>Берём ремонт на себя: сами подберём и закупим материалы, чтобы тебе не ездить по магазинам. После замера назовём финальную стоимость.</p>
+          <div class="hero-badges" aria-label="Ключевые условия">
+            <span>от 20 000 ₽/м²</span>
+            <ul class="hero-conditions">
+              <li>Работы и материалы включены в стоимость.</li>
+              <li>Состав работ и цены зафиксированы в договоре и не изменяются до конца ремонта.</li>
+            </ul>
+          </div>
+          <div class="hero__actions">
+            <button class="primary-action" type="button" data-quiz-open>
+              Получить точный расчёт за минуту
+            </button>
+            <a class="secondary-action" href="tel:+79182383059">Позвонить</a>
+          </div>
+        </div>
+      </section>
+
+      <section class="tariffs section" id="tariffs">
+        <div class="section-head">
+          <h2>Три уровня ремонта</h2>
+          <p>Выбери нужный результат.</p>
+        </div>
+        <div class="tariff-grid">
+          <article class="tariff-card tariff-card--base">
+            <span class="tariff-card__badge tariff-card__badge--base">Базовый ремонт</span>
+            <figure class="tariff-card__visual">
+              <img src="../v10/assets/finish-standard.jpg" alt="Визуальный ориентир ремонта уровня Стандарт" loading="lazy" decoding="async" />
+              <figcaption>Базовый минимум</figcaption>
+            </figure>
+            <div class="tariff-card__body">
+              <h3>Стандарт</h3>
+              <strong>20 000 ₽/м²</strong>
+              <p class="tariff-card__composition">Всё нужное для готовой квартиры</p>
+              <p>Подойдёт, чтобы заехать самому, подготовить квартиру к сдаче или обновить вторичку.</p>
+              <ul class="tariff-card__list">
+                <li>подготовка, черновые работы и материалы;</li>
+                <li>плитка, пол, стены, двери и потолки;</li>
+                <li>базовая сантехника и свет.</li>
+              </ul>
+              <button class="tariff-card__action" type="button" data-tariff-open="standard">Выбрать Стандарт</button>
+            </div>
+          </article>
+          <article class="tariff-card tariff-card--accent tariff-card--featured">
+            <span class="tariff-card__badge tariff-card__badge--popular">Чаще выбирают</span>
+            <figure class="tariff-card__visual">
+              <img src="../v10/assets/finish-comfort.jpg" alt="Визуальный ориентир ремонта уровня Комфорт" loading="lazy" decoding="async" />
+              <figcaption>Комфорт для жизни</figcaption>
+            </figure>
+            <div class="tariff-card__body">
+              <h3>Комфорт</h3>
+              <strong>25 000 ₽/м²</strong>
+              <p class="tariff-card__composition">Больше выбора в отделке и деталях</p>
+              <p>Для квартиры, в которой хочется жить каждый день: больше свободы в отделке, свете и деталях.</p>
+              <ul class="tariff-card__list">
+                <li>подготовка, черновые работы и материалы;</li>
+                <li>расширенный выбор плитки, пола и стен;</li>
+                <li>сантехника, свет, двери, ниши и дополнительная электрика.</li>
+              </ul>
+              <button class="tariff-card__action" type="button" data-tariff-open="comfort">Выбрать Комфорт</button>
+            </div>
+          </article>
+          <article class="tariff-card tariff-card--bonus">
+            <span class="tariff-card__badge tariff-card__badge--bonus">Дизайн-проект в подарок</span>
+            <figure class="tariff-card__visual">
+              <img src="../v10/assets/finish-lux.jpg" alt="Визуальный ориентир ремонта уровня Люкс" loading="lazy" decoding="async" />
+              <figcaption>Индивидуальный проект</figcaption>
+            </figure>
+            <div class="tariff-card__body">
+              <h3>Люкс</h3>
+              <strong>от 29 000 ₽/м²</strong>
+              <p class="tariff-card__composition">Ремонт по индивидуальному проекту</p>
+              <p>Для квартиры с характером: подберём состав работ, материалы и детали под твой проект.</p>
+              <ul class="tariff-card__list">
+                <li>работы по дизайн-проекту или твоему ТЗ;</li>
+                <li>материалы и комплектация под результат;</li>
+                <li>сложные узлы и световые сценарии.</li>
+              </ul>
+              <button class="tariff-card__action" type="button" data-tariff-open="lux">Выбрать Люкс</button>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section class="payment-section section" id="payments">
+        <div class="payment-schedule" aria-label="Порядок платежей">
+          <div class="payment-schedule__head">
+            <span>Порядок платежей</span>
+            <p>Бюджет делим на 4 этапа.</p>
+          </div>
+          <div class="payment-table-wrap">
+            <table class="payment-table">
+              <thead>
+                <tr>
+                  <th scope="col">Этап</th>
+                  <th scope="col">Платёж</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><th scope="row">Договор</th><td>30%</td></tr>
+                <tr><th scope="row">Черновые работы</th><td>30%</td></tr>
+                <tr><th scope="row">Чистовая отделка</th><td>20%</td></tr>
+                <tr><th scope="row">Приёмка</th><td>20%</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <section class="projects section" id="projects">
+        <div class="section-head projects__head">
+          <div>
+            <span class="section-kicker">Реальные объекты</span>
+            <h2>Посмотри, как выглядит готовый ремонт</h2>
+          </div>
+          <p>После этапов важнее всего увидеть результат. Здесь реальные квартиры ВЕРХ ремонта: без рендеров и постановочных интерьеров.</p>
+        </div>
+
+        <div class="project-gallery" data-project-gallery data-project-assets-prefix="../assets/projects">
+          <div class="project-gallery__topbar">
+            <div class="project-gallery__filters" role="tablist" aria-label="Фильтр объектов">
+              <button class="project-gallery__filter is-active" type="button" role="tab" aria-selected="true" data-project-filter="all">Все <span>116</span></button>
+              <button class="project-gallery__filter" type="button" role="tab" aria-selected="false" data-project-filter="standard">Стандарт <span>31</span></button>
+              <button class="project-gallery__filter" type="button" role="tab" aria-selected="false" data-project-filter="comfort">Комфорт <span>35</span></button>
+              <button class="project-gallery__filter" type="button" role="tab" aria-selected="false" data-project-filter="lux">Люкс <span>26</span></button>
+              <button class="project-gallery__filter" type="button" role="tab" aria-selected="false" data-project-filter="details">Свет и детали <span>24</span></button>
+            </div>
+            <output class="project-gallery__count" data-project-count aria-live="polite">116 фото</output>
+          </div>
+
+          <div class="project-gallery__track" data-project-track role="list" aria-label="Фотографии выбранной категории" tabindex="0"></div>
+        </div>
+
+        <p class="projects__privacy" id="projects-privacy"><strong>Адреса квартир не публикуем.</strong> Площадь, ЖК и детали объекта добавим только после согласования с собственниками.</p>
+      </section>
+
+      <section class="reviews-demo section" id="reviews">
+        <div class="section-head reviews-demo__head">
+          <div>
+            <span class="section-kicker">Отзывы клиентов</span>
+            <h2>Здесь будут только подтверждённые отзывы</h2>
+          </div>
+          <p>Собираем отзывы в Яндекс Картах и переносим на сайт только с согласия клиентов. Демонстрационные отзывы и сгенерированные аватары убрали.</p>
+        </div>
+        <div class="reviews-pending" role="note">
+          <strong>Карточка Яндекс Бизнеса готовится</strong>
+          <span>После публикации первых подтверждённых отзывов добавим ссылку или официальный виджет.</span>
+        </div>
+      </section>
+
+      <section class="site-cta" id="contacts">
+        <h2>Готов прикинуть бюджет своей квартиры?</h2>
+          <p>Выбери квартиру, метраж и желаемый результат. После номера покажем предварительный расчёт и график платежей.</p>
+        <div class="site-cta__actions">
+          <button class="primary-action" type="button" data-quiz-open>Получить точный расчёт за минуту</button>
+          <a class="secondary-action secondary-action--light" href="tel:+79182383059">Позвонить</a>
+        </div>
+        <div class="contact-phone">
+          <span class="contact-phone__label">Телефон для связи</span>
+          <button class="contact-phone__toggle" type="button" data-contact-phone-toggle aria-expanded="false" aria-controls="contact-phone-details">
+            Показать номер
+          </button>
+          <div class="contact-phone__details" id="contact-phone-details" hidden>
+            <a href="tel:+79182383059" aria-label="Позвонить по номеру +7 918 238-30-59">+7 (918) 238-30-59</a>
+            <span>Нажми на номер, чтобы позвонить</span>
+          </div>
+        </div>
+        <p class="site-cta__links">
+          Дополнительно: <a href="https://t.me/verh_rem" target="_blank" rel="noreferrer">Telegram</a>
+          · <a href="https://max.ru/join/xVCYmnoBVajOlPHV-udrKsLdipj2nwOdZ73CjM64WbY" target="_blank" rel="noreferrer">MAX</a>
+        </p>
+      </section>
+    </main>
+
+    <div class="mobile-sticky-cta">
+      <button type="button" data-quiz-open>Рассчитать ремонт</button>
+    </div>
+
+    <div class="quiz-modal" id="quiz-modal" aria-hidden="true">
+      <div class="quiz-backdrop" data-quiz-close></div>
+      <section
+        class="quiz-sheet"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="quiz-title"
+        aria-describedby="quiz-description"
+      >
+        <div class="sheet-handle" aria-hidden="true"></div>
+        <button class="sheet-close" type="button" data-quiz-close aria-label="Закрыть квиз">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="m6 6 12 12M18 6 6 18" />
+          </svg>
+        </button>
+
+        <div class="quiz-card" aria-live="polite">
+          <div class="quiz-card__top">
+            <div class="step-counter">
+              <span id="step-count">1 / 5</span>
+              <strong id="step-label">Старт</strong>
+            </div>
+            <div class="progress-dots" aria-label="Прогресс квиза">
+              <button class="is-active" type="button" data-step-nav="0" aria-label="Шаг 1">1</button>
+              <button type="button" data-step-nav="1" aria-label="Шаг 2" disabled>2</button>
+              <button type="button" data-step-nav="2" aria-label="Шаг 3" disabled>3</button>
+              <button type="button" data-step-nav="3" aria-label="Шаг 4" disabled>4</button>
+              <button type="button" data-step-nav="4" aria-label="Шаг 5" disabled>5</button>
+            </div>
+          </div>
+
+          <div class="slides" id="slides">
+            <article class="slide is-active" data-step="0">
+              <div class="slide-head">
+                <h2 id="quiz-title">Что за квартира?</h2>
+                <p id="quiz-description">Выбери вариант, и сразу пойдем дальше.</p>
+              </div>
+              <div class="photo-choice-grid">
+                <button class="photo-choice is-selected" type="button" data-apartment="Новостройка">
+                  <img src="../v14/assets/web/quiz-newbuild.webp" alt="Квартира в новостройке до ремонта" loading="lazy" decoding="async" />
+                  <span>
+                    <strong>Новостройка</strong>
+                    <small>бетон или предчистовая от застройщика</small>
+                  </span>
+                </button>
+                <button class="photo-choice" type="button" data-apartment="Вторичка">
+                  <img src="../v14/assets/web/quiz-secondary.webp" alt="Вторичная квартира до ремонта" loading="lazy" decoding="async" />
+                  <span>
+                    <strong>Вторичка</strong>
+                    <small>старая отделка: в расчёт добавим 100 000 ₽ на демонтаж</small>
+                  </span>
+                </button>
+              </div>
+            </article>
+
+            <article class="slide" data-step="1">
+              <div class="slide-head">
+                <h2>Сколько метров?</h2>
+                <p>Выбери типовой метраж или впиши свой.</p>
+              </div>
+              <div class="area-grid">
+                <button type="button" data-area="28" data-area-label="Студия">
+                  <strong>Студия</strong>
+                  <span>28 м²</span>
+                </button>
+                <button type="button" data-area="36" data-area-label="1-комн.">
+                  <strong>1-комн.</strong>
+                  <span>36 м²</span>
+                </button>
+                <button class="is-selected" type="button" data-area="58" data-area-label="2-комн.">
+                  <strong>2-комн.</strong>
+                  <span>58 м²</span>
+                </button>
+                <button type="button" data-area="78" data-area-label="3-комн.">
+                  <strong>3-комн.</strong>
+                  <span>78 м²</span>
+                </button>
+              </div>
+              <form class="custom-area" id="area-form">
+                <label for="area-input">Своя площадь, м²</label>
+                <div>
+                  <input
+                    id="area-input"
+                    name="area"
+                    type="text"
+                    inputmode="decimal"
+                    autocomplete="off"
+                    placeholder="например, 41"
+                    value="58"
+                  />
+                  <button type="submit">Ок</button>
+                </div>
+              </form>
+            </article>
+
+            <article class="slide" data-step="2">
+              <div class="slide-head">
+                <h2>Какой хочешь результат?</h2>
+                <p>Выбери, какой ремонт ближе: базовый, комфортный для жизни или индивидуальный.</p>
+              </div>
+              <div class="level-choice-grid">
+                <button class="level-choice" type="button" data-level="standard">
+                  <img src="../v14/assets/web/standard_01_msg184.webp" alt="Ремонт уровня Стандарт" loading="lazy" decoding="async" />
+                  <span><strong>Стандарт</strong><small>аккуратный ремонт · 20 000 ₽/м²</small></span>
+                </button>
+                <button class="level-choice is-selected" type="button" data-level="comfort">
+                  <img src="../v14/assets/web/comfort_01_msg170.webp" alt="Ремонт уровня Комфорт" loading="lazy" decoding="async" />
+                  <span><strong>Комфорт</strong><small>больше выбора для жизни · 25 000 ₽/м²</small></span>
+                </button>
+                <button class="level-choice" type="button" data-level="lux">
+                  <img src="../v14/assets/web/lux_01_msg178.webp" alt="Ремонт уровня Люкс" loading="lazy" decoding="async" />
+                  <span><strong>Люкс</strong><small>индивидуальное решение · от 29 000 ₽/м²</small></span>
+                </button>
+              </div>
+            </article>
+
+            <article class="slide" data-step="3">
+              <div class="slide-head">
+                <h2>Заявка почти готова</h2>
+                <p>В выбранный вариант уже входит:</p>
+              </div>
+              <ul class="included-list" id="included-list"></ul>
+              <button class="sheet-primary" type="button" data-to-lead>Показать предварительный расчёт</button>
+            </article>
+
+            <article class="slide" data-step="4">
+              <div class="lead-panel">
+                <div class="slide-head">
+                  <h2 id="lead-title">Оставь телефон</h2>
+                  <p id="lead-description">После отправки покажу предварительную стоимость и график платежей.</p>
+                </div>
+                <div class="lead-offer">
+                  <span>расчёт за минуту</span>
+                  <strong id="timer">02:00</strong>
+                </div>
+                <form class="lead-form" id="lead-form">
+                  <label for="phone-input">Телефон</label>
+                  <input
+                    id="phone-input"
+                    name="phone"
+                    type="tel"
+                    inputmode="tel"
+                    autocomplete="tel"
+                    placeholder="+7 (___) ___-__-__"
+                    required
+                  />
+                  <button type="submit">Показать предварительный расчёт</button>
+                </form>
+                <div class="lead-loading" id="lead-loading" hidden>
+                  <span aria-hidden="true"></span>
+                  <strong>Собираю расчёт</strong>
+                  <p>Тип квартиры, метраж и уровень ремонта уже учтены.</p>
+                </div>
+                <div class="success-message" id="success-message" hidden></div>
+              </div>
+            </article>
+          </div>
+
+        </div>
+      </section>
+    </div>
+
+    <script src="script.js?v=20260719-19"></script>
+  </body>
+</html>
