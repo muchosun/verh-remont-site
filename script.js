@@ -289,22 +289,14 @@ function initProjectGallery() {
 
   const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
   const assetsPrefix = (gallery.dataset.projectAssetsPrefix || "assets/projects").replace(/\/$/, "");
-  const image = gallery.querySelector("[data-project-image]");
-  const meta = gallery.querySelector("[data-project-meta]");
-  const title = gallery.querySelector("[data-project-title]");
   const count = gallery.querySelector("[data-project-count]");
-  const thumbs = gallery.querySelector("[data-project-thumbs]");
-  const media = gallery.querySelector("[data-project-swipe]");
-  const prevButton = gallery.querySelector("[data-project-prev]");
-  const nextButton = gallery.querySelector("[data-project-next]");
+  const track = gallery.querySelector("[data-project-track]");
   const filters = [...gallery.querySelectorAll("[data-project-filter]")];
 
-  if (!image || !meta || !title || !count || !thumbs || !media) return;
+  if (!count || !track) return;
 
   let activeCategory = "all";
-  let activeIndex = 0;
-  let swipeStart = null;
-  let renderedCategory = null;
+  let dragState = null;
 
   const getItems = () => projectGalleryItems.filter((item) => activeCategory === "all" || item.category === activeCategory);
   const sourceFor = (item) => `${assetsPrefix}/${item.path}`;
@@ -317,171 +309,97 @@ function initProjectGallery() {
     });
   };
 
-  const renderThumbs = () => {
-    thumbs.innerHTML = getItems()
+  const renderCards = () => {
+    const items = getItems();
+    count.textContent = `${items.length} фото`;
+    track.innerHTML = items
       .map((item, index) => `
-        <button class="project-gallery__thumb${index === activeIndex ? " is-active" : ""}" type="button" data-project-thumb="${index}" aria-label="Открыть: ${item.tier}, ${item.title}"${index === activeIndex ? " aria-current=\"true\"" : ""}>
-          <img src="${sourceFor(item)}" alt="" loading="lazy" decoding="async" />
-        </button>
+        <article class="project-gallery__card" role="listitem">
+          <img src="${sourceFor(item)}" alt="${item.tier}: ${item.title}. Реальный объект ВЕРХ ремонта" loading="${index < 4 ? "eager" : "lazy"}" decoding="async" draggable="false" />
+          <div class="project-gallery__card-caption">
+            <span>${item.tier}</span>
+            <strong>${item.title}</strong>
+          </div>
+        </article>
       `)
       .join("");
-    renderedCategory = activeCategory;
-  };
-
-  const updateActiveThumb = () => {
-    thumbs.querySelectorAll("[data-project-thumb]").forEach((thumb, index) => {
-      const isActive = index === activeIndex;
-      thumb.classList.toggle("is-active", isActive);
-      thumb.toggleAttribute("aria-current", isActive);
-    });
-  };
-
-  const preloadNeighbours = () => {
-    const items = getItems();
-    if (items.length < 2) return;
-    [1, -1].forEach((offset) => {
-      const nextItem = items[(activeIndex + offset + items.length) % items.length];
-      const preload = new Image();
-      preload.src = sourceFor(nextItem);
-    });
-  };
-
-  const setSlide = (nextIndex, { scrollThumb = true } = {}) => {
-    const items = getItems();
-    if (!items.length) return;
-
-    activeIndex = (nextIndex + items.length) % items.length;
-    const item = items[activeIndex];
-    const applySlide = () => {
-      image.classList.add("is-changing");
-      image.src = sourceFor(item);
-      image.alt = `${item.tier}: ${item.title}. Реальный объект ВЕРХ ремонта`;
-      image.dataset.projectPath = item.path;
-      meta.textContent = `${item.tier} · реальный объект`;
-      title.textContent = item.title;
-      count.textContent = `${activeIndex + 1} / ${items.length}`;
-      if (renderedCategory !== activeCategory) {
-        renderThumbs();
-      } else {
-        updateActiveThumb();
-      }
-      const activeThumb = thumbs.querySelector(".project-gallery__thumb.is-active");
-      if (scrollThumb) {
-        activeThumb?.scrollIntoView({
-          behavior: reduceMotion.matches ? "auto" : "smooth",
-          block: "nearest",
-          inline: "nearest",
-        });
-      }
-      window.setTimeout(() => image.classList.remove("is-changing"), reduceMotion.matches ? 0 : 180);
-      preloadNeighbours();
-    };
-
-    if (image.dataset.projectPath === item.path) {
-      applySlide();
-      return;
-    }
-
-    const preload = new Image();
-    preload.onload = applySlide;
-    preload.onerror = applySlide;
-    preload.src = sourceFor(item);
+    track.scrollTo({ left: 0, behavior: reduceMotion.matches ? "auto" : "smooth" });
   };
 
   const switchCategory = (category) => {
     activeCategory = category;
-    activeIndex = 0;
     updateFilters();
-    setSlide(0, { scrollThumb: false });
+    renderCards();
   };
 
   filters.forEach((filter) => {
     filter.addEventListener("click", () => switchCategory(filter.dataset.projectFilter || "all"));
   });
 
-  thumbs.addEventListener("click", (event) => {
-    const thumb = event.target.closest("[data-project-thumb]");
-    if (!thumb) return;
-    setSlide(Number(thumb.dataset.projectThumb));
-  });
-
-  prevButton?.addEventListener("click", () => setSlide(activeIndex - 1));
-  nextButton?.addEventListener("click", () => setSlide(activeIndex + 1));
-
-  media.addEventListener("keydown", (event) => {
+  track.addEventListener("keydown", (event) => {
     if (event.key === "ArrowLeft") {
       event.preventDefault();
-      setSlide(activeIndex - 1);
+      track.scrollBy({ left: -track.clientWidth * 0.84, behavior: reduceMotion.matches ? "auto" : "smooth" });
     }
     if (event.key === "ArrowRight") {
       event.preventDefault();
-      setSlide(activeIndex + 1);
+      track.scrollBy({ left: track.clientWidth * 0.84, behavior: reduceMotion.matches ? "auto" : "smooth" });
     }
   });
 
-  const moveWithSwipe = (distanceX, distanceY = 0) => {
-    if (Math.abs(distanceX) < 44 || Math.abs(distanceX) <= Math.abs(distanceY)) return;
-    setSlide(activeIndex + (distanceX < 0 ? 1 : -1));
-  };
-
-  const restoreSwipeScroll = (top) => {
+  const restorePagePosition = (top) => {
     if (Math.abs(window.scrollY - top) > 1) window.scrollTo(0, top);
   };
 
-  media.addEventListener("dragstart", (event) => event.preventDefault());
+  const finishDrag = (event) => {
+    if (!dragState || event.pointerId !== dragState.pointerId) return;
+    const { isHorizontal, pageScrollY } = dragState;
+    dragState = null;
+    if (track.hasPointerCapture?.(event.pointerId)) track.releasePointerCapture(event.pointerId);
+    if (!isHorizontal) return;
+    restorePagePosition(pageScrollY);
+    window.requestAnimationFrame(() => {
+      track.classList.remove("is-dragging");
+      restorePagePosition(pageScrollY);
+    });
+    window.setTimeout(() => restorePagePosition(pageScrollY), 120);
+  };
 
-  media.addEventListener("pointerdown", (event) => {
-    if (event.target.closest("button") || (event.button !== undefined && event.button !== 0)) return;
-    swipeStart = { x: event.clientX, y: event.clientY, pointerId: event.pointerId, scrollY: window.scrollY, isHorizontal: false };
-    media.setPointerCapture?.(event.pointerId);
+  track.addEventListener("dragstart", (event) => event.preventDefault());
+
+  track.addEventListener("pointerdown", (event) => {
+    if (event.button !== undefined && event.button !== 0) return;
+    dragState = {
+      x: event.clientX,
+      y: event.clientY,
+      startScrollLeft: track.scrollLeft,
+      pageScrollY: window.scrollY,
+      pointerId: event.pointerId,
+      isHorizontal: false,
+    };
+    track.setPointerCapture?.(event.pointerId);
   });
 
-  media.addEventListener("pointermove", (event) => {
-    if (!swipeStart || event.pointerId !== swipeStart.pointerId) return;
-    const distanceX = event.clientX - swipeStart.x;
-    const distanceY = event.clientY - swipeStart.y;
-    if (Math.abs(distanceX) > 10 && Math.abs(distanceX) > Math.abs(distanceY)) {
-      swipeStart.isHorizontal = true;
-      event.preventDefault();
-      restoreSwipeScroll(swipeStart.scrollY);
+  track.addEventListener("pointermove", (event) => {
+    if (!dragState || event.pointerId !== dragState.pointerId) return;
+    const distanceX = event.clientX - dragState.x;
+    const distanceY = event.clientY - dragState.y;
+    if (!dragState.isHorizontal) {
+      if (Math.abs(distanceX) < 10) return;
+      if (Math.abs(distanceX) <= Math.abs(distanceY)) return;
+      dragState.isHorizontal = true;
+      track.classList.add("is-dragging");
     }
+    event.preventDefault();
+    track.scrollLeft = dragState.startScrollLeft - distanceX;
+    restorePagePosition(dragState.pageScrollY);
   }, { passive: false });
 
-  media.addEventListener("pointerup", (event) => {
-    if (!swipeStart || event.pointerId !== swipeStart.pointerId) return;
-    const { x, y, scrollY, isHorizontal } = swipeStart;
-    swipeStart = null;
-    if (media.hasPointerCapture?.(event.pointerId)) media.releasePointerCapture(event.pointerId);
-    if (isHorizontal) {
-      restoreSwipeScroll(scrollY);
-      window.requestAnimationFrame(() => restoreSwipeScroll(scrollY));
-      window.setTimeout(() => restoreSwipeScroll(scrollY), 80);
-      window.setTimeout(() => restoreSwipeScroll(scrollY), 180);
-    }
-    moveWithSwipe(event.clientX - x, event.clientY - y);
-  });
-
-  media.addEventListener("pointercancel", () => {
-    swipeStart = null;
-  });
-
-  if (!("PointerEvent" in window)) {
-    let touchStart = null;
-    media.addEventListener("touchstart", (event) => {
-      const touch = event.changedTouches[0];
-      touchStart = touch ? { x: touch.clientX, y: touch.clientY } : null;
-    }, { passive: true });
-    media.addEventListener("touchend", (event) => {
-      const touch = event.changedTouches[0];
-      if (!touchStart || !touch) return;
-      const { x, y } = touchStart;
-      touchStart = null;
-      moveWithSwipe(touch.clientX - x, touch.clientY - y);
-    }, { passive: true });
-  }
+  track.addEventListener("pointerup", finishDrag);
+  track.addEventListener("pointercancel", finishDrag);
 
   updateFilters();
-  setSlide(0, { scrollThumb: false });
+  renderCards();
 }
 
 function formatMoney(value) {
