@@ -755,6 +755,8 @@ svg {
   bottom: 0;
   z-index: 18;
   display: none;
+  grid-template-columns: minmax(0, 1fr) 52px;
+  gap: 10px;
   padding: 10px 14px calc(10px + env(safe-area-inset-bottom));
   background: linear-gradient(0deg, rgba(246, 242, 236, 0.96), rgba(246, 242, 236, 0.74));
   backdrop-filter: blur(18px);
@@ -774,7 +776,41 @@ body.show-sticky-cta:not(.modal-open) .mobile-sticky-cta {
 }
 
 .mobile-sticky-cta button {
-  width: 100%;
+  width: auto;
+}
+
+.mobile-sticky-cta__call {
+  display: grid;
+  width: 52px;
+  height: 52px;
+  place-items: center;
+  border: 1px solid rgba(240, 198, 109, 0.72);
+  border-radius: var(--radius);
+  background: rgba(255, 248, 234, 0.06);
+  color: #fff8ea;
+}
+
+.mobile-sticky-cta__call svg {
+  width: 20px;
+  height: 20px;
+  stroke-width: 2;
+}
+
+.mobile-sticky-cta__call:active {
+  background: rgba(240, 198, 109, 0.18);
+  transform: scale(0.96);
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
 }
 
 .quiz-modal {
@@ -1520,7 +1556,7 @@ input:focus-visible {
   }
 
   .mobile-sticky-cta {
-    display: block;
+    display: grid;
   }
 
   .quiz-modal {
