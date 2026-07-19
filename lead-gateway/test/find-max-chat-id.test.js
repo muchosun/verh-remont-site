@@ -2,19 +2,25 @@
 
 const assert = require("node:assert/strict");
 const test = require("node:test");
-const { extractBotAddedChats } = require("../scripts/find-max-chat-id");
+const { extractChatEvents } = require("../scripts/find-max-chat-id");
 
-test("keeps only unique bot_added events with a numeric chat id", () => {
-  const chats = extractBotAddedChats([
+test("keeps only unique chat IDs from bot additions and messages", () => {
+  const chats = extractChatEvents([
     { update_type: "message_created", chat_id: 10 },
     { update_type: "bot_added", chat_id: 22, timestamp: 1, is_channel: false },
     { update_type: "bot_added", chat_id: 22, timestamp: 2, is_channel: false },
     { update_type: "bot_added", chat_id: "33" },
-    { update_type: "bot_added", chat_id: 44, timestamp: 3, is_channel: true },
+    {
+      update_type: "message_created",
+      timestamp: 3,
+      is_channel: true,
+      message: { recipient: { chat: { chat_id: 44 } } },
+    },
   ]);
 
   assert.deepEqual(chats, [
-    { chatId: 22, timestamp: "1970-01-01T00:00:01.000Z", isChannel: false },
-    { chatId: 44, timestamp: "1970-01-01T00:00:03.000Z", isChannel: true },
+    { chatId: 10, updateType: "message_created", timestamp: null, isChannel: false },
+    { chatId: 22, updateType: "bot_added", timestamp: "1970-01-01T00:00:01.000Z", isChannel: false },
+    { chatId: 44, updateType: "message_created", timestamp: "1970-01-01T00:00:03.000Z", isChannel: true },
   ]);
 });

@@ -3,18 +3,35 @@
 
 const DEFAULT_API_BASE = "https://platform-api2.max.ru";
 
-function extractBotAddedChats(updates) {
+function getChatId(update) {
+  const candidates = [
+    update?.chat_id,
+    update?.message?.recipient?.chat_id,
+    update?.message?.recipient?.chat?.chat_id,
+    update?.message?.chat?.chat_id,
+  ];
+
+  return candidates.find((candidate) => Number.isInteger(candidate)) || null;
+}
+
+function extractChatEvents(updates) {
   const knownIds = new Set();
 
   return (Array.isArray(updates) ? updates : [])
-    .filter((update) => update && update.update_type === "bot_added" && Number.isInteger(update.chat_id))
-    .filter((update) => {
-      if (knownIds.has(update.chat_id)) return false;
-      knownIds.add(update.chat_id);
+    .map((update) => ({ update, chatId: getChatId(update) }))
+    .filter(({ update, chatId }) => (
+      update
+      && ["bot_added", "message_created"].includes(update.update_type)
+      && chatId !== null
+    ))
+    .filter(({ chatId }) => {
+      if (knownIds.has(chatId)) return false;
+      knownIds.add(chatId);
       return true;
     })
-    .map((update) => ({
-      chatId: update.chat_id,
+    .map(({ update, chatId }) => ({
+      chatId,
+      updateType: update.update_type,
       timestamp: Number.isFinite(update.timestamp) ? new Date(update.timestamp * 1000).toISOString() : null,
       isChannel: Boolean(update.is_channel),
     }));
@@ -29,7 +46,7 @@ async function main() {
   }
 
   const endpoint = new URL(`${apiBase}/updates`);
-  endpoint.searchParams.set("types", "bot_added");
+  endpoint.searchParams.set("types", "bot_added,message_created");
   endpoint.searchParams.set("limit", "100");
 
   const response = await fetch(endpoint, {
@@ -41,10 +58,10 @@ async function main() {
   }
 
   const payload = await response.json();
-  const chats = extractBotAddedChats(payload.updates);
+  const chats = extractChatEvents(payload.updates);
 
   if (!chats.length) {
-    console.error("События bot_added не найдены. Удали и добавь бота в нужный чат, затем запусти скрипт ещё раз.");
+    console.error("События нужного чата не найдены. Добавь бота в чат или отправь новое сообщение в нём, затем запусти скрипт ещё раз.");
     process.exitCode = 2;
     return;
   }
@@ -52,7 +69,7 @@ async function main() {
   for (const chat of chats) {
     const kind = chat.isChannel ? "канал" : "чат";
     const time = chat.timestamp ? `, событие ${chat.timestamp}` : "";
-    console.log(`${kind}: ${chat.chatId}${time}`);
+    console.log(`${kind}: ${chat.chatId}, событие ${chat.updateType}${time}`);
   }
 }
 
@@ -63,4 +80,4 @@ if (require.main === module) {
   });
 }
 
-module.exports = { extractBotAddedChats };
+module.exports = { extractChatEvents };
