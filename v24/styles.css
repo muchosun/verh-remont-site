@@ -266,6 +266,30 @@ svg {
   font-weight: 900;
 }
 
+.hero-conditions {
+  box-sizing: border-box;
+  flex-basis: 100%;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  list-style: none;
+  border: 1px solid rgba(208, 160, 79, 0.52);
+  border-radius: var(--radius);
+  background: rgba(7, 7, 7, 0.34);
+  color: #fff4df;
+}
+
+.hero-conditions li {
+  padding: 9px 12px;
+  font-size: 14px;
+  font-weight: 900;
+  line-height: 1.35;
+}
+
+.hero-conditions li + li {
+  border-top: 1px solid rgba(208, 160, 79, 0.3);
+}
+
 .hero__actions {
   display: flex;
   flex-wrap: wrap;
@@ -1411,8 +1435,14 @@ input:focus-visible {
     font-size: 15px;
   }
 
-  .hero-badges span:nth-child(2):last-child {
+  .hero-conditions {
     grid-column: 1 / -1;
+  }
+
+  .hero-conditions li {
+    padding: 9px 10px;
+    font-size: 12px;
+    text-align: center;
   }
 
   .hero-proof {
