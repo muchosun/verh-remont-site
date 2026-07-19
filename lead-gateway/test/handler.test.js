@@ -2,9 +2,7 @@
 
 const assert = require("node:assert/strict");
 const test = require("node:test");
-const { handler } = require("../index");
-
-const originalFetch = global.fetch;
+const { createHandler, handler } = require("../index");
 const originalEnvironment = {
   LEAD_ORIGIN: process.env.LEAD_ORIGIN,
   MAX_BOT_TOKEN: process.env.MAX_BOT_TOKEN,
@@ -44,7 +42,6 @@ function validLead() {
 }
 
 test.afterEach(() => {
-  global.fetch = originalFetch;
   restoreEnvironment();
 });
 
@@ -67,9 +64,11 @@ test("rejects a request from a different origin", async () => {
 test("validates the lead before attempting delivery", async () => {
   process.env.MAX_BOT_TOKEN = "token";
   process.env.MAX_CHAT_ID = "123";
-  global.fetch = async () => assert.fail("MAX must not be called for invalid data");
+  const testHandler = createHandler({
+    maxRequest: async () => assert.fail("MAX must not be called for invalid data"),
+  });
 
-  const result = await handler(leadEvent({ ...validLead(), area: 12 }));
+  const result = await testHandler(leadEvent({ ...validLead(), area: 12 }));
 
   assert.equal(result.statusCode, 400);
   assert.equal(JSON.parse(result.body).status, "invalid_lead");
@@ -79,12 +78,12 @@ test("normalizes, recalculates and sends a lead to MAX", async () => {
   process.env.MAX_BOT_TOKEN = "test-token";
   process.env.MAX_CHAT_ID = "987654";
   const calls = [];
-  global.fetch = async (url, options) => {
+  const testHandler = createHandler({ maxRequest: async (url, options) => {
     calls.push({ url: String(url), options });
     return { ok: true, status: 200 };
-  };
+  } });
 
-  const result = await handler(leadEvent(validLead()));
+  const result = await testHandler(leadEvent(validLead()));
   const response = JSON.parse(result.body);
   const message = JSON.parse(calls[0].options.body).text;
 
@@ -101,9 +100,9 @@ test("normalizes, recalculates and sends a lead to MAX", async () => {
 test("returns a neutral error when MAX does not accept the lead", async () => {
   process.env.MAX_BOT_TOKEN = "test-token";
   process.env.MAX_CHAT_ID = "987654";
-  global.fetch = async () => ({ ok: false, status: 401 });
+  const testHandler = createHandler({ maxRequest: async () => ({ ok: false, status: 401 }) });
 
-  const result = await handler(leadEvent(validLead()));
+  const result = await testHandler(leadEvent(validLead()));
 
   assert.equal(result.statusCode, 502);
   assert.deepEqual(JSON.parse(result.body), { status: "delivery_failed" });

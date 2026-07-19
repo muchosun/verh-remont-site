@@ -1,6 +1,7 @@
 "use strict";
 
 const { randomUUID } = require("node:crypto");
+const { requestMax } = require("./max-client");
 
 const TARIFS = {
   standard: { title: "Стандарт", pricePerMeter: 20000 },
@@ -144,7 +145,7 @@ function formatMaxMessage(lead) {
   return lines.join("\n").slice(0, MAX_MESSAGE_LIMIT);
 }
 
-async function sendToMax(lead) {
+async function sendToMax(lead, maxRequest = requestMax) {
   const token = String(process.env.MAX_BOT_TOKEN || "").trim();
   const chatId = String(process.env.MAX_CHAT_ID || "").trim();
   const apiBase = String(process.env.MAX_API_BASE || "https://platform-api2.max.ru").replace(/\/$/, "");
@@ -156,28 +157,21 @@ async function sendToMax(lead) {
   const endpoint = new URL(`${apiBase}/messages`);
   endpoint.searchParams.set("chat_id", chatId);
 
-  const controller = new AbortController();
-  const timeout = setTimeout(() => controller.abort(), 7000);
-  try {
-    const response = await fetch(endpoint, {
-      method: "POST",
-      headers: {
-        Authorization: token,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        text: formatMaxMessage(lead),
-        format: "markdown",
-        notify: true,
-        disable_link_preview: true,
-      }),
-      signal: controller.signal,
-    });
+  const response = await maxRequest(endpoint, {
+    method: "POST",
+    headers: {
+      Authorization: token,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      text: formatMaxMessage(lead),
+      format: "markdown",
+      notify: true,
+      disable_link_preview: true,
+    }),
+  });
 
-    if (!response.ok) throw new Error(`MAX responded with ${response.status}`);
-  } finally {
-    clearTimeout(timeout);
-  }
+  if (!response.ok) throw new Error(`MAX responded with ${response.status}`);
 }
 
 function response(statusCode, body, origin = "") {
@@ -199,54 +193,60 @@ function response(statusCode, body, origin = "") {
   return { statusCode, headers, body: JSON.stringify(body) };
 }
 
-async function handler(event) {
-  const { headers, method, request } = getRequest(event);
-  const origin = allowedOrigin();
-  const requestOrigin = getHeader(headers, "origin");
-  const path = String(request.path || request.rawPath || request.requestContext?.http?.path || "");
+function createHandler({ maxRequest = requestMax } = {}) {
+  return async function handler(event) {
+    const { headers, method, request } = getRequest(event);
+    const origin = allowedOrigin();
+    const requestOrigin = getHeader(headers, "origin");
+    const path = String(request.path || request.rawPath || request.requestContext?.http?.path || "");
 
-  if (method === "GET" && (path === "/health" || path.endsWith("/health"))) {
-    return response(200, { status: "ok" });
-  }
+    if (method === "GET" && (path === "/health" || path.endsWith("/health"))) {
+      return response(200, { status: "ok" });
+    }
 
-  if (requestOrigin !== origin) {
-    return response(403, { status: "forbidden" });
-  }
+    if (requestOrigin !== origin) {
+      return response(403, { status: "forbidden" });
+    }
 
-  if (method === "OPTIONS") return response(204, {}, origin);
-  if (method !== "POST") return response(405, { status: "method_not_allowed" }, origin);
+    if (method === "OPTIONS") return response(204, {}, origin);
+    if (method !== "POST") return response(405, { status: "method_not_allowed" }, origin);
 
-  const contentType = getHeader(headers, "content-type");
-  if (contentType && !contentType.toLowerCase().startsWith("application/json")) {
-    return response(415, { status: "unsupported_media_type" }, origin);
-  }
+    const contentType = getHeader(headers, "content-type");
+    if (contentType && !contentType.toLowerCase().startsWith("application/json")) {
+      return response(415, { status: "unsupported_media_type" }, origin);
+    }
 
-  let payload;
-  try {
-    payload = parseBody(request);
-  } catch {
-    return response(400, { status: "invalid_json" }, origin);
-  }
+    let payload;
+    try {
+      payload = parseBody(request);
+    } catch {
+      return response(400, { status: "invalid_json" }, origin);
+    }
 
-  const result = validateLead(payload, origin);
-  if (!result.ok) return response(400, { status: "invalid_lead", message: result.message }, origin);
-  if (result.honeypot) return response(202, { status: "accepted" }, origin);
+    const result = validateLead(payload, origin);
+    if (!result.ok) return response(400, { status: "invalid_lead", message: result.message }, origin);
+    if (result.honeypot) return response(202, { status: "accepted" }, origin);
 
-  try {
-    await sendToMax(result.lead);
-  } catch (error) {
-    // Do not log the lead or its phone number: Yandex Cloud logs are not a CRM.
-    console.error(`[lead] ${result.lead.id} was not delivered: ${error.message}`);
-    return response(502, { status: "delivery_failed" }, origin);
-  }
+    try {
+      await sendToMax(result.lead, maxRequest);
+    } catch (error) {
+      // Do not log the lead or its phone number: Yandex Cloud logs are not a CRM.
+      console.error(`[lead] ${result.lead.id} was not delivered: ${error.message}`);
+      return response(502, { status: "delivery_failed" }, origin);
+    }
 
-  console.info(`[lead] ${result.lead.id} delivered`);
-  return response(201, { status: "accepted", leadId: result.lead.id }, origin);
+    console.info(`[lead] ${result.lead.id} delivered`);
+    return response(201, { status: "accepted", leadId: result.lead.id }, origin);
+  };
 }
+
+const handler = createHandler();
 
 module.exports = {
   handler,
+  createHandler,
   // Exported for isolated tests; the runtime entry point remains index.handler.
   formatMaxMessage,
+  sendToMax,
   validateLead,
 };

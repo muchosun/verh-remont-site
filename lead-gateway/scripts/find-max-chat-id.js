@@ -1,7 +1,15 @@
 #!/usr/bin/env node
 "use strict";
 
+const { requestMax } = require("../max-client");
+
 const DEFAULT_API_BASE = "https://platform-api2.max.ru";
+
+function formatTimestamp(timestamp) {
+  if (!Number.isFinite(timestamp)) return null;
+  const milliseconds = timestamp > 1_000_000_000_000 ? timestamp : timestamp * 1000;
+  return new Date(milliseconds).toISOString();
+}
 
 function getChatId(update) {
   const candidates = [
@@ -32,7 +40,7 @@ function extractChatEvents(updates) {
     .map(({ update, chatId }) => ({
       chatId,
       updateType: update.update_type,
-      timestamp: Number.isFinite(update.timestamp) ? new Date(update.timestamp * 1000).toISOString() : null,
+      timestamp: formatTimestamp(update.timestamp),
       isChannel: Boolean(update.is_channel),
     }));
 }
@@ -49,15 +57,17 @@ async function main() {
   endpoint.searchParams.set("types", "bot_added,message_created");
   endpoint.searchParams.set("limit", "100");
 
-  const response = await fetch(endpoint, {
+  const response = await requestMax(endpoint, {
     headers: { Authorization: token },
+    // MAX waits up to 30 seconds for an update when Long Polling is used.
+    timeoutMs: 35_000,
   });
 
   if (!response.ok) {
     throw new Error(`MAX вернул HTTP ${response.status}. Проверь токен и отсутствие активного webhook.`);
   }
 
-  const payload = await response.json();
+  const payload = JSON.parse(response.body);
   const chats = extractChatEvents(payload.updates);
 
   if (!chats.length) {
@@ -80,4 +90,4 @@ if (require.main === module) {
   });
 }
 
-module.exports = { extractChatEvents };
+module.exports = { extractChatEvents, formatTimestamp };
