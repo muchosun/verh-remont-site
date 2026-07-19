@@ -193,6 +193,17 @@ svg {
   color: #151515;
 }
 
+.call-action {
+  min-width: 220px;
+  transition: border-color 160ms ease, background-color 160ms ease, color 160ms ease;
+}
+
+.call-action.is-phone-revealed {
+  border-color: var(--gold);
+  background: rgba(240, 198, 109, 0.12);
+  color: #fff8ea;
+}
+
 .hero {
   position: relative;
   min-height: min(760px, calc(100dvh - 72px));
@@ -725,59 +736,6 @@ svg {
   justify-content: center;
   gap: 10px;
   margin-top: 10px;
-}
-
-.contact-phone {
-  display: grid;
-  justify-items: center;
-  gap: 7px;
-  width: min(100%, 360px);
-  padding: 16px 0;
-  border-top: 1px solid rgba(255, 248, 234, 0.14);
-  border-bottom: 1px solid rgba(255, 248, 234, 0.14);
-}
-
-.contact-phone__label,
-.contact-phone__details span {
-  color: rgba(255, 247, 234, 0.66);
-  font-size: 13px;
-  line-height: 1.35;
-}
-
-.contact-phone__toggle {
-  min-height: 40px;
-  border: 0;
-  border-bottom: 1px solid rgba(240, 198, 109, 0.68);
-  border-radius: 0;
-  background: transparent;
-  color: var(--gold);
-  font: inherit;
-  font-size: 16px;
-  font-weight: 650;
-  cursor: pointer;
-}
-
-.contact-phone__toggle:hover,
-.contact-phone__toggle:focus-visible {
-  color: #fff8ea;
-  border-bottom-color: #fff8ea;
-}
-
-.contact-phone__details {
-  display: grid;
-  gap: 3px;
-  justify-items: center;
-}
-
-.contact-phone__details[hidden] {
-  display: none;
-}
-
-.contact-phone__details a {
-  color: #fff8ea;
-  font-size: 22px;
-  font-weight: 650;
-  line-height: 1.2;
 }
 
 .site-cta__links {
