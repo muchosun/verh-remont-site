@@ -84,7 +84,7 @@ test("normalizes, recalculates and sends a lead to MAX", async () => {
   process.env.MAX_IGOR_USER_ID = "101";
   process.env.MAX_IGOR_NAME = "Игорь Тестов";
   process.env.MAX_YURIY_USER_ID = "202";
-  process.env.MAX_YURIY_NAME = "Юрий Юхультль";
+  process.env.MAX_YURIY_NAME = "Юрий Яхутль";
   const calls = [];
   const testHandler = createHandler({ maxRequest: async (url, options) => {
     calls.push({ url: String(url), options });
@@ -93,7 +93,8 @@ test("normalizes, recalculates and sends a lead to MAX", async () => {
 
   const result = await testHandler(leadEvent(validLead()));
   const response = JSON.parse(result.body);
-  const message = JSON.parse(calls[0].options.body).text;
+  const payload = JSON.parse(calls[0].options.body);
+  const message = payload.text;
 
   assert.equal(result.statusCode, 201);
   assert.equal(response.status, "accepted");
@@ -101,10 +102,20 @@ test("normalizes, recalculates and sends a lead to MAX", async () => {
   assert.equal(calls.length, 1);
   assert.equal(calls[0].url, "https://platform-api2.max.ru/messages?chat_id=987654");
   assert.equal(calls[0].options.headers.Authorization, "test-token");
-  assert.match(message, /\[\+7 \(999\) 123-45-67\]\(tel:\+79991234567\)/);
+  assert.match(message, /Телефон: \+7 \(999\) 123-45-67/);
   assert.match(message, /\[Игорь Тестов\]\(max:\/\/user\/101\)/);
-  assert.match(message, /\[Юрий Юхультль\]\(max:\/\/user\/202\)/);
+  assert.match(message, /\[Юрий Яхутль\]\(max:\/\/user\/202\)/);
   assert.match(message, /1\s?037\s?500 ₽/);
+  assert.deepEqual(payload.attachments, [{
+    type: "inline_keyboard",
+    payload: {
+      buttons: [[{
+        type: "link",
+        text: "Позвонить",
+        url: "tel:+79991234567",
+      }]],
+    },
+  }]);
 });
 
 test("returns a neutral error when MAX does not accept the lead", async () => {

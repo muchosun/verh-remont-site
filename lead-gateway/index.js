@@ -74,9 +74,21 @@ function formatMoney(value) {
   return `${new Intl.NumberFormat("ru-RU").format(value)} ₽`;
 }
 
-function formatPhoneLink(phone) {
-  const digits = String(phone).replace(/\D/g, "");
-  return `[${phone}](tel:+${digits})`;
+function formatPhoneTarget(phone) {
+  return `tel:+${String(phone).replace(/\D/g, "")}`;
+}
+
+function formatCallKeyboard(phone) {
+  return [{
+    type: "inline_keyboard",
+    payload: {
+      buttons: [[{
+        type: "link",
+        text: "Позвонить",
+        url: formatPhoneTarget(phone),
+      }]],
+    },
+  }];
 }
 
 function formatMentions() {
@@ -148,7 +160,7 @@ function formatMaxMessage(lead) {
   const lines = [
     "Новая заявка с сайта ВЕРХ ремонт",
     `Заявка: #${lead.id.slice(0, 8)}`,
-    `Телефон: ${formatPhoneLink(lead.phone)}`,
+    `Телефон: ${lead.phone}`,
     `Квартира: ${lead.apartment}`,
     `Площадь: ${formatArea(lead.area)}${lead.areaLabel ? ` (${lead.areaLabel})` : ""}`,
     `Результат: ${lead.levelTitle}`,
@@ -184,6 +196,7 @@ async function sendToMax(lead, maxRequest = requestMax) {
     },
     body: JSON.stringify({
       text: formatMaxMessage(lead),
+      attachments: formatCallKeyboard(lead.phone),
       format: "markdown",
       notify: true,
       disable_link_preview: true,
