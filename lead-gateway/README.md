@@ -36,7 +36,7 @@
    - `MAX_BOT_TOKEN` — токен чат-бота MAX;
    - `MAX_CHAT_ID` — ID общего рабочего чата MAX, куда бот уже добавлен.
    - `MAX_IGOR_USER_ID` и `MAX_IGOR_NAME` — ID и полное имя Игоря в MAX;
-   - `MAX_YURIY_USER_ID` и `MAX_YURIY_NAME` — ID и полное имя Юрия Юхультля в MAX.
+   - `MAX_YURIY_USER_ID` и `MAX_YURIY_NAME` — ID и полное имя Юрия Яхутля в MAX.
 4. Создать API Gateway по `openapi.template.yaml`, заменив `<FUNCTION_ID>` и `<SERVICE_ACCOUNT_ID>` на реальные идентификаторы. У API Gateway должно быть только два маршрута: `/v1/leads` и `/health`.
 5. Привязать к API Gateway поддомен, например `leads.verhremont.ru`, с HTTPS-сертификатом.
 6. Открыть `https://leads.verhremont.ru/health`: ожидаемый ответ `{"status":"ok"}`.
