@@ -3750,3 +3750,20 @@ html.has-js .process-cta {
   background: transparent;
   color: #fff8ea;
 }
+
+/* v25.2: the featured card uses the same badge geometry as the other tiers */
+.tariff-card--featured .tariff-card__badge {
+  top: 14px;
+  left: 14px;
+  border-radius: 5px;
+  padding: 7px 10px;
+  box-shadow: none;
+}
+
+@media (max-width: 720px) {
+  .tariff-card--featured .tariff-card__badge {
+    top: 12px;
+    left: 12px;
+    padding: 6px 9px;
+  }
+}
