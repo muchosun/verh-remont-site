@@ -749,7 +749,9 @@ svg {
 }
 
 .reviews-section {
-  background: #11110f;
+  border-top: 1px solid rgba(240, 198, 109, 0.48);
+  border-bottom: 1px solid rgba(255, 248, 234, 0.1);
+  background: #181711;
   color: #fff8ea;
 }
 
