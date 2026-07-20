@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+Disallow: /v*/
+Disallow: /ui-kit/
+Disallow: /lead-gateway/
+Disallow: /verh-remont-lead-gateway-20260719-224101/
+
+Sitemap: https://verhremont.ru/sitemap.xml

@@ -91,6 +91,7 @@ const contactsSection = document.querySelector("#contacts");
 const callButtons = [...document.querySelectorAll("[data-call-button]")];
 const mobileCallButton = document.querySelector("[data-mobile-call]");
 const yandexReviewsSection = document.querySelector("[data-yandex-reviews]");
+const yandexReviewsFrame = document.querySelector("[data-yandex-reviews-frame]");
 
 let lastQuizTrigger = null;
 let timerId = null;
@@ -317,7 +318,7 @@ function initProjectGallery() {
     track.innerHTML = items
       .map((item, index) => `
         <article class="project-gallery__card" role="listitem">
-          <img src="${sourceFor(item)}" alt="${item.tier}: ${item.title}. Реальный объект ВЕРХ ремонта" loading="${index < 4 ? "eager" : "lazy"}" decoding="async" draggable="false" />
+          <img src="${sourceFor(item)}" alt="${item.tier}: ${item.title}. Реальный объект ВЕРХ ремонта" loading="lazy" decoding="async" draggable="false" />
           <span class="photo-watermark" aria-hidden="true">ВЕРХ</span>
           <div class="project-gallery__card-caption">
             <span>${item.tier}</span>
@@ -354,6 +355,25 @@ function initProjectGallery() {
   renderCards();
 }
 
+function initDeferredProjectGallery() {
+  const gallery = document.querySelector("[data-project-gallery]");
+  if (!gallery) return;
+
+  const start = () => initProjectGallery();
+  if (!("IntersectionObserver" in window)) {
+    start();
+    return;
+  }
+
+  const observer = new IntersectionObserver((entries) => {
+    if (!entries.some((entry) => entry.isIntersecting)) return;
+    start();
+    observer.disconnect();
+  }, { rootMargin: "1400px 0px" });
+
+  observer.observe(gallery);
+}
+
 function trackMetricGoal(goal) {
   if (typeof window.ym === "function") window.ym(110859289, "reachGoal", goal);
 }
@@ -362,7 +382,27 @@ function initYandexReviews() {
   if (!yandexReviewsSection) return;
   if (window.VERH_REVIEWS_WIDGET_ENABLED === false) {
     yandexReviewsSection.remove();
+    return;
   }
+
+  if (!yandexReviewsFrame?.dataset.src) return;
+
+  const loadReviewsWidget = () => {
+    if (!yandexReviewsFrame.src) yandexReviewsFrame.src = yandexReviewsFrame.dataset.src;
+  };
+
+  if (!("IntersectionObserver" in window)) {
+    loadReviewsWidget();
+    return;
+  }
+
+  const observer = new IntersectionObserver((entries) => {
+    if (!entries.some((entry) => entry.isIntersecting)) return;
+    loadReviewsWidget();
+    observer.disconnect();
+  }, { rootMargin: "400px 0px" });
+
+  observer.observe(yandexReviewsSection);
 }
 
 function initCallActions() {
@@ -385,10 +425,6 @@ function initCallActions() {
 
 function initMobileCallAction() {
   mobileCallButton?.addEventListener("click", () => trackMetricGoal("phone_call"));
-}
-
-function initIcons() {
-  window.lucide?.createIcons();
 }
 
 function formatMoney(value) {
@@ -506,8 +542,16 @@ function resetLeadResult() {
   successMessage.hidden = true;
 }
 
+function prepareQuizMedia() {
+  document.querySelectorAll("img[data-quiz-media][data-src]").forEach((image) => {
+    image.src = image.dataset.src;
+    image.removeAttribute("data-src");
+  });
+}
+
 function openQuiz(trigger) {
   lastQuizTrigger = trigger || document.activeElement;
+  prepareQuizMedia();
   quizModal.classList.add("is-open");
   quizModal.setAttribute("aria-hidden", "false");
   document.body.classList.add("modal-open");
@@ -704,6 +748,9 @@ function startTimer() {
 }
 
 quizOpenButtons.forEach((button) => {
+  button.addEventListener("pointerenter", prepareQuizMedia, { once: true });
+  button.addEventListener("focus", prepareQuizMedia, { once: true });
+  button.addEventListener("touchstart", prepareQuizMedia, { once: true, passive: true });
   button.addEventListener("click", () => openQuiz(button));
 });
 
@@ -862,10 +909,9 @@ leadForm.addEventListener("submit", async (event) => {
 });
 
 render();
-initProjectGallery();
+initDeferredProjectGallery();
 initCallActions();
 initMobileCallAction();
 initYandexReviews();
-initIcons();
 setStep(0);
 updateStickyCta();
