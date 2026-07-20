@@ -90,6 +90,8 @@ const tariffGalleries = [...document.querySelectorAll("[data-tariff-gallery]")];
 const contactsSection = document.querySelector("#contacts");
 const callButtons = [...document.querySelectorAll("[data-call-button]")];
 const mobileCallButton = document.querySelector("[data-mobile-call]");
+const yandexReviewsSection = document.querySelector("[data-yandex-reviews]");
+const yandexReviewsLink = document.querySelector("[data-yandex-reviews-link]");
 
 let lastQuizTrigger = null;
 let timerId = null;
@@ -355,6 +357,16 @@ function initProjectGallery() {
 
 function trackMetricGoal(goal) {
   if (typeof window.ym === "function") window.ym(110859289, "reachGoal", goal);
+}
+
+function initYandexReviews() {
+  if (!yandexReviewsSection) return;
+  if (window.VERH_REVIEWS_WIDGET_ENABLED === false) {
+    yandexReviewsSection.remove();
+    return;
+  }
+
+  yandexReviewsLink?.addEventListener("click", () => trackMetricGoal("reviews_maps_open"));
 }
 
 function initCallActions() {
@@ -857,6 +869,7 @@ render();
 initProjectGallery();
 initCallActions();
 initMobileCallAction();
+initYandexReviews();
 initIcons();
 setStep(0);
 updateStickyCta();

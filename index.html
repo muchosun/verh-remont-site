@@ -14,7 +14,7 @@
     <link rel="preload" as="font" href="assets/fonts/onest-cyrillic.woff2" type="font/woff2" crossorigin />
     <link rel="preload" as="font" href="assets/fonts/onest-latin.woff2" type="font/woff2" crossorigin />
     <link rel="preload" as="image" href="v14/assets/web/vk-hero.webp" type="image/webp" fetchpriority="high" />
-    <link rel="stylesheet" href="styles.css?v=20260719-18" />
+    <link rel="stylesheet" href="styles.css?v=20260720-1" />
     <!-- Yandex.Metrika counter -->
     <script type="text/javascript">
       (function (m, e, t, r, i, k, a) {
@@ -199,6 +199,37 @@
         </div>
 
         <p class="projects__privacy" id="projects-privacy"><strong>Адреса квартир не публикуем.</strong> Площадь, ЖК и детали объекта добавим только после согласования с собственниками.</p>
+      </section>
+
+      <section class="reviews-section section" id="reviews" data-yandex-reviews>
+        <div class="reviews-section__inner">
+          <div class="reviews-section__intro">
+            <span class="section-kicker">Отзывы клиентов</span>
+            <h2>Отзывы, которые можно проверить</h2>
+            <p>Показываем живые отзывы из карточки ВЕРХ в Яндекс Картах. Их нельзя отредактировать на сайте или подменить.</p>
+            <div class="reviews-section__actions">
+              <a
+                class="secondary-action secondary-action--light"
+                href="https://yandex.ru/maps/org/verkh/136590229738/reviews/"
+                target="_blank"
+                rel="noopener noreferrer"
+                data-yandex-reviews-link
+              >
+                Все отзывы в Яндекс Картах
+              </a>
+              <button class="primary-action" type="button" data-quiz-open>Рассчитать ремонт</button>
+            </div>
+            <p class="reviews-section__note">Отзывы загружаются напрямую из Яндекс Карт.</p>
+          </div>
+          <div class="reviews-section__widget" aria-label="Отзывы о ВЕРХ на Яндекс Картах">
+            <iframe
+              src="https://yandex.ru/maps-reviews-widget/136590229738?comments"
+              title="Отзывы о ВЕРХ на Яндекс Картах"
+              loading="lazy"
+              referrerpolicy="strict-origin-when-cross-origin"
+            ></iframe>
+          </div>
+        </div>
       </section>
 
       <section class="site-cta" id="contacts">
@@ -393,7 +424,9 @@
     <script>
       // This is a public HTTP endpoint. MAX credentials remain in Yandex Cloud variables.
       window.VERH_LEAD_ENDPOINT = "https://functions.yandexcloud.net/d4e8j84veok7kjc043kk";
+      // Set to false to hide the Yandex Maps reviews block without deleting its markup.
+      window.VERH_REVIEWS_WIDGET_ENABLED = true;
     </script>
-    <script src="script.js?v=20260719-24"></script>
+    <script src="script.js?v=20260720-1"></script>
   </body>
 </html>
