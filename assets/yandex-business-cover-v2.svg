@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1774" height="887" viewBox="0 0 1774 887">
+  <image href="yandex-business-cover-v2-source.png" width="1774" height="887" preserveAspectRatio="xMidYMid slice"/>
+
+  <g font-family="Arial, Helvetica, sans-serif">
+    <text x="112" y="152" fill="#f7f7f5" font-size="60" font-weight="700">ВЕРХ</text>
+    <rect x="112" y="191" width="180" height="3" fill="#ed6f2d"/>
+
+    <text x="112" y="290" fill="#ffffff" font-size="43" font-weight="700">Квартиры под ключ</text>
+    <text x="112" y="343" fill="#ffffff" font-size="43" font-weight="700">в Краснодаре</text>
+
+    <g font-size="26" fill="#f3f3f0">
+      <circle cx="124" cy="428" r="7" fill="#ed6f2d"/>
+      <text x="148" y="438">Работы и материалы в стоимости</text>
+      <circle cx="124" cy="486" r="7" fill="#ed6f2d"/>
+      <text x="148" y="496">Цена закреплена в договоре</text>
+      <circle cx="124" cy="544" r="7" fill="#ed6f2d"/>
+      <text x="148" y="554">Закупку и комплектацию берём на себя</text>
+    </g>
+  </g>
+</svg>
