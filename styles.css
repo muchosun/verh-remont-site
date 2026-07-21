@@ -782,11 +782,9 @@ svg {
 .reviews-section__widget iframe {
   display: block;
   width: 100%;
-  height: min(600px, 72dvh);
-  min-height: 500px;
+  height: 640px;
+  min-height: 560px;
   border: 0;
-  overscroll-behavior: contain;
-  touch-action: pan-y;
 }
 
 .mobile-sticky-cta {
@@ -1451,8 +1449,8 @@ input:focus-visible {
   }
 
   .reviews-section__widget iframe {
-    height: min(580px, 72dvh);
-    min-height: 500px;
+    height: 600px;
+    min-height: 560px;
   }
 
   .tariff-grid,
