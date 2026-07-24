@@ -5309,3 +5309,95 @@ body.show-sticky-cta:not(.modal-open) .mobile-sticky-cta__call svg {
     align-content: start;
   }
 }
+
+/* v26.8: one label row and full-height tariff imagery at every breakpoint */
+.tariff-grid--four .tariff-card,
+.tariff-grid--four .tariff-card__visual,
+.tariff-grid--four .tariff-card__body {
+  min-width: 0;
+  width: 100%;
+}
+
+.tariff-grid--four .tariff-card__visual {
+  aspect-ratio: 2 / 3;
+}
+
+.tariff-grid--four .tariff-card__visual img {
+  width: 100%;
+  height: 100%;
+  aspect-ratio: auto;
+  object-fit: contain;
+  object-position: center;
+}
+
+.tariff-card__labels {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  left: 14px;
+  z-index: 3;
+  display: flex;
+  align-items: stretch;
+  gap: 8px;
+  min-width: 0;
+}
+
+.tariff-card__labels .tariff-card__badge,
+.tariff-card__labels .tariff-card__included {
+  position: static;
+  top: auto;
+  right: auto;
+  bottom: auto;
+  left: auto;
+  min-height: 46px;
+  margin: 0;
+}
+
+.tariff-card__labels .tariff-card__badge {
+  flex: 0 1 auto;
+  justify-content: center;
+  max-width: 46%;
+  padding: 8px 10px;
+  font-size: 10px;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.tariff-card__labels .tariff-card__included {
+  flex: 1 1 128px;
+  min-width: 0;
+  justify-content: center;
+  padding: 8px 9px;
+}
+
+.tariff-card__labels .tariff-card__included small {
+  font-size: 7px;
+  white-space: nowrap;
+}
+
+.tariff-card__labels .tariff-card__included strong {
+  font-size: 11px;
+  white-space: nowrap;
+}
+
+@media (max-width: 720px) {
+  .tariff-grid--four .tariff-card__visual {
+    aspect-ratio: 2 / 3;
+  }
+
+  .tariff-card__labels {
+    top: 12px;
+    right: 12px;
+    left: 12px;
+    gap: 8px;
+  }
+
+  .tariff-card__labels .tariff-card__badge,
+  .tariff-card__labels .tariff-card__included {
+    min-height: 44px;
+  }
+
+  .tariff-card__labels .tariff-card__badge {
+    max-width: 44%;
+  }
+}
