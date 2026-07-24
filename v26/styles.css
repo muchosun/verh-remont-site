@@ -5271,3 +5271,41 @@ body.show-sticky-cta:not(.modal-open) .mobile-sticky-cta__call svg {
     animation: none;
   }
 }
+
+/* v26.7: keep apartment-type photos readable in their original portrait ratio */
+.slide[data-step="0"] .photo-choice {
+  display: grid;
+  grid-template-columns: 46% minmax(0, 1fr);
+  min-height: 260px;
+}
+
+.slide[data-step="0"] .photo-choice img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+.slide[data-step="0"] .photo-choice > span:not(.photo-watermark) {
+  min-width: 0;
+  align-content: center;
+}
+
+@media (max-width: 720px) {
+  .slide[data-step="0"] .photo-choice {
+    grid-template-columns: 1fr;
+    min-height: 0;
+  }
+
+  .slide[data-step="0"] .photo-choice img {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 640 / 1138;
+    object-fit: cover;
+  }
+
+  .slide[data-step="0"] .photo-choice > span:not(.photo-watermark) {
+    min-height: 88px;
+    align-content: start;
+  }
+}
