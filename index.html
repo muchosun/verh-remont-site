@@ -7,7 +7,7 @@
     <title>ВЕРХ - ремонт квартир под ключ в Краснодаре</title>
     <meta
       name="description"
-      content="ВЕРХ: ремонт квартир под ключ в Краснодаре. Выбери уровень ремонта и получи ориентир стоимости для своей квартиры."
+      content="ВЕРХ: косметический ремонт от 6 000 ₽/м² или ремонт квартиры под ключ в Краснодаре. Получи ориентир стоимости для своей квартиры."
     />
     <meta name="robots" content="index, follow, max-image-preview:large" />
     <meta name="theme-color" content="#070707" />
@@ -46,7 +46,7 @@
     <link rel="preload" as="font" href="assets/fonts/onest-cyrillic.woff2" type="font/woff2" crossorigin />
     <link rel="preload" as="font" href="assets/fonts/onest-latin.woff2" type="font/woff2" crossorigin />
     <link rel="preload" as="image" href="v14/assets/web/vk-hero.webp" type="image/webp" fetchpriority="high" />
-    <link rel="stylesheet" href="styles.css?v=20260724-1" />
+    <link rel="stylesheet" href="styles.css?v=20260725-main" />
     <script type="application/ld+json">
       {
         "@context": "https://schema.org",
@@ -171,7 +171,7 @@
         <a href="#contacts">Контакты</a>
       </nav>
 
-      <button class="header-cta" type="button" data-quiz-open>Рассчитать ремонт</button>
+      <button class="header-cta cta-glint" type="button" data-quiz-open>Рассчитать ремонт</button>
     </header>
 
     <main>
@@ -182,16 +182,17 @@
         </div>
         <div class="hero__content">
           <h1>Ремонт квартир под ключ в Краснодаре</h1>
-          <p>Берём ремонт на себя: сами подберём и закупим материалы, чтобы тебе не ездить по магазинам. После замера назовём финальную стоимость.</p>
+          <p>Сделаем ремонт под ключ: работы и материалы уже входят в стоимость.</p>
           <div class="hero-badges" aria-label="Ключевые условия">
-            <span>от 20 000 ₽/м²</span>
+            <span>Косметический от 6 000 ₽/м²</span>
+            <span>Под ключ от 20 000 ₽/м²</span>
             <ul class="hero-conditions">
-              <li>Работы и материалы включены в стоимость.</li>
-              <li>Состав работ и цены зафиксированы в договоре и не изменяются до конца ремонта.</li>
+              <li>Цена, сроки и порядок оплаты — в договоре.</li>
+              <li>Гарантия на ремонт — 3 года.</li>
             </ul>
           </div>
           <div class="hero__actions">
-            <button class="primary-action" type="button" data-quiz-open>
+            <button class="primary-action cta-glint" type="button" data-quiz-open>
               Получить точный расчёт за минуту
             </button>
             <a class="secondary-action call-action" href="tel:+79182383059" data-call-button data-phone-label="+7 (918) 238-30-59">Позвонить</a>
@@ -201,70 +202,138 @@
 
       <section class="tariffs section" id="tariffs">
         <div class="section-head">
-          <h2>Три уровня ремонта</h2>
+          <div>
+            <h2>Выбери, каким будет ремонт</h2>
+          </div>
         </div>
-        <div class="tariff-grid">
+        <div class="tariff-grid tariff-grid--four">
+          <article class="tariff-card tariff-card--cosmetic">
+            <figure class="tariff-card__visual">
+              <img src="assets/tariffs/finish-cosmetic.webp" alt="Квартира после косметического ремонта" width="1024" height="1536" loading="lazy" decoding="async" />
+              <div class="tariff-card__labels">
+                <span class="tariff-card__badge tariff-card__badge--cosmetic">Под ключ</span>
+                <span class="tariff-card__included"><small>В стоимость уже входят</small><strong>Работы + материалы</strong></span>
+              </div>
+              <span class="photo-watermark" aria-hidden="true">ВЕРХ</span>
+            </figure>
+            <div class="tariff-card__body">
+              <h3>Косметический</h3>
+              <strong>от 6 000 ₽/м²</strong>
+              <p class="tariff-card__composition">Освежим квартиру, когда капитальный ремонт пока не нужен.</p>
+              <ul class="tariff-card__list">
+                <li>Снимем старые покрытия и подготовим поверхности там, где это нужно.</li>
+                <li>Обновим стены, потолок и пол в согласованном объёме.</li>
+                <li>Работы и материалы включены в стоимость. Точный состав закрепим после осмотра.</li>
+              </ul>
+              <button class="tariff-card__action" type="button" data-tariff-open="cosmetic">Рассчитать косметический</button>
+            </div>
+          </article>
           <article class="tariff-card tariff-card--base">
-            <span class="tariff-card__badge tariff-card__badge--base">Базовый ремонт</span>
             <figure class="tariff-card__visual">
               <img src="assets/tariffs/finish-standard.webp" alt="Визуальный ориентир ремонта уровня Стандарт" width="1024" height="1536" loading="lazy" decoding="async" />
-              <figcaption>Базовый минимум</figcaption>
+              <div class="tariff-card__labels">
+                <span class="tariff-card__badge tariff-card__badge--base">Под ключ</span>
+                <span class="tariff-card__included"><small>В стоимость уже входят</small><strong>Работы + материалы</strong></span>
+              </div>
               <span class="photo-watermark" aria-hidden="true">ВЕРХ</span>
             </figure>
             <div class="tariff-card__body">
               <h3>Стандарт</h3>
               <strong>20 000 ₽/м²</strong>
-              <p class="tariff-card__composition">Готовый ремонт для заезда или сдачи</p>
+              <p class="tariff-card__composition">Сделаем квартиру готовой к заезду без отдельной закупки материалов.</p>
               <ul class="tariff-card__list">
-                <li>подготовка, черновые работы и материалы;</li>
-                <li>плитка, пол, стены, двери и потолки;</li>
-                <li>базовая сантехника и свет.</li>
+                <li>До старта составим план работ и подберём материалы. Они уже входят в стоимость.</li>
+                <li>Подготовим стены, пол и потолок, затем выполним плитку и чистовую отделку.</li>
+                <li>Установим межкомнатные двери, сантехнику и свет, предусмотренные тарифом.</li>
               </ul>
               <button class="tariff-card__action" type="button" data-tariff-open="standard">Выбрать Стандарт</button>
             </div>
           </article>
           <article class="tariff-card tariff-card--accent tariff-card--featured">
-            <span class="tariff-card__badge tariff-card__badge--popular">Чаще выбирают</span>
             <figure class="tariff-card__visual">
               <img src="assets/tariffs/finish-comfort-aircon.webp" alt="Ремонт уровня Комфорт с настенным кондиционером в готовой квартире" width="1007" height="1562" loading="lazy" decoding="async" />
+              <div class="tariff-card__labels">
+                <span class="tariff-card__badge tariff-card__badge--popular">Чаще выбирают</span>
+                <span class="tariff-card__included"><small>В стоимость уже входят</small><strong>Работы + материалы</strong></span>
+              </div>
               <span class="tariff-card__promo" aria-label="Акция: кондиционер в подарок">
                 <strong>Кондиционер<br />в подарок</strong>
               </span>
-              <figcaption>Комфорт для жизни</figcaption>
               <span class="photo-watermark" aria-hidden="true">ВЕРХ</span>
             </figure>
             <div class="tariff-card__body">
               <h3>Комфорт</h3>
               <strong>25 000 ₽/м²</strong>
-              <p class="tariff-card__composition">Больше деталей для комфортной жизни</p>
+              <p class="tariff-card__composition">Больше выбора в отделке, свете и электрике.</p>
               <ul class="tariff-card__list">
-                <li>крупноформатная плитка, ламинат 33 класса и моющиеся обои;</li>
-                <li>двери, сантехника, свет и карнизы;</li>
-                <li>дополнительная электрика, ниши и потолки.</li>
+                <li>До старта согласуем план и материалы из расширенной комплектации. Они уже входят в стоимость.</li>
+                <li>Подготовим поверхности и выполним плиточные, малярные и напольные работы.</li>
+                <li>Установим двери, сантехнику и свет; добавим нужные розетки и выводы.</li>
                 <li class="tariff-card__offer"><strong>Кондиционер в подарок</strong> при заказе ремонта от 50 м².</li>
               </ul>
               <button class="tariff-card__action" type="button" data-tariff-open="comfort">Выбрать Комфорт</button>
             </div>
           </article>
           <article class="tariff-card tariff-card--bonus">
-            <span class="tariff-card__badge tariff-card__badge--bonus">Дизайн-проект в подарок</span>
             <figure class="tariff-card__visual">
               <img src="assets/tariffs/finish-lux.webp" alt="Визуальный ориентир ремонта уровня Люкс" width="985" height="1597" loading="lazy" decoding="async" />
-              <figcaption>Индивидуальный проект</figcaption>
+              <div class="tariff-card__labels">
+                <span class="tariff-card__badge tariff-card__badge--bonus">Дизайн в подарок</span>
+                <span class="tariff-card__included"><small>В стоимость уже входят</small><strong>Работы + материалы</strong></span>
+              </div>
               <span class="photo-watermark" aria-hidden="true">ВЕРХ</span>
             </figure>
             <div class="tariff-card__body">
               <h3>Люкс</h3>
               <strong>от 29 000 ₽/м²</strong>
-              <p class="tariff-card__composition">Индивидуальный ремонт по твоему проекту</p>
+              <p class="tariff-card__composition">Ремонт по проекту, который учитывает твою планировку и привычки.</p>
               <ul class="tariff-card__list">
-                <li>работы по дизайн-проекту или твоему ТЗ;</li>
-                <li>материалы и комплектация под результат;</li>
-                <li>сложные узлы и световые сценарии.</li>
+                <li>Подготовим дизайн-проект и до старта согласуем материалы и свет.</li>
+                <li>Выполним отделку и все работы по утверждённому проекту.</li>
+                <li>Реализуем сложные узлы, сценарии освещения и нестандартные решения.</li>
               </ul>
               <button class="tariff-card__action" type="button" data-tariff-open="lux">Выбрать Люкс</button>
             </div>
           </article>
+        </div>
+      </section>
+
+      <section class="materials section" id="materials">
+        <div class="section-head materials__head">
+          <div>
+            <h2>Материалы подберём вместе</h2>
+          </div>
+          <button class="tariff-card__action materials__action cta-glint" type="button" data-quiz-open>Рассчитать ремонт</button>
+        </div>
+        <div class="materials-grid">
+          <article class="material-card">
+            <img src="assets/materials/tile-selection.webp" alt="Выбор плитки и керамогранита" width="1448" height="1086" loading="lazy" decoding="async" />
+            <div><strong>Плитка</strong><span>Покажем варианты для ванной, кухни и прихожей.</span></div>
+          </article>
+          <article class="material-card">
+            <img src="assets/materials/floor-selection.webp" alt="Выбор напольного покрытия" width="1448" height="1086" loading="lazy" decoding="async" />
+            <div><strong>Пол</strong><span>Выберем покрытие, которое подойдёт твоей квартире.</span></div>
+          </article>
+          <article class="material-card">
+            <img src="assets/materials/wall-selection.webp" alt="Выбор обоев и отделки стен" width="1448" height="1086" loading="lazy" decoding="async" />
+            <div><strong>Стены</strong><span>Поможем собрать цвет, обои и фактуру в один интерьер.</span></div>
+          </article>
+        </div>
+        <div class="materials-supply">
+          <figure class="materials-supply__visual">
+            <img src="assets/materials/direct-delivery-warehouse.webp" alt="Разгрузка отделочных материалов на складе" width="1440" height="901" loading="lazy" decoding="async" />
+            <span class="photo-watermark" aria-hidden="true">ВЕРХ</span>
+          </figure>
+          <div class="materials-supply__content">
+            <span>Прямые поставки</span>
+            <h3>Закупаем материалы напрямую у производителей</h3>
+            <p>Покажем доступные варианты, согласуем выбор и привезём материалы на объект. Тебе не придётся ездить по магазинам и собирать всё по отдельности.</p>
+          </div>
+        </div>
+        <div class="materials-note">
+          <span>Уже в стоимости</span>
+          <strong>Работы и материалы входят в цену</strong>
+          <p>После замера назовём точную сумму и закрепим её в договоре.</p>
         </div>
       </section>
 
@@ -274,21 +343,24 @@
             <span>Порядок платежей</span>
             <p>Бюджет делим на 4 этапа.</p>
           </div>
-          <div class="payment-table-wrap">
-            <table class="payment-table">
-              <thead>
-                <tr>
-                  <th scope="col">Этап</th>
-                  <th scope="col">Платёж</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr><th scope="row">Договор</th><td>30%</td></tr>
-                <tr><th scope="row">Черновые работы</th><td>30%</td></tr>
-                <tr><th scope="row">Чистовая отделка</th><td>20%</td></tr>
-                <tr><th scope="row">Приёмка</th><td>20%</td></tr>
-              </tbody>
-            </table>
+          <div class="payment-schedule__content">
+            <div class="payment-table-wrap">
+              <table class="payment-table">
+                <thead>
+                  <tr>
+                    <th scope="col">Этап</th>
+                    <th scope="col">Платёж</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr><th scope="row">Договор</th><td>30%</td></tr>
+                  <tr><th scope="row">Черновые работы</th><td>30%</td></tr>
+                  <tr><th scope="row">Чистовая отделка</th><td>20%</td></tr>
+                  <tr><th scope="row">Приёмка</th><td>20%</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <button class="payment-schedule__action cta-glint" type="button" data-quiz-open>Рассчитать свой бюджет</button>
           </div>
         </div>
       </section>
@@ -345,7 +417,7 @@
       <section class="site-cta" id="contacts">
         <h2>Готов прикинуть бюджет своей квартиры?</h2>
         <div class="site-cta__actions">
-          <button class="primary-action" type="button" data-quiz-open>Получить точный расчёт за минуту</button>
+          <button class="primary-action cta-glint" type="button" data-quiz-open>Получить точный расчёт за минуту</button>
           <a class="secondary-action secondary-action--light call-action" href="tel:+79182383059" data-call-button data-phone-label="+7 (918) 238-30-59">Позвонить</a>
         </div>
         <p class="site-cta__links">
@@ -356,7 +428,7 @@
     </main>
 
     <div class="mobile-sticky-cta">
-      <button type="button" data-quiz-open>Рассчитать ремонт</button>
+      <button class="cta-glint" type="button" data-quiz-open>Рассчитать ремонт</button>
       <a class="mobile-sticky-cta__call" href="tel:+79182383059" data-mobile-call aria-label="Позвонить">
         <svg viewBox="0 0 24 24" aria-hidden="true">
           <path d="M22 16.92v3a2 2 0 0 1-2.18 2A19.79 19.79 0 0 1 11.19 18.85a19.5 19.5 0 0 1-6-6A19.79 19.79 0 0 1 2.12 4.18 2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.12.9.33 1.78.62 2.63a2 2 0 0 1-.45 2.11L8.01 9.73a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.85.29 1.73.5 2.63.62A2 2 0 0 1 22 16.92Z" />
@@ -364,6 +436,21 @@
         <span class="sr-only">Позвонить</span>
       </a>
     </div>
+
+    <aside class="callback-prompt" id="callback-prompt" aria-hidden="true" aria-labelledby="callback-title">
+      <button class="callback-prompt__close" type="button" data-callback-close aria-label="Закрыть предложение обратного звонка">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18" /></svg>
+      </button>
+      <span class="callback-prompt__eyebrow">Остались вопросы?</span>
+      <strong id="callback-title">Перезвоним и всё объясним</strong>
+      <p>Оставь номер — спокойно разберём задачу и подскажем, с чего начать.</p>
+      <form class="callback-prompt__form" id="callback-form">
+        <label class="sr-only" for="callback-phone">Телефон</label>
+        <input id="callback-phone" name="phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="+7 (___) ___-__-__" required />
+        <button type="submit">Перезвони мне</button>
+      </form>
+      <p class="callback-prompt__status" id="callback-status" role="status" aria-live="polite"></p>
+    </aside>
 
     <div class="quiz-modal" id="quiz-modal" aria-hidden="true">
       <div class="quiz-backdrop" data-quiz-close></div>
@@ -384,7 +471,7 @@
         <div class="quiz-card" aria-live="polite">
           <div class="quiz-card__top">
             <div class="step-counter">
-              <span id="step-count">1 / 5</span>
+              <span id="step-count">1 / 4</span>
               <strong id="step-label">Старт</strong>
             </div>
             <div class="progress-dots" aria-label="Прогресс квиза">
@@ -392,7 +479,6 @@
               <button type="button" data-step-nav="1" aria-label="Шаг 2" disabled>2</button>
               <button type="button" data-step-nav="2" aria-label="Шаг 3" disabled>3</button>
               <button type="button" data-step-nav="3" aria-label="Шаг 4" disabled>4</button>
-              <button type="button" data-step-nav="4" aria-label="Шаг 5" disabled>5</button>
             </div>
           </div>
 
@@ -404,7 +490,7 @@
               </div>
               <div class="photo-choice-grid">
                 <button class="photo-choice is-selected" type="button" data-apartment="Новостройка">
-                  <img data-quiz-media data-src="v14/assets/web/quiz-newbuild.webp" alt="Квартира в новостройке до ремонта" decoding="async" />
+                  <img data-quiz-media data-src="v14/assets/web/quiz-newbuild.webp" alt="Квартира в новостройке до ремонта" width="640" height="1138" decoding="async" />
                   <span class="photo-watermark" aria-hidden="true">ВЕРХ</span>
                   <span>
                     <strong>Новостройка</strong>
@@ -412,11 +498,11 @@
                   </span>
                 </button>
                 <button class="photo-choice" type="button" data-apartment="Вторичка">
-                  <img data-quiz-media data-src="v14/assets/web/quiz-secondary.webp" alt="Вторичная квартира до ремонта" decoding="async" />
+                  <img data-quiz-media data-src="v14/assets/web/quiz-secondary.webp" alt="Вторичная квартира до ремонта" width="640" height="1138" decoding="async" />
                   <span class="photo-watermark" aria-hidden="true">ВЕРХ</span>
                   <span>
                     <strong>Вторичка</strong>
-                    <small>старая отделка: в расчёт добавим 100 000 ₽ на демонтаж</small>
+                    <small>старая отделка: объём демонтажа уточним после осмотра</small>
                   </span>
                 </button>
               </div>
@@ -464,38 +550,34 @@
 
             <article class="slide" data-step="2">
               <div class="slide-head">
-                <h2>Какой хочешь результат?</h2>
-                <p>Выбери, какой ремонт ближе: базовый, комфортный для жизни или индивидуальный.</p>
+                <h2>Какой результат хочешь?</h2>
+                <p>Выбери вариант, а дальше покажем, что уже входит в стоимость.</p>
               </div>
-              <div class="level-choice-grid">
-                <button class="level-choice" type="button" data-level="standard">
-                  <img data-quiz-media data-src="v14/assets/web/standard_01_msg184.webp" alt="Ремонт уровня Стандарт" decoding="async" />
+              <div class="level-choice-grid level-choice-grid--four">
+                <button class="level-choice" type="button" data-level="cosmetic">
+                  <img data-quiz-media data-src="assets/tariffs/finish-cosmetic.webp" alt="Квартира после косметического ремонта" width="1024" height="1536" decoding="async" />
                   <span class="photo-watermark" aria-hidden="true">ВЕРХ</span>
-                  <span><strong>Стандарт</strong><small>аккуратный ремонт · 20 000 ₽/м²</small></span>
+                  <span><strong>Косметический</strong><small>работы + материалы · от 6 000 ₽/м²</small></span>
+                </button>
+                <button class="level-choice" type="button" data-level="standard">
+                  <img data-quiz-media data-src="assets/tariffs/finish-standard.webp" alt="Ремонт уровня Стандарт" width="1024" height="1536" decoding="async" />
+                  <span class="photo-watermark" aria-hidden="true">ВЕРХ</span>
+                  <span><strong>Стандарт</strong><small>работы + материалы · 20 000 ₽/м²</small></span>
                 </button>
                 <button class="level-choice is-selected" type="button" data-level="comfort">
-                  <img data-quiz-media data-src="v14/assets/web/comfort_01_msg170.webp" alt="Ремонт уровня Комфорт" decoding="async" />
+                  <img data-quiz-media data-src="assets/tariffs/finish-comfort-aircon.webp" alt="Ремонт уровня Комфорт с кондиционером" width="1007" height="1562" decoding="async" />
                   <span class="photo-watermark" aria-hidden="true">ВЕРХ</span>
-                  <span><strong>Комфорт</strong><small>больше выбора для жизни · 25 000 ₽/м²</small></span>
+                  <span><strong>Комфорт</strong><small>работы + материалы · 25 000 ₽/м²</small></span>
                 </button>
                 <button class="level-choice" type="button" data-level="lux">
-                  <img data-quiz-media data-src="v14/assets/web/lux_01_msg178.webp" alt="Ремонт уровня Люкс" decoding="async" />
+                  <img data-quiz-media data-src="assets/tariffs/finish-lux.webp" alt="Ремонт уровня Люкс" width="985" height="1597" decoding="async" />
                   <span class="photo-watermark" aria-hidden="true">ВЕРХ</span>
-                  <span><strong>Люкс</strong><small>индивидуальное решение · от 29 000 ₽/м²</small></span>
+                  <span><strong>Люкс</strong><small>работы + материалы · от 29 000 ₽/м²</small></span>
                 </button>
               </div>
             </article>
 
             <article class="slide" data-step="3">
-              <div class="slide-head">
-                <h2>Заявка почти готова</h2>
-                <p>В выбранный вариант уже входит:</p>
-              </div>
-              <ul class="included-list" id="included-list"></ul>
-              <button class="sheet-primary" type="button" data-to-lead>Показать предварительный расчёт</button>
-            </article>
-
-            <article class="slide" data-step="4">
               <div class="lead-panel">
                 <div class="slide-head">
                   <h2 id="lead-title">Оставь телефон</h2>
@@ -538,6 +620,6 @@
       // Set to false to hide the Yandex Maps reviews block without deleting its markup.
       window.VERH_REVIEWS_WIDGET_ENABLED = true;
     </script>
-    <script src="script.js?v=20260721-2"></script>
+    <script src="script.js?v=20260725-main"></script>
   </body>
 </html>

@@ -5330,6 +5330,17 @@ body.show-sticky-cta:not(.modal-open) .mobile-sticky-cta__call svg {
   object-position: center;
 }
 
+/* These source photos are slightly narrower than 2:3, so cover removes side bars. */
+.tariff-card--featured .tariff-card__visual img {
+  object-fit: cover;
+  object-position: center 52%;
+}
+
+.tariff-card--bonus .tariff-card__visual img {
+  object-fit: cover;
+  object-position: center 52%;
+}
+
 .tariff-card__labels {
   position: absolute;
   top: 14px;
