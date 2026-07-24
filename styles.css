@@ -3889,6 +3889,38 @@ html.has-js .process-cta {
   animation: tariff-badge-shift 10s ease-in-out infinite;
 }
 
+.tariff-card__promo {
+  position: absolute;
+  top: 58px;
+  left: 14px;
+  z-index: 2;
+  display: inline-flex;
+  max-width: calc(100% - 28px);
+  border: 1px solid rgba(240, 198, 109, 0.88);
+  border-radius: 5px;
+  background: rgba(7, 7, 7, 0.82);
+  box-shadow: 0 10px 26px rgba(0, 0, 0, 0.28);
+  color: #ffe7b0;
+  padding: 10px 12px;
+  font-size: clamp(15px, 1.5vw, 19px);
+  font-weight: 750;
+  line-height: 1.04;
+  letter-spacing: 0;
+}
+
+.tariff-card__offer {
+  color: #f2ca7b !important;
+}
+
+.tariff-card__offer::before {
+  background: #f0c66d !important;
+}
+
+.tariff-card__offer strong {
+  color: #fff2cf;
+  font-weight: 750;
+}
+
 .tariff-card--featured .tariff-card__action {
   border-color: rgba(240, 198, 109, 0.9);
   background: rgba(240, 198, 109, 0.1);
@@ -3942,6 +3974,15 @@ html.has-js .process-cta {
   .tariff-card--featured .tariff-card__visual::before,
   .tariff-card__badge--popular {
     animation: none;
+  }
+}
+
+@media (max-width: 720px) {
+  .tariff-card__promo {
+    top: 52px;
+    left: 12px;
+    padding: 8px 10px;
+    font-size: 14px;
   }
 }
 
