@@ -4,6 +4,7 @@ const { randomUUID } = require("node:crypto");
 const { requestMax } = require("./max-client");
 
 const TARIFS = {
+  cosmetic: { title: "Косметический ремонт", pricePerMeter: 6000 },
   standard: { title: "Стандарт", pricePerMeter: 20000 },
   comfort: { title: "Комфорт", pricePerMeter: 25000 },
   lux: { title: "Люкс", pricePerMeter: 29000 },

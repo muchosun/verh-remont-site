@@ -78,6 +78,23 @@ test("validates the lead before attempting delivery", async () => {
   assert.equal(JSON.parse(result.body).status, "invalid_lead");
 });
 
+test("accepts the cosmetic repair scenario", async () => {
+  process.env.MAX_BOT_TOKEN = "test-token";
+  process.env.MAX_CHAT_ID = "987654";
+  const calls = [];
+  const testHandler = createHandler({ maxRequest: async (url, options) => {
+    calls.push({ url: String(url), options });
+    return { ok: true, status: 200 };
+  } });
+
+  const result = await testHandler(leadEvent({ ...validLead(), level: "cosmetic", area: 58 }));
+  const message = JSON.parse(calls[0].options.body).text;
+
+  assert.equal(result.statusCode, 201);
+  assert.match(message, /Результат: Косметический ремонт/);
+  assert.match(message, /Ориентир: 348\s?000 ₽/);
+});
+
 test("normalizes, recalculates and sends a lead to MAX", async () => {
   process.env.MAX_BOT_TOKEN = "test-token";
   process.env.MAX_CHAT_ID = "987654";
