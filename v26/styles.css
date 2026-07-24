@@ -4471,3 +4471,263 @@ html.has-js .process-cta {
     transition: none;
   }
 }
+
+/* v26.1: a four-level tariff grid and material selection preview */
+.tariff-grid--four {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.tariff-grid--four .tariff-card__visual {
+  aspect-ratio: 1 / 1.08;
+}
+
+.tariff-card--cosmetic {
+  border-color: rgba(240, 198, 109, 0.48);
+  background:
+    linear-gradient(145deg, rgba(240, 198, 109, 0.065), rgba(255, 248, 234, 0.012) 56%),
+    var(--surface);
+}
+
+.tariff-card__included {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  z-index: 3;
+  display: inline-flex;
+  align-items: center;
+  min-height: 32px;
+  border: 1px solid rgba(240, 198, 109, 0.68);
+  border-radius: 5px;
+  background: rgba(7, 7, 7, 0.8);
+  color: #ffe6a5;
+  padding: 6px 8px;
+  font-size: 9px;
+  font-weight: 750;
+  line-height: 1.08;
+  text-align: right;
+  text-transform: uppercase;
+}
+
+.tariff-card__badge--cosmetic {
+  border-color: rgba(240, 198, 109, 0.72);
+  background: rgba(240, 198, 109, 0.12);
+  color: #ffe2a0;
+}
+
+.tariff-card__visual > .photo-watermark {
+  top: auto;
+  right: 14px;
+  bottom: 14px;
+}
+
+.tariff-card__visual figcaption {
+  right: 66px;
+}
+
+.tariff-card--featured .tariff-card__promo {
+  top: 58px;
+  max-width: calc(100% - 28px);
+  font-size: 14px;
+}
+
+.materials {
+  display: block;
+  max-width: none;
+  margin: 0;
+  padding-top: 72px;
+  padding-bottom: 72px;
+}
+
+.materials__head {
+  display: flex;
+  max-width: 1180px;
+  margin: 0 auto 24px;
+}
+
+.materials__head > div {
+  max-width: 720px;
+}
+
+.materials .section-link {
+  align-self: end;
+}
+
+.materials .materials-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+  max-width: 1180px;
+  border: 0;
+  margin: 0 auto;
+  background: transparent;
+}
+
+.material-card {
+  position: relative;
+  min-height: 0;
+  overflow: hidden;
+  border: 1px solid rgba(255, 248, 234, 0.16);
+  border-radius: 6px;
+  background: #11110f;
+  aspect-ratio: 4 / 3;
+}
+
+.material-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(0deg, rgba(7, 7, 7, 0.92), transparent 62%);
+  pointer-events: none;
+}
+
+.material-card img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.materials .materials-grid .material-card > div {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 1;
+  display: grid;
+  min-height: 0;
+  gap: 6px;
+  border: 0;
+  padding: 18px;
+  background: transparent;
+}
+
+.materials .materials-grid .material-card strong {
+  color: #fff8ea;
+  font-size: 22px;
+  font-weight: 750;
+  line-height: 1.05;
+}
+
+.materials .materials-grid .material-card span {
+  color: rgba(255, 248, 234, 0.72);
+  font-size: 13px;
+  line-height: 1.35;
+}
+
+.materials-note {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) minmax(260px, 0.8fr);
+  align-items: center;
+  gap: 22px;
+  max-width: 1180px;
+  border-top: 1px solid rgba(255, 248, 234, 0.16);
+  margin: 24px auto 0;
+  padding: 22px 0 0;
+}
+
+.materials-note > span {
+  color: var(--gold);
+  font-size: 12px;
+  font-weight: 750;
+  line-height: 1.2;
+  text-transform: uppercase;
+}
+
+.materials-note > strong {
+  color: #fff8ea;
+  font-size: clamp(20px, 2.2vw, 28px);
+  font-weight: 750;
+  line-height: 1.08;
+}
+
+.materials .materials-note p {
+  margin: 0;
+  color: rgba(255, 248, 234, 0.66);
+  font-size: 13px;
+  line-height: 1.42;
+}
+
+.level-choice img {
+  object-position: center top;
+}
+
+.level-choice[data-level="cosmetic"] img {
+  object-position: center 62%;
+}
+
+@media (max-width: 1180px) {
+  .tariff-grid--four {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 720px) {
+  .tariff-grid--four {
+    grid-template-columns: 1fr;
+  }
+
+  .tariff-grid--four .tariff-card__visual {
+    aspect-ratio: 16 / 10;
+  }
+
+  .tariff-card__included {
+    top: 12px;
+    right: 12px;
+    min-height: 30px;
+    padding: 5px 7px;
+    font-size: 8px;
+  }
+
+  .tariff-card__visual > .photo-watermark {
+    right: 12px;
+    bottom: 12px;
+  }
+
+  .tariff-card__visual figcaption {
+    right: 60px;
+    bottom: 12px;
+    left: 12px;
+  }
+
+  .tariff-card--featured .tariff-card__promo {
+    top: 52px;
+    left: 12px;
+  }
+
+  .materials {
+    padding-top: 54px;
+    padding-bottom: 54px;
+  }
+
+  .materials__head {
+    display: grid;
+    gap: 18px;
+    margin-bottom: 18px;
+  }
+
+  .materials .section-link {
+    align-self: start;
+  }
+
+  .materials .materials-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .material-card {
+    aspect-ratio: 16 / 10;
+  }
+
+  .materials .materials-grid .material-card > div {
+    padding: 16px;
+  }
+
+  .materials-note {
+    grid-template-columns: 1fr;
+    gap: 9px;
+    margin-top: 18px;
+    padding-top: 18px;
+  }
+
+  .materials .materials-note p {
+    font-size: 13px;
+  }
+}
