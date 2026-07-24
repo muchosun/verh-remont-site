@@ -46,7 +46,7 @@ function parseBody(request) {
   }
 
   // This also makes the handler convenient to test with a direct JSON payload.
-  if (request && typeof request === "object" && "apartment" in request) return request;
+  if (request && typeof request === "object" && ("apartment" in request || "kind" in request)) return request;
   throw new Error("Request body is missing");
 }
 
@@ -136,6 +136,22 @@ function validateLead(payload, origin) {
     return { ok: true, honeypot: true };
   }
 
+  const kind = String(payload.kind || "quiz").trim().toLowerCase();
+  if (kind === "callback") {
+    const phone = formatPhone(payload.phone);
+    if (!phone) return { ok: false, message: "Укажи корректный номер телефона." };
+    return {
+      ok: true,
+      lead: {
+        id: randomUUID(),
+        kind,
+        phone,
+        source: normalizeSource(payload.source, origin),
+        receivedAt: new Date().toISOString(),
+      },
+    };
+  }
+
   const apartment = String(payload.apartment || "").trim();
   const level = String(payload.level || "").trim().toLowerCase();
   const area = parseArea(payload.area);
@@ -154,6 +170,7 @@ function validateLead(payload, origin) {
     ok: true,
     lead: {
       id: randomUUID(),
+      kind: "quiz",
       apartment,
       area,
       areaLabel: String(payload.areaLabel || "").trim().slice(0, 40),
@@ -171,15 +188,21 @@ function validateLead(payload, origin) {
 
 function formatMaxMessage(lead) {
   const mentions = formatMentions();
-  const lines = [
-    "Новая заявка с сайта ВЕРХ ремонт",
-    `Заявка: #${lead.id.slice(0, 8)}`,
-    `Телефон: ${lead.phone}`,
-    `Квартира: ${lead.apartment}`,
-    `Площадь: ${formatArea(lead.area)}${lead.areaLabel ? ` (${lead.areaLabel})` : ""}`,
-    `Результат: ${lead.levelTitle}`,
-    `Ориентир: ${formatMoney(lead.preliminaryEstimate)}`,
-  ];
+  const lines = lead.kind === "callback"
+    ? [
+      "Запрос обратного звонка с сайта ВЕРХ ремонт",
+      `Заявка: #${lead.id.slice(0, 8)}`,
+      `Телефон: ${lead.phone}`,
+    ]
+    : [
+      "Новая заявка с сайта ВЕРХ ремонт",
+      `Заявка: #${lead.id.slice(0, 8)}`,
+      `Телефон: ${lead.phone}`,
+      `Квартира: ${lead.apartment}`,
+      `Площадь: ${formatArea(lead.area)}${lead.areaLabel ? ` (${lead.areaLabel})` : ""}`,
+      `Результат: ${lead.levelTitle}`,
+      `Ориентир: ${formatMoney(lead.preliminaryEstimate)}`,
+    ];
 
   if (lead.secondarySurcharge) {
     lines.push(`Включён демонтаж для вторички: ${formatMoney(lead.secondarySurcharge)}`);

@@ -95,6 +95,28 @@ test("accepts the cosmetic repair scenario", async () => {
   assert.match(message, /Ориентир: 348\s?000 ₽/);
 });
 
+test("accepts a callback request with phone only", async () => {
+  process.env.MAX_BOT_TOKEN = "test-token";
+  process.env.MAX_CHAT_ID = "987654";
+  const calls = [];
+  const testHandler = createHandler({ maxRequest: async (url, options) => {
+    calls.push({ url: String(url), options });
+    return { ok: true, status: 200 };
+  } });
+
+  const result = await testHandler(leadEvent({
+    kind: "callback",
+    phone: "+7 (999) 123-45-67",
+    source: "https://verhremont.ru/v26/",
+  }));
+  const message = JSON.parse(calls[0].options.body).text;
+
+  assert.equal(result.statusCode, 201);
+  assert.match(message, /Запрос обратного звонка/);
+  assert.match(message, /Телефон: \+7 \(999\) 123-45-67/);
+  assert.doesNotMatch(message, /Квартира:/);
+});
+
 test("normalizes, recalculates and sends a lead to MAX", async () => {
   process.env.MAX_BOT_TOKEN = "test-token";
   process.env.MAX_CHAT_ID = "987654";

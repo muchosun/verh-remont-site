@@ -51,12 +51,15 @@ const tariffs = {
 
 const SECONDARY_PRELIMINARY_SURCHARGE = 100000;
 const leadEndpoint = typeof window.VERH_LEAD_ENDPOINT === "string" ? window.VERH_LEAD_ENDPOINT.trim() : "";
+const callbackPromptDelay = ["127.0.0.1", "localhost"].includes(window.location.hostname)
+  && new URLSearchParams(window.location.search).has("callback-test")
+  ? 800
+  : 60000;
 
 const stepLabels = [
   "Старт",
   "Площадь",
   "Отделка",
-  "Что входит",
   "Телефон",
 ];
 
@@ -86,7 +89,6 @@ const summaryLine = document.querySelector("#summary-line");
 const summaryEstimateLabel = document.querySelector("#summary-estimate-label");
 const summaryEstimate = document.querySelector("#summary-estimate");
 const areaInput = document.querySelector("#area-input");
-const includedList = document.querySelector("#included-list");
 const phoneInput = document.querySelector("#phone-input");
 const leadPanel = document.querySelector(".lead-panel");
 const leadTitle = document.querySelector("#lead-title");
@@ -103,10 +105,17 @@ const callButtons = [...document.querySelectorAll("[data-call-button]")];
 const mobileCallButton = document.querySelector("[data-mobile-call]");
 const yandexReviewsSection = document.querySelector("[data-yandex-reviews]");
 const yandexReviewsFrame = document.querySelector("[data-yandex-reviews-frame]");
+const callbackPrompt = document.querySelector("#callback-prompt");
+const callbackForm = document.querySelector("#callback-form");
+const callbackPhone = document.querySelector("#callback-phone");
+const callbackStatus = document.querySelector("#callback-status");
+const callbackCloseButton = document.querySelector("[data-callback-close]");
 
 let lastQuizTrigger = null;
 let timerId = null;
 let quizMediaPreloaded = false;
+let callbackTimerId = null;
+let callbackSuppressed = false;
 
 function initTariffGalleries() {
   const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -574,6 +583,8 @@ function preloadQuizMediaWhenIdle() {
 }
 
 function openQuiz(trigger) {
+  callbackSuppressed = true;
+  hideCallbackPrompt(true);
   lastQuizTrigger = trigger || document.activeElement;
   prepareQuizMedia();
   quizModal.classList.add("is-open");
@@ -623,7 +634,7 @@ function setStep(nextStep) {
   stepCount.textContent = `${step + 1} / ${slides.length}`;
   stepLabel.textContent = stepLabels[step];
 
-  if (step === 4) {
+  if (step === 3) {
     startTimer();
     if (!state.leadSubmitted) {
       setTimeout(() => phoneInput.focus(), 120);
@@ -641,18 +652,7 @@ function renderSummary() {
     return;
   }
   summaryEstimateLabel.textContent = "Предварительный расчёт";
-  summaryEstimate.textContent = state.step === 4 ? "после номера" : "после телефона";
-}
-
-function renderIncluded() {
-  includedList.innerHTML = getTariff().included
-    .map((item) => `
-      <li>
-        <span aria-hidden="true">✓</span>
-        <strong>${item}</strong>
-      </li>
-    `)
-    .join("");
+  summaryEstimate.textContent = state.step === 3 ? "после номера" : "после телефона";
 }
 
 function renderSelections() {
@@ -672,7 +672,6 @@ function renderSelections() {
 function render() {
   renderSelections();
   renderSummary();
-  renderIncluded();
 }
 
 function normalizeArea(value) {
@@ -771,6 +770,49 @@ function startTimer() {
   }, 1000);
 }
 
+function hasDismissedCallback() {
+  try {
+    return window.sessionStorage.getItem("verh-callback-dismissed") === "1";
+  } catch {
+    return false;
+  }
+}
+
+function rememberCallbackDismissal() {
+  try {
+    window.sessionStorage.setItem("verh-callback-dismissed", "1");
+  } catch {
+    // The prompt still closes when storage is unavailable.
+  }
+}
+
+function hideCallbackPrompt(remember = false) {
+  if (!callbackPrompt) return;
+  callbackPrompt.classList.remove("is-visible");
+  callbackPrompt.setAttribute("aria-hidden", "true");
+  if (remember) rememberCallbackDismissal();
+}
+
+function showCallbackPrompt() {
+  if (!callbackPrompt || callbackSuppressed || hasDismissedCallback()) return;
+  callbackPrompt.classList.add("is-visible");
+  callbackPrompt.setAttribute("aria-hidden", "false");
+  trackMetricGoal("callback_prompt_shown");
+}
+
+function scheduleCallbackPrompt(delay = 60000) {
+  if (!callbackPrompt || callbackSuppressed || hasDismissedCallback()) return;
+  if (callbackTimerId) window.clearTimeout(callbackTimerId);
+  callbackTimerId = window.setTimeout(() => {
+    callbackTimerId = null;
+    if (document.visibilityState !== "visible" || quizModal.classList.contains("is-open")) {
+      scheduleCallbackPrompt(15000);
+      return;
+    }
+    showCallbackPrompt();
+  }, delay);
+}
+
 quizOpenButtons.forEach((button) => {
   button.addEventListener("pointerenter", prepareQuizMedia, { once: true });
   button.addEventListener("focus", prepareQuizMedia, { once: true });
@@ -856,10 +898,6 @@ document.querySelectorAll("[data-level]").forEach((button) => {
   });
 });
 
-document.querySelector("[data-to-lead]").addEventListener("click", () => {
-  setStep(4);
-});
-
 progressButtons.forEach((button) => {
   button.addEventListener("click", () => {
     setStep(Number(button.dataset.stepNav));
@@ -872,6 +910,56 @@ phoneInput.addEventListener("focus", () => {
 
 phoneInput.addEventListener("input", () => {
   phoneInput.value = formatPhone(phoneInput.value);
+});
+
+callbackCloseButton?.addEventListener("click", () => {
+  hideCallbackPrompt(true);
+  trackMetricGoal("callback_prompt_dismissed");
+});
+
+callbackPhone?.addEventListener("focus", () => {
+  if (!callbackPhone.value) callbackPhone.value = "+7 ";
+});
+
+callbackPhone?.addEventListener("input", () => {
+  callbackPhone.value = formatPhone(callbackPhone.value);
+  callbackPhone.setCustomValidity("");
+});
+
+callbackForm?.addEventListener("submit", async (event) => {
+  event.preventDefault();
+  const digits = callbackPhone.value.replace(/\D/g, "");
+  if (digits.length < 11) {
+    callbackPhone.setCustomValidity("Укажи номер, чтобы мы могли перезвонить.");
+    callbackPhone.reportValidity();
+    return;
+  }
+
+  callbackPhone.setCustomValidity("");
+  const submitButton = callbackForm.querySelector("button[type='submit']");
+  submitButton.disabled = true;
+  submitButton.textContent = "Отправляю…";
+  callbackStatus.textContent = "";
+
+  try {
+    await sendLeadToMax({
+      kind: "callback",
+      phone: callbackPhone.value.trim(),
+      source: window.location.href,
+      submittedAt: new Date().toISOString(),
+    });
+    callbackForm.hidden = true;
+    callbackStatus.textContent = "Готово. Перезвоним по этому номеру.";
+    callbackStatus.classList.add("is-success");
+    callbackSuppressed = true;
+    rememberCallbackDismissal();
+    trackMetricGoal("callback_requested");
+  } catch {
+    callbackStatus.textContent = "Не получилось отправить номер. Попробуй ещё раз или позвони нам с сайта.";
+    callbackStatus.classList.remove("is-success");
+    submitButton.disabled = false;
+    submitButton.textContent = "Перезвони мне";
+  }
 });
 
 leadForm.addEventListener("submit", async (event) => {
@@ -946,3 +1034,4 @@ initYandexReviews();
 setStep(0);
 updateStickyCta();
 preloadQuizMediaWhenIdle();
+scheduleCallbackPrompt(callbackPromptDelay);
