@@ -4543,9 +4543,15 @@ html.has-js .process-cta {
 }
 
 .tariff-card--featured .tariff-card__promo {
-  top: 82px;
+  top: auto;
+  bottom: 14px;
   max-width: calc(100% - 28px);
   font-size: 14px;
+}
+
+.tariff-card--featured .tariff-card__included {
+  right: auto;
+  left: 14px;
 }
 
 .materials {
@@ -4719,7 +4725,13 @@ html.has-js .process-cta {
   }
 
   .tariff-card--featured .tariff-card__promo {
-    top: 70px;
+    top: auto;
+    bottom: 12px;
+    left: 12px;
+  }
+
+  .tariff-card--featured .tariff-card__included {
+    right: auto;
     left: 12px;
   }
 
