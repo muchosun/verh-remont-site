@@ -106,6 +106,7 @@ const yandexReviewsFrame = document.querySelector("[data-yandex-reviews-frame]")
 
 let lastQuizTrigger = null;
 let timerId = null;
+let quizMediaPreloaded = false;
 
 function initTariffGalleries() {
   const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -554,10 +555,22 @@ function resetLeadResult() {
 }
 
 function prepareQuizMedia() {
+  if (quizMediaPreloaded) return;
   document.querySelectorAll("img[data-quiz-media][data-src]").forEach((image) => {
     image.src = image.dataset.src;
     image.removeAttribute("data-src");
   });
+  quizMediaPreloaded = true;
+}
+
+function preloadQuizMediaWhenIdle() {
+  if (navigator.connection?.saveData) return;
+  const preload = () => prepareQuizMedia();
+  if ("requestIdleCallback" in window) {
+    window.requestIdleCallback(preload, { timeout: 1800 });
+    return;
+  }
+  window.setTimeout(preload, 900);
 }
 
 function openQuiz(trigger) {
@@ -762,7 +775,12 @@ quizOpenButtons.forEach((button) => {
   button.addEventListener("pointerenter", prepareQuizMedia, { once: true });
   button.addEventListener("focus", prepareQuizMedia, { once: true });
   button.addEventListener("touchstart", prepareQuizMedia, { once: true, passive: true });
-  button.addEventListener("click", () => openQuiz(button));
+  button.addEventListener("click", () => {
+    resetLeadResult();
+    state.maxStep = 0;
+    setStep(0);
+    openQuiz(button);
+  });
 });
 
 document.querySelectorAll("[data-tariff-open]").forEach((button) => {
@@ -770,7 +788,8 @@ document.querySelectorAll("[data-tariff-open]").forEach((button) => {
     state.level = button.dataset.tariffOpen;
     resetLeadResult();
     render();
-    setStep(1);
+    state.maxStep = 0;
+    setStep(0);
     openQuiz(button);
   });
 });
@@ -926,3 +945,4 @@ initMobileCallAction();
 initYandexReviews();
 setStep(0);
 updateStickyCta();
+preloadQuizMediaWhenIdle();
