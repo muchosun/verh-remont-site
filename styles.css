@@ -5412,3 +5412,11 @@ body.show-sticky-cta:not(.modal-open) .mobile-sticky-cta__call svg {
     max-width: 44%;
   }
 }
+
+/* v26.9: keep every tariff price as one readable line. */
+.tariff-card__body > strong {
+  min-height: 1.12em;
+  font-size: clamp(24px, 2vw, 30px);
+  line-height: 1.12;
+  white-space: nowrap;
+}
