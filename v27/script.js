@@ -54,7 +54,7 @@ const leadEndpoint = typeof window.VERH_LEAD_ENDPOINT === "string" ? window.VERH
 const callbackPromptDelay = ["127.0.0.1", "localhost"].includes(window.location.hostname)
   && new URLSearchParams(window.location.search).has("callback-test")
   ? 800
-  : 60000;
+  : 24000;
 
 const stepLabels = [
   "Старт",
@@ -800,7 +800,7 @@ function showCallbackPrompt() {
   trackMetricGoal("callback_prompt_shown");
 }
 
-function scheduleCallbackPrompt(delay = 60000) {
+function scheduleCallbackPrompt(delay = 24000) {
   if (!callbackPrompt || callbackSuppressed || hasDismissedCallback()) return;
   if (callbackTimerId) window.clearTimeout(callbackTimerId);
   callbackTimerId = window.setTimeout(() => {

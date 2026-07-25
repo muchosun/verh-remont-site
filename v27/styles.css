@@ -5886,3 +5886,113 @@ html.has-js .process-list [data-process-step].is-visible {
     background: linear-gradient(180deg, rgba(255, 251, 244, 0.9), rgba(255, 251, 244, 0.44) 52%, rgba(255, 251, 244, 0.18));
   }
 }
+
+/* v27.1: contrast pass for the light preview. */
+.section-kicker,
+.materials-supply__content > span,
+.materials-note > span,
+.payment-schedule__head span {
+  color: #895315;
+}
+
+.materials-supply {
+  border-top-color: rgba(49, 37, 26, 0.14);
+  border-bottom-color: rgba(49, 37, 26, 0.14);
+}
+
+.materials-supply__content h3,
+.materials-note > strong {
+  color: #211a14;
+}
+
+.materials-supply__content p,
+.materials .materials-note p {
+  color: #655b51;
+}
+
+.materials-note {
+  border-top-color: rgba(49, 37, 26, 0.14);
+}
+
+.payment-table-wrap {
+  border-color: rgba(49, 37, 26, 0.16);
+  background: #fffdf9;
+}
+
+.payment-table thead th {
+  border-bottom-color: rgba(49, 37, 26, 0.14);
+  background: #f2e9dc;
+  color: #655b51;
+}
+
+.payment-table tbody tr + tr {
+  border-top-color: rgba(49, 37, 26, 0.11);
+}
+
+.payment-table tbody tr:nth-child(even) {
+  background: rgba(183, 122, 34, 0.045);
+}
+
+.payment-table tbody th {
+  color: #211a14;
+}
+
+.payment-table tbody td {
+  color: #895315;
+}
+
+.project-gallery__filter {
+  border-color: rgba(49, 37, 26, 0.2);
+  background: rgba(255, 253, 249, 0.82);
+  color: #3f372f;
+}
+
+.project-gallery__filter span {
+  color: #71675d;
+}
+
+.project-gallery__filter:hover,
+.project-gallery__filter:focus-visible {
+  border-color: #a86c1d;
+  background: #fffdf9;
+  color: #211a14;
+}
+
+.project-gallery__filter.is-active {
+  border-color: #b5761e;
+  background: #e5b458;
+  color: #211a14;
+}
+
+.project-gallery__filter.is-active span {
+  color: #57411f;
+}
+
+.project-gallery__count {
+  color: #895315;
+}
+
+.tariff-card__promo {
+  color: #fff8ed !important;
+}
+
+.tariff-card--featured .tariff-card__promo {
+  border-color: rgba(66, 43, 14, 0.28);
+  background: #e5b458;
+  color: #211a14 !important;
+  text-shadow: none;
+}
+
+.site-cta p {
+  color: #ded4c8;
+}
+
+.site-cta__links a {
+  color: #f3cc7d;
+}
+
+@media (max-width: 720px) {
+  .site-header {
+    background: rgba(255, 253, 249, 0.98);
+  }
+}
