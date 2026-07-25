@@ -1,5 +1,68 @@
 document.documentElement.classList.add("has-js");
 
+const themeToggle = document.querySelector("[data-theme-toggle]");
+const lightThemeStylesheet = document.querySelector("#site-theme-stylesheet");
+const darkThemeStylesheet = document.querySelector("#site-theme-dark-stylesheet");
+const themeColorMeta = document.querySelector('meta[name="theme-color"]');
+
+function setTheme(theme, { persist = false, track = false } = {}) {
+  if (theme !== "light" && theme !== "dark") return;
+
+  const isDark = theme === "dark";
+  const root = document.documentElement;
+  root.dataset.theme = theme;
+  root.dataset.themeSource = persist ? "manual" : root.dataset.themeSource || "default";
+  root.style.colorScheme = theme;
+  window.VERH_THEME = theme;
+
+  const nextLightMedia = isDark ? "not all" : "all";
+  const nextDarkMedia = isDark ? "all" : "not all";
+  if (
+    lightThemeStylesheet &&
+    darkThemeStylesheet &&
+    (lightThemeStylesheet.media !== nextLightMedia || darkThemeStylesheet.media !== nextDarkMedia)
+  ) {
+    const scrollPosition = { x: window.scrollX, y: window.scrollY };
+    root.classList.add("is-theme-switching");
+    themeToggle?.blur();
+    lightThemeStylesheet.media = nextLightMedia;
+    darkThemeStylesheet.media = nextDarkMedia;
+    requestAnimationFrame(() => {
+      window.scrollTo(scrollPosition.x, scrollPosition.y);
+      requestAnimationFrame(() => {
+        window.scrollTo(scrollPosition.x, scrollPosition.y);
+        root.classList.remove("is-theme-switching");
+      });
+    });
+  }
+  if (themeColorMeta) themeColorMeta.content = isDark ? "#070707" : "#f7f2ea";
+
+  if (themeToggle) {
+    const actionLabel = isDark ? "Включить светлую тему" : "Включить тёмную тему";
+    themeToggle.setAttribute("aria-label", actionLabel);
+    themeToggle.setAttribute("title", actionLabel);
+    themeToggle.setAttribute("aria-pressed", String(isDark));
+  }
+
+  if (persist) {
+    try {
+      sessionStorage.setItem("verh-theme", theme);
+    } catch (error) {
+      // The selected theme still applies when storage is unavailable.
+    }
+  }
+
+  if (track && typeof window.ym === "function") {
+    window.ym(110859289, "reachGoal", "theme_switch", { theme });
+  }
+}
+
+setTheme(window.VERH_THEME === "dark" ? "dark" : "light");
+themeToggle?.addEventListener("click", () => {
+  const nextTheme = document.documentElement.dataset.theme === "dark" ? "light" : "dark";
+  setTheme(nextTheme, { persist: true, track: true });
+});
+
 const tariffs = {
   cosmetic: {
     title: "Косметический ремонт",
