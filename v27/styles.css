@@ -854,7 +854,7 @@ svg {
 
 .reviews-section__widget {
   width: min(100%, 720px);
-  height: clamp(700px, 82vh, 820px);
+  height: 1240px;
   overflow: hidden;
   border: 1px solid rgba(240, 198, 109, 0.34);
   border-radius: 6px;
@@ -1533,7 +1533,7 @@ input:focus-visible {
 
   .reviews-section__widget {
     width: 100%;
-    height: clamp(680px, 85svh, 760px);
+    height: 1320px;
   }
 
   .reviews-section__widget iframe {
