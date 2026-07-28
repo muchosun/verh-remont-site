@@ -7,7 +7,7 @@
     <title>ВЕРХ - адаптивная тема v27</title>
     <meta
       name="description"
-      content="ВЕРХ: косметический ремонт от 6 000 ₽/м² или ремонт квартиры под ключ в Краснодаре. Получи ориентир стоимости для своей квартиры."
+      content="ВЕРХ: косметический ремонт от 6 000 ₽/м². Материалы для ремонта Стандарт, Комфорт и Люкс — от 10 000 ₽/м², работы считаются отдельно."
     />
     <meta name="robots" content="noindex, nofollow" />
     <meta name="theme-color" content="#f7f2ea" />
@@ -117,7 +117,7 @@
       })();
     </script>
     <noscript><link rel="stylesheet" href="styles.css?v=20260725-27c" /></noscript>
-    <link rel="stylesheet" href="theme-switch.css?v=20260725-27b" />
+    <link rel="stylesheet" href="theme-switch.css?v=20260728-prices" />
     <script type="application/ld+json">
       {
         "@context": "https://schema.org",
@@ -136,9 +136,9 @@
             "url": "https://verhremont.ru/",
             "image": "https://verhremont.ru/assets/yandex-business-cover-v2.jpg",
             "logo": "https://verhremont.ru/assets/favicon-verh.png",
-            "description": "Ремонт квартир под ключ в Краснодаре. В стоимость входят работы и материалы.",
+            "description": "Ремонт квартир под ключ в Краснодаре. Материалы и работы считаются отдельно и фиксируются в смете.",
             "telephone": "+79182383059",
-            "priceRange": "от 20 000 ₽/м²",
+            "priceRange": "материалы 10 000–19 000 ₽/м²; работы от 10 000 ₽/м²",
             "areaServed": {
               "@type": "City",
               "name": "Краснодар"
@@ -161,9 +161,10 @@
                   },
                   "priceSpecification": {
                     "@type": "UnitPriceSpecification",
-                    "price": "20000",
+                    "price": "10000",
                     "priceCurrency": "RUB",
-                    "unitText": "м²"
+                    "unitText": "м²",
+                    "description": "Стоимость материалов. Работы — 10 000 ₽/м²."
                   }
                 },
                 {
@@ -175,9 +176,10 @@
                   },
                   "priceSpecification": {
                     "@type": "UnitPriceSpecification",
-                    "price": "25000",
+                    "price": "15000",
                     "priceCurrency": "RUB",
-                    "unitText": "м²"
+                    "unitText": "м²",
+                    "description": "Стоимость материалов. Работы — 10 000 ₽/м²."
                   }
                 },
                 {
@@ -189,9 +191,10 @@
                   },
                   "priceSpecification": {
                     "@type": "UnitPriceSpecification",
-                    "price": "29000",
+                    "price": "19000",
                     "priceCurrency": "RUB",
-                    "unitText": "м²"
+                    "unitText": "м²",
+                    "description": "Стоимость материалов. Работы — 10 000 ₽/м²."
                   }
                 }
               ]
@@ -264,10 +267,10 @@
         </div>
         <div class="hero__content">
           <h1>Ремонт квартир под ключ в Краснодаре</h1>
-          <p>Сделаем ремонт под ключ: работы и материалы уже входят в стоимость.</p>
+          <p>Материалы для ремонта — от 10 000 ₽/м². Работы считаем отдельно и фиксируем в смете.</p>
           <div class="hero-badges" aria-label="Ключевые условия">
             <span class="hero-price"><span class="hero-price__label">Косметический</span><strong>от&nbsp;6&nbsp;000&nbsp;₽/м²</strong></span>
-            <span class="hero-price"><span class="hero-price__label">Под ключ</span><strong>от&nbsp;20&nbsp;000&nbsp;₽/м²</strong></span>
+            <span class="hero-price"><span class="hero-price__label">Материалы</span><strong>от&nbsp;10&nbsp;000&nbsp;₽/м²</strong></span>
             <ul class="hero-conditions">
               <li>Цена, сроки и порядок оплаты — в договоре.</li>
               <li>Гарантия на ремонт — 3 года.</li>
@@ -294,13 +297,14 @@
               <img src="../assets/tariffs/finish-cosmetic.webp" alt="Квартира после косметического ремонта" width="1024" height="1536" loading="lazy" decoding="async" />
               <div class="tariff-card__labels">
                 <span class="tariff-card__badge tariff-card__badge--cosmetic">Под ключ</span>
-                <span class="tariff-card__included"><small>В стоимость уже входят</small><strong>Работы + материалы</strong></span>
+                <span class="tariff-card__included"><small>Состав ремонта</small><strong>Работы + материалы</strong></span>
               </div>
               <span class="photo-watermark" aria-hidden="true">ВЕРХ</span>
             </figure>
             <div class="tariff-card__body">
               <h3>Косметический</h3>
               <strong>от 6 000 ₽/м²</strong>
+              <p class="tariff-card__price-note"><span>работы + материалы</span><span>в базовом объёме</span></p>
               <p class="tariff-card__composition">Освежим квартиру, когда капитальный ремонт пока не нужен.</p>
               <ul class="tariff-card__list">
                 <li>Снимем старые покрытия и подготовим поверхности там, где это нужно.</li>
@@ -315,16 +319,17 @@
               <img src="../assets/tariffs/finish-standard.webp" alt="Визуальный ориентир ремонта уровня Стандарт" width="1024" height="1536" loading="lazy" decoding="async" />
               <div class="tariff-card__labels">
                 <span class="tariff-card__badge tariff-card__badge--base">Под ключ</span>
-                <span class="tariff-card__included"><small>В стоимость уже входят</small><strong>Работы + материалы</strong></span>
+                <span class="tariff-card__included"><small>Состав сметы</small><strong>Материалы + работы</strong></span>
               </div>
               <span class="photo-watermark" aria-hidden="true">ВЕРХ</span>
             </figure>
             <div class="tariff-card__body">
               <h3>Стандарт</h3>
-              <strong>20 000 ₽/м²</strong>
+              <strong>10 000 ₽/м²</strong>
+              <p class="tariff-card__price-note"><span>материалы</span><span>+ работы 10 000 ₽/м²</span></p>
               <p class="tariff-card__composition">Сделаем квартиру готовой к заезду без отдельной закупки материалов.</p>
               <ul class="tariff-card__list">
-                <li>До старта составим план работ и подберём материалы. Они уже входят в стоимость.</li>
+                <li>До старта составим план и отдельно зафиксируем материалы и работы в смете.</li>
                 <li>Подготовим стены, пол и потолок, затем выполним плитку и чистовую отделку.</li>
                 <li>Установим межкомнатные двери, сантехнику и свет, предусмотренные тарифом.</li>
               </ul>
@@ -336,7 +341,7 @@
               <img src="../assets/tariffs/finish-comfort-aircon.webp" alt="Ремонт уровня Комфорт с настенным кондиционером в готовой квартире" width="1007" height="1562" loading="lazy" decoding="async" />
               <div class="tariff-card__labels">
                 <span class="tariff-card__badge tariff-card__badge--popular">Чаще выбирают</span>
-                <span class="tariff-card__included"><small>В стоимость уже входят</small><strong>Работы + материалы</strong></span>
+                <span class="tariff-card__included"><small>Состав сметы</small><strong>Материалы + работы</strong></span>
               </div>
               <span class="tariff-card__promo" aria-label="Акция: кондиционер в подарок">
                 <strong>Кондиционер<br />в подарок</strong>
@@ -345,10 +350,11 @@
             </figure>
             <div class="tariff-card__body">
               <h3>Комфорт</h3>
-              <strong>25 000 ₽/м²</strong>
+              <strong>15 000 ₽/м²</strong>
+              <p class="tariff-card__price-note"><span>материалы</span><span>+ работы 10 000 ₽/м²</span></p>
               <p class="tariff-card__composition">Больше выбора в отделке, свете и электрике.</p>
               <ul class="tariff-card__list">
-                <li>До старта согласуем план и материалы из расширенной комплектации. Они уже входят в стоимость.</li>
+                <li>До старта согласуем расширенную комплектацию и отдельно зафиксируем работы в смете.</li>
                 <li>Подготовим поверхности и выполним плиточные, малярные и напольные работы.</li>
                 <li>Установим двери, сантехнику и свет; добавим нужные розетки и выводы.</li>
                 <li class="tariff-card__offer"><strong>Кондиционер в подарок</strong> при заказе ремонта от 50 м².</li>
@@ -361,13 +367,14 @@
               <img src="../assets/tariffs/finish-lux.webp" alt="Визуальный ориентир ремонта уровня Люкс" width="985" height="1597" loading="lazy" decoding="async" />
               <div class="tariff-card__labels">
                 <span class="tariff-card__badge tariff-card__badge--bonus">Дизайн в подарок</span>
-                <span class="tariff-card__included"><small>В стоимость уже входят</small><strong>Работы + материалы</strong></span>
+                <span class="tariff-card__included"><small>Состав сметы</small><strong>Материалы + работы</strong></span>
               </div>
               <span class="photo-watermark" aria-hidden="true">ВЕРХ</span>
             </figure>
             <div class="tariff-card__body">
               <h3>Люкс</h3>
-              <strong>от 29 000 ₽/м²</strong>
+              <strong>19 000 ₽/м²</strong>
+              <p class="tariff-card__price-note"><span>материалы</span><span>+ работы 10 000 ₽/м²</span></p>
               <p class="tariff-card__composition">Ремонт по проекту, который учитывает твою планировку и привычки.</p>
               <ul class="tariff-card__list">
                 <li>Подготовим дизайн-проект и до старта согласуем материалы и свет.</li>
@@ -413,9 +420,9 @@
           </div>
         </div>
         <div class="materials-note">
-          <span>Уже в стоимости</span>
-          <strong>Работы и материалы входят в цену</strong>
-          <p>После замера назовём точную сумму и закрепим её в договоре.</p>
+          <span>Понятная смета</span>
+          <strong>Материалы и работы считаем отдельно</strong>
+          <p>После замера соберём общую сумму и закрепим её в договоре.</p>
         </div>
       </section>
 
@@ -644,17 +651,17 @@
                 <button class="level-choice" type="button" data-level="standard">
                   <img data-quiz-media data-src="../assets/tariffs/finish-standard.webp" alt="Ремонт уровня Стандарт" width="1024" height="1536" decoding="async" />
                   <span class="photo-watermark" aria-hidden="true">ВЕРХ</span>
-                  <span><strong>Стандарт</strong><small>работы + материалы · 20 000 ₽/м²</small></span>
+                  <span><strong>Стандарт</strong><small>материалы 10 000 · работы 10 000 ₽/м²</small></span>
                 </button>
                 <button class="level-choice is-selected" type="button" data-level="comfort">
                   <img data-quiz-media data-src="../assets/tariffs/finish-comfort-aircon.webp" alt="Ремонт уровня Комфорт с кондиционером" width="1007" height="1562" decoding="async" />
                   <span class="photo-watermark" aria-hidden="true">ВЕРХ</span>
-                  <span><strong>Комфорт</strong><small>работы + материалы · 25 000 ₽/м²</small></span>
+                  <span><strong>Комфорт</strong><small>материалы 15 000 · работы 10 000 ₽/м²</small></span>
                 </button>
                 <button class="level-choice" type="button" data-level="lux">
                   <img data-quiz-media data-src="../assets/tariffs/finish-lux.webp" alt="Ремонт уровня Люкс" width="985" height="1597" decoding="async" />
                   <span class="photo-watermark" aria-hidden="true">ВЕРХ</span>
-                  <span><strong>Люкс</strong><small>работы + материалы · от 29 000 ₽/м²</small></span>
+                  <span><strong>Люкс</strong><small>материалы 19 000 · работы 10 000 ₽/м²</small></span>
                 </button>
               </div>
             </article>
@@ -702,6 +709,6 @@
       // Set to false to hide the Yandex Maps reviews block without deleting its markup.
       window.VERH_REVIEWS_WIDGET_ENABLED = true;
     </script>
-    <script src="script.js?v=20260725-27c"></script>
+    <script src="script.js?v=20260728-prices"></script>
   </body>
 </html>

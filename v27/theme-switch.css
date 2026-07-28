@@ -93,6 +93,22 @@ html[data-theme="dark"] .theme-toggle__moon {
   white-space: nowrap;
 }
 
+.tariff-card__price-note {
+  display: grid;
+  min-height: 2.75em;
+  gap: 1px;
+  margin: 5px 0 0 !important;
+  color: var(--muted) !important;
+  font-size: 12px !important;
+  font-weight: 650;
+  line-height: 1.28 !important;
+}
+
+.tariff-card__price-note span:first-child {
+  color: var(--gold);
+  font-weight: 750;
+}
+
 @media (max-width: 980px) {
   .site-header {
     gap: 12px;

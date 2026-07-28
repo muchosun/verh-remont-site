@@ -67,6 +67,8 @@ const tariffs = {
   cosmetic: {
     title: "Косметический ремонт",
     price: 6000,
+    materialPrice: null,
+    workPrice: null,
     prefix: "от ",
     included: [
       "снятие старых покрытий и подготовка поверхностей там, где это нужно",
@@ -78,9 +80,11 @@ const tariffs = {
   standard: {
     title: "Стандарт",
     price: 20000,
+    materialPrice: 10000,
+    workPrice: 10000,
     prefix: "",
     included: [
-      "план работ и материалы, которые уже входят в стоимость",
+      "план работ, материалы и работы отдельными строками в смете",
       "подготовка стен, пола и потолка",
       "плитка и чистовая отделка по согласованному перечню",
       "межкомнатные двери, сантехника и свет, предусмотренные тарифом",
@@ -90,9 +94,11 @@ const tariffs = {
   comfort: {
     title: "Комфорт",
     price: 25000,
+    materialPrice: 15000,
+    workPrice: 10000,
     prefix: "",
     included: [
-      "план работ и материалы из расширенной комплектации, включённые в стоимость",
+      "план работ и материалы из расширенной комплектации отдельной строкой в смете",
       "подготовка поверхностей и чистовая отделка",
       "плиточные, малярные и напольные работы",
       "двери, сантехника, свет, дополнительные розетки и выводы",
@@ -102,7 +108,9 @@ const tariffs = {
   lux: {
     title: "Люкс",
     price: 29000,
-    prefix: "от ",
+    materialPrice: 19000,
+    workPrice: 10000,
+    prefix: "",
     included: [
       "дизайн-проект, согласование материалов и света до начала работ",
       "работы и комплектация по утверждённому проекту",
@@ -540,6 +548,14 @@ function getEstimateText() {
   return tariff.prefix ? `${tariff.prefix}${formatMoney(getEstimate())}` : `≈ ${formatMoney(getEstimate())}`;
 }
 
+function getEstimateBreakdownText() {
+  const tariff = getTariff();
+  if (!tariff.workPrice) {
+    return `Работы и материалы: ${formatMoney(state.area * tariff.price)}.`;
+  }
+  return `Материалы: ${formatMoney(state.area * tariff.materialPrice)} · работы: ${formatMoney(state.area * tariff.workPrice)}.`;
+}
+
 function getPaymentPlan() {
   const estimate = getEstimate();
   return {
@@ -792,6 +808,8 @@ function createLeadPayload() {
     level: state.level,
     levelTitle: getTariff().title,
     pricePerMeter: getTariff().price,
+    materialPricePerMeter: getTariff().materialPrice,
+    workPricePerMeter: getTariff().workPrice,
     secondarySurcharge: getSecondarySurcharge(),
     preliminaryEstimate: getEstimate(),
     phone: state.leadPhone,
@@ -1066,6 +1084,7 @@ leadForm.addEventListener("submit", async (event) => {
       : "<span class=\"delivery-note\">Тестовая версия: доставка заявок в MAX подключается отдельно. Расчёт работает, но номер пока не отправляется в рабочую группу.</span>";
     successMessage.innerHTML = `
       <strong>Предварительный расчёт: ${getEstimateText()}.</strong>
+      <span>${getEstimateBreakdownText()}</span>
       <span>${state.apartment}, ${formatArea(state.area)}, ${getTariff().title}. Это предварительный расчет, точную смету закрепим после замера.</span>
       ${secondaryNote}
       ${deliveryNote}
@@ -1081,6 +1100,7 @@ leadForm.addEventListener("submit", async (event) => {
     successMessage.hidden = false;
     successMessage.innerHTML = `
       <strong>Предварительный расчёт: ${getEstimateText()}.</strong>
+      <span>${getEstimateBreakdownText()}</span>
       <span>${state.apartment}, ${formatArea(state.area)}, ${getTariff().title}. Точную смету закрепим после замера.</span>
       <span class="delivery-note">Не удалось передать заявку в рабочую группу. Позвони нам по номеру на сайте, чтобы согласовать замер.</span>
       ${getPaymentPlanHtml()}
