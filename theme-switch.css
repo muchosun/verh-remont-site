@@ -80,6 +80,39 @@ html[data-theme="dark"] .theme-toggle__moon {
   transform: rotate(-24deg) scale(0.72);
 }
 
+.brand {
+  display: block;
+  width: 118px;
+  aspect-ratio: 168 / 53;
+  line-height: 0;
+  flex: 0 0 auto;
+}
+
+.brand picture,
+.brand img {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.brand img {
+  object-fit: contain;
+}
+
+.photo-watermark {
+  width: 52px !important;
+  height: 17px !important;
+  overflow: hidden;
+  background: url("assets/brand/verh-wordmark-white-transparent.webp") center / contain no-repeat;
+  color: transparent !important;
+  font-size: 0 !important;
+}
+
+.hero__media > .photo-watermark {
+  width: clamp(72px, 6vw, 92px) !important;
+  height: clamp(23px, 1.9vw, 29px) !important;
+}
+
 .hero-price {
   display: inline-flex !important;
   align-items: baseline;
@@ -116,6 +149,15 @@ html[data-theme="dark"] .theme-toggle__moon {
 }
 
 @media (max-width: 720px) {
+  .brand {
+    width: 104px;
+  }
+
+  .photo-watermark {
+    width: 46px !important;
+    height: 15px !important;
+  }
+
   .site-header {
     gap: 8px;
   }
