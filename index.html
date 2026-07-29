@@ -113,6 +113,7 @@
     </script>
     <noscript><link rel="stylesheet" href="styles-light.css?v=20260728-all-reviews" /></noscript>
     <link rel="stylesheet" href="theme-switch.css?v=20260728-brand-zone" />
+    <link rel="stylesheet" href="marketing-legal.css?v=20260729-design-legal" />
     <script type="application/ld+json">
       {
         "@context": "https://schema.org",
@@ -128,6 +129,9 @@
             "@type": "HomeAndConstructionBusiness",
             "@id": "https://verhremont.ru/#business",
             "name": "ВЕРХ",
+            "legalName": "Индивидуальный предприниматель Пономаренко Игорь Владимирович",
+            "taxID": "234207648329",
+            "identifier": "ОГРНИП 324237500512814",
             "url": "https://verhremont.ru/",
             "image": "https://verhremont.ru/assets/yandex-business-cover-v2.jpg",
             "logo": "https://verhremont.ru/assets/favicon-verh.png",
@@ -141,7 +145,8 @@
             "sameAs": [
               "https://vk.ru/verhremont",
               "https://t.me/verh_rem",
-              "https://max.ru/join/xVCYmnoBVajOlPHV-udrKsLdipj2nwOdZ73CjM64WbY"
+              "https://max.ru/join/xVCYmnoBVajOlPHV-udrKsLdipj2nwOdZ73CjM64WbY",
+              "https://www.rusprofile.ru/ip/324237500512814"
             ],
             "hasOfferCatalog": {
               "@type": "OfferCatalog",
@@ -385,6 +390,28 @@
         </div>
       </section>
 
+      <section class="design-gift section" id="design-gift">
+        <div class="design-gift__inner">
+          <figure class="design-gift__visual">
+            <img src="assets/tariffs/finish-lux.webp" alt="Интерьер, подготовленный по дизайн-проекту" width="985" height="1597" loading="lazy" decoding="async" />
+            <span class="design-gift__label">В подарок</span>
+            <span class="photo-watermark" aria-hidden="true">ВЕРХ</span>
+          </figure>
+          <div class="design-gift__content">
+            <span class="design-gift__eyebrow">Для ремонта под ключ</span>
+            <h2>Дизайн-проект в подарок</h2>
+            <p>Бесплатно приедем на замер. После заключения договора подготовим проект и до начала работ согласуем материалы, свет и основные решения.</p>
+            <ol class="design-gift__steps" aria-label="Как получить дизайн-проект">
+              <li><span>01</span><strong>Бесплатный замер</strong></li>
+              <li><span>02</span><strong>Договор на ремонт</strong></li>
+              <li><span>03</span><strong>Проект без доплаты</strong></li>
+            </ol>
+            <p class="design-gift__note">Отдельный аванс за дизайн-проект не нужен. Состав проекта и ремонта закрепим в договоре.</p>
+            <button class="primary-action cta-glint" type="button" data-quiz-open>Записаться на замер</button>
+          </div>
+        </div>
+      </section>
+
       <section class="materials section" id="materials">
         <div class="section-head materials__head">
           <div>
@@ -514,6 +541,35 @@
       </section>
     </main>
 
+    <footer class="legal-footer" aria-label="Юридическая информация">
+      <div class="legal-footer__inner">
+        <div class="legal-footer__brand">
+          <img src="assets/brand/verh-wordmark-white-transparent.webp" alt="ВЕРХ" width="3360" height="1060" loading="lazy" decoding="async" />
+          <strong>Работаем официально</strong>
+          <p>Заключаем договор на ремонтно-отделочные работы до выхода на объект.</p>
+        </div>
+        <div class="legal-footer__facts">
+          <div><span>Исполнитель</span><strong>ИП Пономаренко Игорь Владимирович</strong></div>
+          <div><span>ИНН</span><strong>234207648329</strong></div>
+          <div><span>ОГРНИП</span><strong>324237500512814</strong></div>
+        </div>
+        <ul class="legal-footer__assurances">
+          <li>Стоимость, состав работ, материалы и сроки закрепляем в договоре.</li>
+          <li>Оплату делим на этапы 30 / 30 / 20 / 20.</li>
+          <li>Завершение работ оформляем актом сдачи-приёмки.</li>
+        </ul>
+      </div>
+      <div class="legal-footer__bottom">
+        <span>© 2026 ВЕРХ ремонт</span>
+        <nav aria-label="Правовые документы">
+          <a href="contract.html">Как оформляем договор</a>
+          <a href="privacy.html">Политика обработки данных</a>
+          <a href="consent.html">Согласие на обработку данных</a>
+          <a href="https://www.rusprofile.ru/ip/324237500512814" target="_blank" rel="noreferrer noopener">Проверить ИП на Rusprofile</a>
+        </nav>
+      </div>
+    </footer>
+
     <div class="mobile-sticky-cta">
       <button class="cta-glint" type="button" data-quiz-open>Рассчитать ремонт</button>
       <a class="mobile-sticky-cta__call" href="tel:+79182383059" data-mobile-call aria-label="Позвонить">
@@ -535,6 +591,11 @@
         <label class="sr-only" for="callback-phone">Телефон</label>
         <input id="callback-phone" name="phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="+7 (___) ___-__-__" required />
         <button type="submit">Перезвони мне</button>
+        <label class="form-consent">
+          <input type="checkbox" name="personal_data_consent" required />
+          <span>Даю <a href="consent.html" target="_blank" rel="noopener">согласие на обработку персональных данных</a>.</span>
+        </label>
+        <p class="form-policy-note">Условия описаны в <a href="privacy.html" target="_blank" rel="noopener">политике обработки данных</a>.</p>
       </form>
       <p class="callback-prompt__status" id="callback-status" role="status" aria-live="polite"></p>
     </aside>
@@ -686,6 +747,11 @@
                     required
                   />
                   <button type="submit">Показать предварительный расчёт</button>
+                  <label class="form-consent">
+                    <input type="checkbox" name="personal_data_consent" required />
+                    <span>Даю <a href="consent.html" target="_blank" rel="noopener">согласие на обработку персональных данных</a>.</span>
+                  </label>
+                  <p class="form-policy-note">Условия описаны в <a href="privacy.html" target="_blank" rel="noopener">политике обработки данных</a>.</p>
                 </form>
                 <div class="lead-loading" id="lead-loading" hidden>
                   <span aria-hidden="true"></span>
@@ -707,6 +773,6 @@
       // Set to false to hide the Yandex Maps reviews block without deleting its markup.
       window.VERH_REVIEWS_WIDGET_ENABLED = true;
     </script>
-    <script src="script.js?v=20260728-prices"></script>
+    <script src="script.js?v=20260729-legal-consent"></script>
   </body>
 </html>

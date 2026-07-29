@@ -1009,6 +1009,7 @@ callbackPhone?.addEventListener("input", () => {
 
 callbackForm?.addEventListener("submit", async (event) => {
   event.preventDefault();
+  if (!callbackForm.reportValidity()) return;
   const digits = callbackPhone.value.replace(/\D/g, "");
   if (digits.length < 11) {
     callbackPhone.setCustomValidity("Укажи номер, чтобы мы могли перезвонить.");
@@ -1045,6 +1046,7 @@ callbackForm?.addEventListener("submit", async (event) => {
 
 leadForm.addEventListener("submit", async (event) => {
   event.preventDefault();
+  if (!leadForm.reportValidity()) return;
   const digits = phoneInput.value.replace(/\D/g, "");
   if (digits.length < 11) {
     phoneInput.setCustomValidity("Нужен телефон, чтобы показать расчет.");
