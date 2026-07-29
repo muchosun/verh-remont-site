@@ -10,7 +10,7 @@
       content="ВЕРХ: косметический ремонт от 6 000 ₽/м². Материалы для ремонта Стандарт, Комфорт и Люкс — от 10 000 ₽/м², работы считаются отдельно."
     />
     <meta name="robots" content="index, follow, max-image-preview:large" />
-    <meta name="theme-color" content="#f7f2ea" />
+    <meta name="theme-color" content="#070707" />
     <meta name="application-name" content="ВЕРХ" />
     <meta name="apple-mobile-web-app-title" content="ВЕРХ" />
     <meta name="mobile-web-app-capable" content="yes" />
@@ -70,7 +70,7 @@
         const premiumIntent = /(люкс|преми|элит|дизайнерск|бизнес.?класс|vip|lux|premium)/i;
         const standardIntent = /(эконом|бюджет|стандарт|обычн|космет|недорог|econom|budget|standard)/i;
 
-        let theme = "light";
+        let theme = "dark";
         let source = "default";
         if (validTheme(explicitTheme)) {
           theme = explicitTheme;
@@ -111,7 +111,7 @@
         window.VERH_THEME = theme;
       })();
     </script>
-    <noscript><link rel="stylesheet" href="styles-light.css?v=20260728-all-reviews" /></noscript>
+    <noscript><link rel="stylesheet" href="styles.css?v=20260728-all-reviews" /></noscript>
     <link rel="stylesheet" href="theme-switch.css?v=20260728-brand-zone" />
     <link rel="stylesheet" href="marketing-legal.css?v=20260729-project-gift" />
     <script type="application/ld+json">
@@ -249,7 +249,7 @@
       </nav>
 
       <div class="header-actions">
-        <button class="theme-toggle" type="button" data-theme-toggle aria-label="Включить тёмную тему" title="Включить тёмную тему" aria-pressed="false">
+        <button class="theme-toggle" type="button" data-theme-toggle aria-label="Включить светлую тему" title="Включить светлую тему" aria-pressed="true">
           <svg class="theme-toggle__icon theme-toggle__moon" viewBox="0 0 24 24" aria-hidden="true">
             <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z" />
           </svg>
