@@ -991,6 +991,7 @@ phoneInput.addEventListener("focus", () => {
 
 phoneInput.addEventListener("input", () => {
   phoneInput.value = formatPhone(phoneInput.value);
+  phoneInput.setCustomValidity("");
 });
 
 callbackCloseButton?.addEventListener("click", () => {
@@ -1009,7 +1010,7 @@ callbackPhone?.addEventListener("input", () => {
 
 callbackForm?.addEventListener("submit", async (event) => {
   event.preventDefault();
-  if (!callbackForm.reportValidity()) return;
+  callbackPhone.setCustomValidity("");
   const digits = callbackPhone.value.replace(/\D/g, "");
   if (digits.length < 11) {
     callbackPhone.setCustomValidity("Укажи номер, чтобы мы могли перезвонить.");
@@ -1017,7 +1018,7 @@ callbackForm?.addEventListener("submit", async (event) => {
     return;
   }
 
-  callbackPhone.setCustomValidity("");
+  if (!callbackForm.reportValidity()) return;
   const submitButton = callbackForm.querySelector("button[type='submit']");
   submitButton.disabled = true;
   submitButton.textContent = "Отправляю…";
@@ -1046,14 +1047,14 @@ callbackForm?.addEventListener("submit", async (event) => {
 
 leadForm.addEventListener("submit", async (event) => {
   event.preventDefault();
-  if (!leadForm.reportValidity()) return;
+  phoneInput.setCustomValidity("");
   const digits = phoneInput.value.replace(/\D/g, "");
   if (digits.length < 11) {
     phoneInput.setCustomValidity("Нужен телефон, чтобы показать расчет.");
     phoneInput.reportValidity();
     return;
   }
-  phoneInput.setCustomValidity("");
+  if (!leadForm.reportValidity()) return;
   state.leadPhone = phoneInput.value.trim();
   state.leadSubmitted = false;
   leadForm.hidden = true;
