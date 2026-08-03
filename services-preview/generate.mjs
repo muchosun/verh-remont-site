@@ -12,6 +12,8 @@ const escapeHtml = (value) => String(value)
   .replaceAll('"', "&quot;")
   .replaceAll("'", "&#039;");
 
+const mediaWatermark = () => `<img class="media-watermark" src="/assets/brand/verh-wordmark-white-transparent.webp" alt="" width="3360" height="1060" aria-hidden="true" />`;
+
 const metrika = `
     <script>
       (function(m,e,t,r,i,k,a){
@@ -85,6 +87,7 @@ function servicePage(service) {
   const gallery = service.gallery.map(([src, width, height, title, text]) => `
           <figure class="service-gallery__item">
             <img src="${escapeHtml(src)}" alt="${escapeHtml(title)}" width="${width}" height="${height}" loading="lazy" decoding="async" />
+            ${mediaWatermark()}
             <figcaption><strong>${escapeHtml(title)}</strong><span>${escapeHtml(text)}</span></figcaption>
           </figure>`).join("");
 
@@ -101,7 +104,7 @@ function servicePage(service) {
       <section class="service-hero" id="top">
         <div class="service-hero__media" aria-hidden="true">
           <img src="${escapeHtml(service.heroImage)}" alt="" width="${service.heroWidth}" height="${service.heroHeight}" style="object-position:${escapeHtml(service.heroPosition)}" fetchpriority="high" decoding="async" />
-          <span>ВЕРХ</span>
+          ${mediaWatermark()}
         </div>
         <div class="service-hero__content">
           <a class="breadcrumb" href="/services-preview/">Услуги / ${escapeHtml(service.shortTitle)}</a>
@@ -246,7 +249,7 @@ function hubPage(services) {
           <article class="service-card">
             <a class="service-card__media" href="${escapeHtml(service.slug)}/" aria-label="Открыть: ${escapeHtml(service.shortTitle)}">
               <img src="${escapeHtml(service.heroImage)}" alt="${escapeHtml(service.shortTitle)}" width="${service.heroWidth}" height="${service.heroHeight}" loading="lazy" decoding="async" style="object-position:${escapeHtml(service.heroPosition)}" />
-              <span>ВЕРХ</span>
+              ${mediaWatermark()}
             </a>
             <div class="service-card__body">
               <p>${escapeHtml(service.minimum)}</p>
