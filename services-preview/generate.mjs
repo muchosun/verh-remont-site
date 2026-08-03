@@ -14,6 +14,22 @@ const escapeHtml = (value) => String(value)
 
 const mediaWatermark = () => `<img class="media-watermark" src="/assets/brand/verh-wordmark-white-transparent.webp" alt="" width="3360" height="1060" aria-hidden="true" />`;
 
+const forbiddenClientCopy = [
+  "посмотреть шаблон",
+  "черновой ориентир",
+  "черновые шаблоны",
+  "для теста спроса",
+  "preview /",
+];
+
+function validateClientCopy(html, pageName) {
+  const normalized = html.toLowerCase();
+  const invalidPhrase = forbiddenClientCopy.find((phrase) => normalized.includes(phrase));
+  if (invalidPhrase) {
+    throw new Error(`Internal copy "${invalidPhrase}" found in ${pageName}`);
+  }
+}
+
 const metrika = `
     <script>
       (function(m,e,t,r,i,k,a){
@@ -42,30 +58,59 @@ function head({ title, description, stylesheet = "../styles.css" }) {
   </head>`;
 }
 
-function header() {
+function header(isHub = false) {
+  const navigation = isHub
+    ? `<a href="#services">Услуги</a>
+        <a href="/">Ремонт под ключ</a>
+        <a href="tel:+79182383059" data-call-link>Позвонить</a>`
+    : `<a href="/services-preview/">Все услуги</a>
+        <a href="#prices">Цены</a>
+        <a href="#examples">Примеры</a>`;
+  const action = isHub
+    ? `<a class="button button--outline header-lead" href="#services">Выбрать услугу</a>`
+    : `<button class="button button--outline header-lead" type="button" data-scroll-lead>Рассчитать</button>`;
+
   return `<header class="preview-header">
       <a class="preview-brand" href="/" aria-label="ВЕРХ — на главную">
         <img src="/assets/brand/verh-wordmark-white-on-black.webp" alt="ВЕРХ" width="3360" height="1060" />
       </a>
-      <nav class="preview-nav" aria-label="Навигация по шаблонам">
-        <a href="/services-preview/">Все услуги</a>
-        <a href="#prices">Цены</a>
-        <a href="#examples">Примеры</a>
+      <nav class="preview-nav" aria-label="Основная навигация">
+        ${navigation}
       </nav>
-      <button class="button button--outline header-lead" type="button" data-scroll-lead>Рассчитать</button>
+      ${action}
     </header>`;
 }
 
 function footer() {
-  return `<footer class="preview-footer" data-page-footer>
-      <a class="preview-footer__brand" href="/">ВЕРХ</a>
-      <p>Ремонт и отделочные работы в Краснодаре</p>
-      <nav aria-label="Юридическая информация">
-        <a href="/privacy.html">Политика</a>
-        <a href="/consent.html">Согласие</a>
-        <a href="/contract.html">Договор</a>
-      </nav>
-      <small>Черновые шаблоны. Цены и условия требуют подтверждения.</small>
+  return `<footer class="preview-footer" id="contacts" data-page-footer>
+      <div class="preview-footer__inner">
+        <div class="preview-footer__brand">
+          <a href="/" aria-label="ВЕРХ — на главную">
+            <img src="/assets/brand/verh-wordmark-white-transparent.webp" alt="ВЕРХ" width="3360" height="1060" loading="lazy" decoding="async" />
+          </a>
+          <strong>Работаем официально</strong>
+          <p>Заключаем договор до начала работ и фиксируем в нём стоимость, объём и сроки.</p>
+        </div>
+        <div class="preview-footer__facts">
+          <div><span>Исполнитель</span><strong>ИП Пономаренко Игорь Владимирович</strong></div>
+          <div><span>ИНН</span><strong>234207648329</strong></div>
+          <div><span>ОГРНИП</span><strong>324237500512814</strong></div>
+        </div>
+        <ul class="preview-footer__assurances">
+          <li>Стоимость и состав работ закрепляем в договоре.</li>
+          <li>Дополнительные работы заранее согласуем.</li>
+          <li>Результат принимаем по акту.</li>
+        </ul>
+      </div>
+      <div class="preview-footer__bottom">
+        <span>© 2026 ВЕРХ ремонт</span>
+        <nav aria-label="Правовые документы">
+          <a href="/contract.html">Как оформляем договор</a>
+          <a href="/privacy.html">Политика обработки данных</a>
+          <a href="/consent.html">Согласие на обработку данных</a>
+          <a href="https://www.rusprofile.ru/ip/324237500512814" target="_blank" rel="noreferrer noopener">Проверить ИП</a>
+        </nav>
+      </div>
     </footer>`;
 }
 
@@ -110,8 +155,8 @@ function servicePage(service) {
           <a class="breadcrumb" href="/services-preview/">Услуги / ${escapeHtml(service.shortTitle)}</a>
           <h1>${escapeHtml(service.title)}</h1>
           <p>${escapeHtml(service.description)}</p>
-          <div class="service-price" aria-label="Черновой ценовой ориентир">
-            <span>Черновой ориентир</span>
+          <div class="service-price" aria-label="Стоимость работы">
+            <span>Стоимость работы</span>
             <strong>${escapeHtml(service.price)}</strong>
             <small>${escapeHtml(service.priceNote)}</small>
           </div>
@@ -144,8 +189,8 @@ function servicePage(service) {
         <div class="section-shell">
           <header class="section-heading">
             <span class="section-label">Что получишь</span>
-            <h2>Один исполнитель на весь этап</h2>
-            <p>Сначала фиксируем объём, затем называем цену и только после этого выходим на объект.</p>
+            <h2>Закроем весь этап целиком</h2>
+            <p>Сначала смотрим объём и называем цену. После согласования выходим на объект и доводим работу до результата.</p>
           </header>
           <div class="deliverables-grid">${includeCards}
           </div>
@@ -156,16 +201,16 @@ function servicePage(service) {
         <div class="section-shell price-section__grid">
           <header class="section-heading section-heading--dark">
             <span class="section-label">Стоимость работ</span>
-            <h2>Понятный ориентир до замера</h2>
-            <p>Показываем стартовую стоимость сразу. После осмотра фиксируем полный объём и цену в смете.</p>
+            <h2>Сколько стоит работа</h2>
+            <p>Базовую стоимость показываем сразу. Точную цену рассчитаем после осмотра и зафиксируем в смете.</p>
           </header>
           <div class="price-table-wrap">
             <table class="price-table">
-              <thead><tr><th>Работа</th><th>Единица</th><th>Ориентир</th></tr></thead>
+              <thead><tr><th>Работа</th><th>Единица</th><th>Цена от</th></tr></thead>
               <tbody>${priceRows}
               </tbody>
             </table>
-            <p class="price-disclaimer">Материалы, демонтаж и сложная подготовка считаются отдельно после осмотра. Прайс не является публичной офертой.</p>
+            <p class="price-disclaimer">Материалы, демонтаж и сложная подготовка считаются отдельно. Точную стоимость зафиксируем в смете после осмотра.</p>
           </div>
         </div>
       </section>
@@ -190,8 +235,8 @@ function servicePage(service) {
           </header>
           <ol class="process-list">
             <li><span>01</span><strong>Уточняем объём</strong><p>Смотрим помещение, площадь и состояние основания.</p></li>
-            <li><span>02</span><strong>Фиксируем смету</strong><p>Разделяем обязательные работы и возможные допы.</p></li>
-            <li><span>03</span><strong>Выполняем этап</strong><p>Работаем по согласованному составу и срокам.</p></li>
+            <li><span>02</span><strong>Фиксируем смету</strong><p>Показываем обязательные работы, а дополнительные заранее согласуем.</p></li>
+            <li><span>03</span><strong>Выполняем этап</strong><p>Работаем по утверждённой смете и срокам.</p></li>
             <li><span>04</span><strong>Принимаем результат</strong><p>Проверяем качество и подписываем выполненный этап.</p></li>
           </ol>
         </div>
@@ -200,8 +245,8 @@ function servicePage(service) {
       <section class="lead-section section-light" id="lead">
         <div class="section-shell lead-section__grid">
           <header class="lead-copy">
-            <span class="section-label">Без длинного квиза</span>
-            <h2>Прикинем объём твоей работы</h2>
+            <span class="section-label">Расчёт стоимости</span>
+            <h2>Узнай стоимость своей работы</h2>
             <p>Выбери объём и оставь телефон. Уточним детали и скажем, подходит ли задача под наш минимальный заказ.</p>
             <strong>${escapeHtml(service.minimum)}</strong>
           </header>
@@ -228,7 +273,7 @@ function servicePage(service) {
               <input name="consent" type="checkbox" checked required />
               <span>Даю <a href="/consent.html" target="_blank" rel="noopener">согласие на обработку данных</a>.</span>
             </label>
-            <button class="button button--gold service-form__submit" type="submit">Получить предварительный расчёт</button>
+            <button class="button button--gold service-form__submit" type="submit">Получить расчёт</button>
             <p class="form-status" data-form-status role="status" aria-live="polite"></p>
           </form>
         </div>
@@ -256,17 +301,17 @@ function hubPage(services) {
               <h2><a href="${escapeHtml(service.slug)}/">${escapeHtml(service.shortTitle)}</a></h2>
               <strong>${escapeHtml(service.price)}</strong>
               <span>${escapeHtml(service.priceNote)}</span>
-              <a class="service-card__link" href="${escapeHtml(service.slug)}/">Посмотреть шаблон</a>
+              <a class="service-card__link" href="${escapeHtml(service.slug)}/">Узнать стоимость</a>
             </div>
           </article>`).join("");
 
   return `${head({
-    title: "Отделочные работы в Краснодаре — шаблоны ВЕРХ",
-    description: "Предварительные шаблоны страниц отделочных услуг ВЕРХ.",
+    title: "Отделочные работы в Краснодаре — ВЕРХ",
+    description: "Отделочные работы в Краснодаре: полы, стены, плитка, сантехника и потолки.",
     stylesheet: "styles.css",
   })}
   <body class="hub-page">
-    ${header()}
+    ${header(true)}
     <main>
       <section class="hub-hero">
         <div class="hub-hero__media" aria-hidden="true">
@@ -288,8 +333,8 @@ function hubPage(services) {
       <section class="hub-services section-light" id="services">
         <div class="section-shell">
           <header class="section-heading">
-            <span class="section-label">Не мастер на час</span>
-            <h2>Выбери полноценный этап</h2>
+            <span class="section-label">Работаем с полноценным объёмом</span>
+            <h2>Выбери нужную работу</h2>
             <p>Берём одну комнату, санузел или полноценный этап. Стоимость зависит от объёма и состояния основания.</p>
           </header>
           <div class="service-card-grid">${cards}
@@ -310,12 +355,16 @@ function hubPage(services) {
 </html>`;
 }
 
-await writeFile(join(currentDir, "index.html"), hubPage(data.services), "utf8");
+const hubHtml = hubPage(data.services);
+validateClientCopy(hubHtml, "services index");
+await writeFile(join(currentDir, "index.html"), hubHtml, "utf8");
 
 for (const service of data.services) {
   const serviceDir = join(currentDir, service.slug);
+  const serviceHtml = servicePage(service);
+  validateClientCopy(serviceHtml, service.slug);
   await mkdir(serviceDir, { recursive: true });
-  await writeFile(join(serviceDir, "index.html"), servicePage(service), "utf8");
+  await writeFile(join(serviceDir, "index.html"), serviceHtml, "utf8");
 }
 
 console.log(`Generated ${data.services.length} service pages in ${currentDir}`);

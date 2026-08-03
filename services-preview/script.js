@@ -124,7 +124,7 @@
         reachGoal("service_lead_submit", { scope, property, local_preview: isLocal });
         status.dataset.state = "success";
         status.textContent = isLocal
-          ? "Тест пройден: на опубликованной странице заявка уйдёт менеджеру."
+          ? "Форма заполнена корректно."
           : "Заявка отправлена. Скоро позвоним и уточним детали.";
         submit.textContent = "Заявка принята";
         form.elements.scope.disabled = true;
