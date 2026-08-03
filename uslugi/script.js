@@ -16,7 +16,7 @@
     if (!lead) return;
     reachGoal("service_lead_start");
     lead.scrollIntoView({ behavior: "smooth", block: "start" });
-    window.setTimeout(() => lead.querySelector("select, input")?.focus({ preventScroll: true }), 520);
+    window.setTimeout(() => lead.querySelector("input[type='tel']")?.focus({ preventScroll: true }), 520);
   };
 
   document.querySelectorAll("[data-scroll-lead]").forEach((button) => {
@@ -27,22 +27,12 @@
     link.addEventListener("click", () => reachGoal("service_call", { placement: link.closest(".mobile-actions") ? "sticky" : "page" }));
   });
 
-  const phoneDigits = (value) => {
+  const normalizePhone = (value) => {
     let digits = String(value || "").replace(/\D/g, "");
-    if (digits.length > 10 && (digits.startsWith("7") || digits.startsWith("8"))) digits = digits.slice(1);
-    return digits.slice(0, 10);
-  };
-
-  const formatPhone = (value) => {
-    const digits = phoneDigits(value);
-    if (!digits) return "";
-    let result = "+7";
-    if (digits.length) result += ` (${digits.slice(0, 3)}`;
-    if (digits.length >= 3) result += ")";
-    if (digits.length > 3) result += ` ${digits.slice(3, 6)}`;
-    if (digits.length > 6) result += `-${digits.slice(6, 8)}`;
-    if (digits.length > 8) result += `-${digits.slice(8, 10)}`;
-    return result;
+    if (digits.length === 11 && (digits.startsWith("7") || digits.startsWith("8"))) {
+      digits = digits.slice(1);
+    }
+    return digits.length === 10 ? `+7${digits}` : "";
   };
 
   const form = document.querySelector("[data-service-form]");
@@ -52,14 +42,9 @@
     const status = form.querySelector("[data-form-status]");
 
     phone.addEventListener("input", () => {
-      phone.value = formatPhone(phone.value);
       phone.removeAttribute("aria-invalid");
       status.textContent = "";
       status.removeAttribute("data-state");
-    });
-
-    [form.elements.scope, form.elements.property].forEach((field) => {
-      field.addEventListener("change", () => field.removeAttribute("aria-invalid"));
     });
 
     form.addEventListener("submit", async (event) => {
@@ -67,23 +52,17 @@
       status.textContent = "";
       status.removeAttribute("data-state");
 
-      const scope = form.elements.scope.value.trim();
-      const property = form.elements.property.value.trim();
-      const digits = phoneDigits(phone.value);
+      const normalizedPhone = normalizePhone(phone.value);
       const consent = form.elements.consent.checked;
       const website = form.elements.website.value.trim();
 
-      form.elements.scope.toggleAttribute("aria-invalid", !scope);
-      form.elements.property.toggleAttribute("aria-invalid", !property);
-      phone.toggleAttribute("aria-invalid", digits.length !== 10);
+      phone.toggleAttribute("aria-invalid", !normalizedPhone);
 
-      if (!scope || !property || digits.length !== 10 || !consent) {
+      if (!normalizedPhone || !consent) {
         status.dataset.state = "error";
-        status.textContent = !scope || !property
-          ? "Выбери объём и тип объекта."
-          : digits.length !== 10
-            ? "Проверь номер: нужно 10 цифр после +7."
-            : "Нужно согласие на обработку данных.";
+        status.textContent = !normalizedPhone
+          ? "Проверь номер телефона."
+          : "Нужно согласие на обработку данных.";
         form.querySelector("[aria-invalid='true']")?.focus();
         return;
       }
@@ -102,15 +81,14 @@
           const source = new URL(location.href);
           source.hash = "";
           source.searchParams.set("service", serviceName);
-          source.searchParams.set("scope", scope);
-          source.searchParams.set("object", property);
+          source.searchParams.set("request", "measurement");
 
           const response = await fetch(leadEndpoint, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
               kind: "callback",
-              phone: `+7${digits}`,
+              phone: normalizedPhone,
               website: "",
               source: source.toString(),
             }),
@@ -121,14 +99,12 @@
           await new Promise((resolve) => window.setTimeout(resolve, 650));
         }
 
-        reachGoal("service_lead_submit", { scope, property, local_preview: isLocal });
+        reachGoal("service_lead_submit", { request: "measurement", local_preview: isLocal });
         status.dataset.state = "success";
         status.textContent = isLocal
           ? "Форма заполнена корректно."
-          : "Заявка отправлена. Скоро позвоним и уточним детали.";
+          : "Заявка отправлена. Скоро позвоним и договоримся о замере.";
         submit.textContent = "Заявка принята";
-        form.elements.scope.disabled = true;
-        form.elements.property.disabled = true;
         phone.disabled = true;
         form.elements.consent.disabled = true;
       } catch (error) {

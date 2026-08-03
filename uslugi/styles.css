@@ -339,10 +339,21 @@ h3 {
 }
 
 .breadcrumb {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
   align-self: flex-start;
   margin-bottom: 24px;
   color: rgba(244, 239, 229, 0.64);
   font-size: 14px;
+}
+
+.breadcrumb a:hover {
+  color: var(--cream-strong);
+}
+
+.breadcrumb span[aria-current="page"] {
+  color: rgba(244, 239, 229, 0.86);
 }
 
 .service-hero h1,
@@ -561,6 +572,8 @@ h3 {
 
 .service-gallery__item {
   position: relative;
+  display: grid;
+  grid-template-rows: 320px minmax(94px, auto);
   min-width: 0;
   margin: 0;
   overflow: hidden;
@@ -569,21 +582,28 @@ h3 {
   background: #e7dfd2;
 }
 
-.service-gallery__item > img:not(.media-watermark) {
+.service-gallery__media {
+  position: relative;
+  min-height: 0;
+  overflow: hidden;
+  background: #d8d0c4;
+}
+
+.service-gallery__media > img:not(.media-watermark) {
   width: 100%;
-  aspect-ratio: 4 / 3;
+  height: 100%;
   object-fit: cover;
 }
 
-.service-gallery__item .media-watermark {
+.service-gallery__media .media-watermark {
   right: 14px;
-  bottom: 102px;
+  bottom: 14px;
   width: 62px;
 }
 
 .service-gallery__item figcaption {
   display: flex;
-  min-height: 88px;
+  min-height: 94px;
   flex-direction: column;
   padding: 16px;
 }
@@ -1224,6 +1244,7 @@ h3 {
   }
 
   .service-gallery__item {
+    grid-template-rows: 260px minmax(100px, auto);
     flex: 0 0 86%;
     scroll-snap-align: start;
   }

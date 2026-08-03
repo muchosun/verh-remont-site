@@ -65,22 +65,24 @@ function head({ title, description, canonical, stylesheet = "../styles.css" }) {
     <meta property="og:description" content="${escapeHtml(description)}" />
     <meta property="og:url" content="${escapeHtml(canonical)}" />
     <link rel="icon" href="/favicon.ico" sizes="any" />
-    <link rel="stylesheet" href="${stylesheet}" />
+    <link rel="stylesheet" href="${stylesheet}?v=20260803-measurement" />
     ${metrika}
   </head>`;
 }
 
 function header(isHub = false) {
   const navigation = isHub
-    ? `<a href="#services">Услуги</a>
+    ? `<a href="/">На главную</a>
+        <a href="#services">Услуги</a>
         <a href="/">Ремонт под ключ</a>
         <a href="tel:+79182383059" data-call-link>Позвонить</a>`
-    : `<a href="/uslugi/">Все услуги</a>
+    : `<a href="/">На главную</a>
+        <a href="/uslugi/">Все услуги</a>
         <a href="#prices">Цены</a>
         <a href="#examples">Примеры</a>`;
   const action = isHub
     ? `<a class="button button--outline header-lead" href="#services">Выбрать услугу</a>`
-    : `<button class="button button--outline header-lead" type="button" data-scroll-lead>Рассчитать</button>`;
+    : `<button class="button button--outline header-lead" type="button" data-scroll-lead>Заказать замер</button>`;
 
   return `<header class="preview-header">
       <a class="preview-brand" href="/" aria-label="ВЕРХ — на главную">
@@ -143,12 +145,12 @@ function servicePage(service) {
 
   const gallery = service.gallery.map(([src, width, height, title, text, position = "center center"]) => `
           <figure class="service-gallery__item">
-            <img src="${escapeHtml(src)}" alt="${escapeHtml(title)}" width="${width}" height="${height}" loading="lazy" decoding="async" style="object-position:${escapeHtml(position)}" />
-            ${mediaWatermark()}
+            <div class="service-gallery__media">
+              <img src="${escapeHtml(src)}" alt="${escapeHtml(title)}" width="${width}" height="${height}" loading="lazy" decoding="async" style="object-position:${escapeHtml(position)}" />
+              ${mediaWatermark()}
+            </div>
             <figcaption><strong>${escapeHtml(title)}</strong><span>${escapeHtml(text)}</span></figcaption>
           </figure>`).join("");
-
-  const scopeOptions = service.scopeOptions.map((option) => `<option value="${escapeHtml(option)}">${escapeHtml(option)}</option>`).join("");
 
   return `${head({
     title: `${service.title} — ВЕРХ`,
@@ -165,7 +167,9 @@ function servicePage(service) {
           ${mediaWatermark()}
         </div>
         <div class="service-hero__content">
-          <a class="breadcrumb" href="/uslugi/">Услуги / ${escapeHtml(service.shortTitle)}</a>
+          <nav class="breadcrumb" aria-label="Хлебные крошки">
+            <a href="/">Главная</a><span>/</span><a href="/uslugi/">Услуги</a><span>/</span><span aria-current="page">${escapeHtml(service.shortTitle)}</span>
+          </nav>
           <h1>${escapeHtml(service.title)}</h1>
           <p>${escapeHtml(service.description)}</p>
           <div class="service-price" aria-label="Стоимость работы">
@@ -174,7 +178,7 @@ function servicePage(service) {
             <small>${escapeHtml(service.priceNote)}</small>
           </div>
           <div class="service-hero__actions">
-            <button class="button button--gold" type="button" data-scroll-lead>Рассчитать стоимость</button>
+            <button class="button button--gold" type="button" data-scroll-lead>Заказать замер</button>
             <a class="button button--ghost" href="tel:+79182383059" data-call-link aria-label="Позвонить в ВЕРХ">
               <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2A19.79 19.79 0 0 1 11.19 18.85a19.5 19.5 0 0 1-6-6A19.79 19.79 0 0 1 2.12 4.18 2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.12.9.33 1.78.62 2.63a2 2 0 0 1-.45 2.11L8.01 9.73a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.85.29 1.73.5 2.63.62A2 2 0 0 1 22 16.92Z" /></svg>
               <span>Позвонить</span>
@@ -261,35 +265,21 @@ function servicePage(service) {
       <section class="lead-section section-light" id="lead">
         <div class="section-shell lead-section__grid">
           <header class="lead-copy">
-            <span class="section-label">Расчёт стоимости</span>
-            <h2>Рассчитаем стоимость для твоей квартиры</h2>
-            <p>Выбери объём и оставь номер. Позвоним, зададим несколько вопросов и договоримся об осмотре.</p>
+            <span class="section-label">Бесплатный замер</span>
+            <h2>Заказать замер</h2>
+            <p>Оставь телефон. Позвоним, уточним задачу и договоримся, когда приехать.</p>
             <strong>${escapeHtml(service.minimum)}</strong>
           </header>
           <form class="service-form" data-service-form novalidate>
-            <label>Объём работы
-              <select name="scope" required>
-                <option value="">Выбери объём</option>
-                ${scopeOptions}
-              </select>
-            </label>
-            <label>Что за объект
-              <select name="property" required>
-                <option value="">Выбери вариант</option>
-                <option value="Новостройка">Новостройка</option>
-                <option value="Вторичка">Вторичка</option>
-                <option value="Коммерческое помещение">Коммерческое помещение</option>
-              </select>
-            </label>
-            <label>Телефон
-              <input name="phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="+7 (___) ___-__-__" required />
+            <label>Номер телефона
+              <input name="phone" type="tel" inputmode="tel" autocomplete="tel" enterkeyhint="send" maxlength="18" placeholder="+7 (___) ___-__-__" required />
             </label>
             <label class="honeypot" aria-hidden="true">Сайт<input name="website" tabindex="-1" autocomplete="off" /></label>
             <label class="consent-row">
               <input name="consent" type="checkbox" checked required />
               <span>Даю <a href="/consent.html" target="_blank" rel="noopener">согласие на обработку данных</a>.</span>
             </label>
-            <button class="button button--gold service-form__submit" type="submit">Рассчитать стоимость</button>
+            <button class="button button--gold service-form__submit" type="submit">Заказать замер</button>
             <p class="form-status" data-form-status role="status" aria-live="polite"></p>
           </form>
         </div>
@@ -297,13 +287,13 @@ function servicePage(service) {
     </main>
     ${footer()}
     <div class="mobile-actions" data-mobile-actions>
-      <button class="button button--gold" type="button" data-scroll-lead>Рассчитать стоимость</button>
+      <button class="button button--gold" type="button" data-scroll-lead>Заказать замер</button>
       <a class="button button--compact" href="tel:+79182383059" data-call-link aria-label="Позвонить в ВЕРХ">
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2A19.79 19.79 0 0 1 11.19 18.85a19.5 19.5 0 0 1-6-6A19.79 19.79 0 0 1 2.12 4.18 2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.12.9.33 1.78.62 2.63a2 2 0 0 1-.45 2.11L8.01 9.73a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.85.29 1.73.5 2.63.62A2 2 0 0 1 22 16.92Z" /></svg>
         <span>Позвонить</span>
       </a>
     </div>
-    <script src="../script.js" defer></script>
+    <script src="../script.js?v=20260803-measurement" defer></script>
   </body>
 </html>`;
 }
@@ -370,7 +360,7 @@ function hubPage(services) {
       </section>
     </main>
     ${footer()}
-    <script src="script.js" defer></script>
+    <script src="script.js?v=20260803-measurement" defer></script>
   </body>
 </html>`;
 }
