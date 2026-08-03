@@ -3,7 +3,7 @@
 
   const leadEndpoint = window.VERH_LEAD_ENDPOINT || "";
   const serviceName = document.body.dataset.service || "Отделочные работы";
-  const serviceSlug = document.body.dataset.serviceSlug || "services-preview";
+  const serviceSlug = document.body.dataset.serviceSlug || "uslugi";
 
   const reachGoal = (goal, params = {}) => {
     if (typeof window.ym === "function") {
@@ -143,7 +143,7 @@
 
   const mobileActions = document.querySelector("[data-mobile-actions]");
   if (mobileActions) {
-    const observed = [document.querySelector("#lead"), document.querySelector("[data-page-footer]")].filter(Boolean);
+    const observed = [document.querySelector(".service-hero"), document.querySelector("#lead"), document.querySelector("[data-page-footer]")].filter(Boolean);
     const visible = new Set();
     const observer = new IntersectionObserver((entries) => {
       entries.forEach((entry) => entry.isIntersecting ? visible.add(entry.target) : visible.delete(entry.target));

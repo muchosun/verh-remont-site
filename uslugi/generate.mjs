@@ -20,6 +20,11 @@ const forbiddenClientCopy = [
   "черновые шаблоны",
   "для теста спроса",
   "preview /",
+  "полноценный объём",
+  "без мелких выездов",
+  "берём работу комплексом",
+  "закроем весь этап",
+  "узнай стоимость своей работы",
 ];
 
 function validateClientCopy(html, pageName) {
@@ -42,16 +47,23 @@ const metrika = `
       window.VERH_LEAD_ENDPOINT = "https://functions.yandexcloud.net/d4e8j84veok7kjc043kk";
     </script>`;
 
-function head({ title, description, stylesheet = "../styles.css" }) {
+function head({ title, description, canonical, stylesheet = "../styles.css" }) {
   return `<!doctype html>
 <html lang="ru">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="robots" content="noindex, nofollow" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
     <meta name="theme-color" content="#070707" />
     <title>${escapeHtml(title)}</title>
     <meta name="description" content="${escapeHtml(description)}" />
+    <link rel="canonical" href="${escapeHtml(canonical)}" />
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="ru_RU" />
+    <meta property="og:site_name" content="ВЕРХ" />
+    <meta property="og:title" content="${escapeHtml(title)}" />
+    <meta property="og:description" content="${escapeHtml(description)}" />
+    <meta property="og:url" content="${escapeHtml(canonical)}" />
     <link rel="icon" href="/favicon.ico" sizes="any" />
     <link rel="stylesheet" href="${stylesheet}" />
     ${metrika}
@@ -63,7 +75,7 @@ function header(isHub = false) {
     ? `<a href="#services">Услуги</a>
         <a href="/">Ремонт под ключ</a>
         <a href="tel:+79182383059" data-call-link>Позвонить</a>`
-    : `<a href="/services-preview/">Все услуги</a>
+    : `<a href="/uslugi/">Все услуги</a>
         <a href="#prices">Цены</a>
         <a href="#examples">Примеры</a>`;
   const action = isHub
@@ -129,9 +141,9 @@ function servicePage(service) {
                 <td>${escapeHtml(price)}</td>
               </tr>`).join("");
 
-  const gallery = service.gallery.map(([src, width, height, title, text]) => `
+  const gallery = service.gallery.map(([src, width, height, title, text, position = "center center"]) => `
           <figure class="service-gallery__item">
-            <img src="${escapeHtml(src)}" alt="${escapeHtml(title)}" width="${width}" height="${height}" loading="lazy" decoding="async" />
+            <img src="${escapeHtml(src)}" alt="${escapeHtml(title)}" width="${width}" height="${height}" loading="lazy" decoding="async" style="object-position:${escapeHtml(position)}" />
             ${mediaWatermark()}
             <figcaption><strong>${escapeHtml(title)}</strong><span>${escapeHtml(text)}</span></figcaption>
           </figure>`).join("");
@@ -141,6 +153,7 @@ function servicePage(service) {
   return `${head({
     title: `${service.title} — ВЕРХ`,
     description: `${service.description} ${service.price}.`,
+    canonical: `https://verhremont.ru/uslugi/${service.slug}/`,
   })}
   <body data-service="${escapeHtml(service.shortTitle)}" data-service-slug="${escapeHtml(service.slug)}">
     <noscript><div><img src="https://mc.yandex.ru/watch/110859289" class="metrika-pixel" alt="" /></div></noscript>
@@ -148,11 +161,11 @@ function servicePage(service) {
     <main>
       <section class="service-hero" id="top">
         <div class="service-hero__media" aria-hidden="true">
-          <img src="${escapeHtml(service.heroImage)}" alt="" width="${service.heroWidth}" height="${service.heroHeight}" style="object-position:${escapeHtml(service.heroPosition)}" fetchpriority="high" decoding="async" />
+          <img src="${escapeHtml(service.heroImage)}" alt="" width="${service.heroWidth}" height="${service.heroHeight}" style="--hero-position:${escapeHtml(service.heroPosition)};--hero-mobile-position:${escapeHtml(service.heroMobilePosition || service.heroPosition)}" fetchpriority="high" decoding="async" />
           ${mediaWatermark()}
         </div>
         <div class="service-hero__content">
-          <a class="breadcrumb" href="/services-preview/">Услуги / ${escapeHtml(service.shortTitle)}</a>
+          <a class="breadcrumb" href="/uslugi/">Услуги / ${escapeHtml(service.shortTitle)}</a>
           <h1>${escapeHtml(service.title)}</h1>
           <p>${escapeHtml(service.description)}</p>
           <div class="service-price" aria-label="Стоимость работы">
@@ -161,8 +174,11 @@ function servicePage(service) {
             <small>${escapeHtml(service.priceNote)}</small>
           </div>
           <div class="service-hero__actions">
-            <button class="button button--gold" type="button" data-scroll-lead>Рассчитать объём</button>
-            <a class="button button--ghost" href="tel:+79182383059" data-call-link>Позвонить</a>
+            <button class="button button--gold" type="button" data-scroll-lead>Рассчитать стоимость</button>
+            <a class="button button--ghost" href="tel:+79182383059" data-call-link aria-label="Позвонить в ВЕРХ">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2A19.79 19.79 0 0 1 11.19 18.85a19.5 19.5 0 0 1-6-6A19.79 19.79 0 0 1 2.12 4.18 2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.12.9.33 1.78.62 2.63a2 2 0 0 1-.45 2.11L8.01 9.73a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.85.29 1.73.5 2.63.62A2 2 0 0 1 22 16.92Z" /></svg>
+              <span>Позвонить</span>
+            </a>
           </div>
           <ul class="hero-trust" aria-label="Условия">
             <li><strong>${escapeHtml(service.minimum)}</strong><span>минимальный объём</span></li>
@@ -175,12 +191,12 @@ function servicePage(service) {
       <section class="fit-section section-dark">
         <div class="section-shell fit-section__grid">
           <div>
-            <span class="section-label">Без мелких выездов</span>
-            <h2>Берём работу комплексом</h2>
+            <span class="section-label">Готовый результат</span>
+            <h2>${escapeHtml(service.resultTitle)}</h2>
           </div>
           <div class="fit-copy">
             <p>${escapeHtml(service.result)}</p>
-            <p class="fit-copy__limit">${escapeHtml(service.notFor)}</p>
+            <p class="fit-copy__limit">${escapeHtml(service.minimumNote)}</p>
           </div>
         </div>
       </section>
@@ -188,9 +204,9 @@ function servicePage(service) {
       <section class="section-light" id="scope">
         <div class="section-shell">
           <header class="section-heading">
-            <span class="section-label">Что получишь</span>
-            <h2>Закроем весь этап целиком</h2>
-            <p>Сначала смотрим объём и называем цену. После согласования выходим на объект и доводим работу до результата.</p>
+            <span class="section-label">Что входит</span>
+            <h2>${escapeHtml(service.scopeTitle)}</h2>
+            <p>До начала работ перечислим все этапы в смете. Дополнительные работы выполняем только после согласования.</p>
           </header>
           <div class="deliverables-grid">${includeCards}
           </div>
@@ -202,7 +218,7 @@ function servicePage(service) {
           <header class="section-heading section-heading--dark">
             <span class="section-label">Стоимость работ</span>
             <h2>Сколько стоит работа</h2>
-            <p>Базовую стоимость показываем сразу. Точную цену рассчитаем после осмотра и зафиксируем в смете.</p>
+            <p>Показываем базовые цены. После осмотра назовём итоговую сумму и зафиксируем её в смете.</p>
           </header>
           <div class="price-table-wrap">
             <table class="price-table">
@@ -210,7 +226,7 @@ function servicePage(service) {
               <tbody>${priceRows}
               </tbody>
             </table>
-            <p class="price-disclaimer">Материалы, демонтаж и сложная подготовка считаются отдельно. Точную стоимость зафиксируем в смете после осмотра.</p>
+            <p class="price-disclaimer">Материалы, демонтаж и подготовка основания считаются отдельно, если они нужны. Всё согласуем до начала работ.</p>
           </div>
         </div>
       </section>
@@ -218,9 +234,9 @@ function servicePage(service) {
       <section class="section-light examples-section" id="examples">
         <div class="section-shell">
           <header class="section-heading">
-            <span class="section-label">Работы ВЕРХ</span>
-            <h2>Посмотри результат в деталях</h2>
-            <p>Показываем реальные материалы и объекты, с которыми уже работала команда.</p>
+            <span class="section-label">Наши работы</span>
+            <h2>Примеры выполненных работ</h2>
+            <p>Фотографии с объектов ВЕРХ.</p>
           </header>
           <div class="service-gallery" tabindex="0" aria-label="Примеры работ и материалов">${gallery}
           </div>
@@ -231,13 +247,13 @@ function servicePage(service) {
         <div class="section-shell">
           <header class="section-heading section-heading--dark">
             <span class="section-label">Порядок работы</span>
-            <h2>От заявки до готового этапа</h2>
+            <h2>Как проходит работа</h2>
           </header>
           <ol class="process-list">
-            <li><span>01</span><strong>Уточняем объём</strong><p>Смотрим помещение, площадь и состояние основания.</p></li>
-            <li><span>02</span><strong>Фиксируем смету</strong><p>Показываем обязательные работы, а дополнительные заранее согласуем.</p></li>
-            <li><span>03</span><strong>Выполняем этап</strong><p>Работаем по утверждённой смете и срокам.</p></li>
-            <li><span>04</span><strong>Принимаем результат</strong><p>Проверяем качество и подписываем выполненный этап.</p></li>
+            <li><span>01</span><strong>Осматриваем объект</strong><p>Смотрим площадь, состояние основания и условия работы.</p></li>
+            <li><span>02</span><strong>Составляем смету</strong><p>Перечисляем работы, материалы, сроки и итоговую стоимость.</p></li>
+            <li><span>03</span><strong>Выполняем работу</strong><p>Работаем по смете и сообщаем о ходе ремонта.</p></li>
+            <li><span>04</span><strong>Сдаём результат</strong><p>Вместе проверяем качество и подписываем акт.</p></li>
           </ol>
         </div>
       </section>
@@ -246,8 +262,8 @@ function servicePage(service) {
         <div class="section-shell lead-section__grid">
           <header class="lead-copy">
             <span class="section-label">Расчёт стоимости</span>
-            <h2>Узнай стоимость своей работы</h2>
-            <p>Выбери объём и оставь телефон. Уточним детали и скажем, подходит ли задача под наш минимальный заказ.</p>
+            <h2>Рассчитаем стоимость для твоей квартиры</h2>
+            <p>Выбери объём и оставь номер. Позвоним, зададим несколько вопросов и договоримся об осмотре.</p>
             <strong>${escapeHtml(service.minimum)}</strong>
           </header>
           <form class="service-form" data-service-form novalidate>
@@ -273,7 +289,7 @@ function servicePage(service) {
               <input name="consent" type="checkbox" checked required />
               <span>Даю <a href="/consent.html" target="_blank" rel="noopener">согласие на обработку данных</a>.</span>
             </label>
-            <button class="button button--gold service-form__submit" type="submit">Получить расчёт</button>
+            <button class="button button--gold service-form__submit" type="submit">Рассчитать стоимость</button>
             <p class="form-status" data-form-status role="status" aria-live="polite"></p>
           </form>
         </div>
@@ -281,8 +297,11 @@ function servicePage(service) {
     </main>
     ${footer()}
     <div class="mobile-actions" data-mobile-actions>
-      <button class="button button--gold" type="button" data-scroll-lead>Рассчитать</button>
-      <a class="button button--compact" href="tel:+79182383059" data-call-link aria-label="Позвонить в ВЕРХ">Позвонить</a>
+      <button class="button button--gold" type="button" data-scroll-lead>Рассчитать стоимость</button>
+      <a class="button button--compact" href="tel:+79182383059" data-call-link aria-label="Позвонить в ВЕРХ">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2A19.79 19.79 0 0 1 11.19 18.85a19.5 19.5 0 0 1-6-6A19.79 19.79 0 0 1 2.12 4.18 2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.12.9.33 1.78.62 2.63a2 2 0 0 1-.45 2.11L8.01 9.73a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.85.29 1.73.5 2.63.62A2 2 0 0 1 22 16.92Z" /></svg>
+        <span>Позвонить</span>
+      </a>
     </div>
     <script src="../script.js" defer></script>
   </body>
@@ -293,7 +312,7 @@ function hubPage(services) {
   const cards = services.map((service) => `
           <article class="service-card">
             <a class="service-card__media" href="${escapeHtml(service.slug)}/" aria-label="Открыть: ${escapeHtml(service.shortTitle)}">
-              <img src="${escapeHtml(service.heroImage)}" alt="${escapeHtml(service.shortTitle)}" width="${service.heroWidth}" height="${service.heroHeight}" loading="lazy" decoding="async" style="object-position:${escapeHtml(service.heroPosition)}" />
+              <img src="${escapeHtml(service.heroImage)}" alt="${escapeHtml(service.shortTitle)}" width="${service.heroWidth}" height="${service.heroHeight}" loading="lazy" decoding="async" style="--hero-position:${escapeHtml(service.heroPosition)};--hero-mobile-position:${escapeHtml(service.heroMobilePosition || service.heroPosition)}" />
               ${mediaWatermark()}
             </a>
             <div class="service-card__body">
@@ -308,6 +327,7 @@ function hubPage(services) {
   return `${head({
     title: "Отделочные работы в Краснодаре — ВЕРХ",
     description: "Отделочные работы в Краснодаре: полы, стены, плитка, сантехника и потолки.",
+    canonical: "https://verhremont.ru/uslugi/",
     stylesheet: "styles.css",
   })}
   <body class="hub-page">
@@ -318,14 +338,14 @@ function hubPage(services) {
           <img src="/assets/tariffs/finish-cosmetic.webp" alt="" width="1024" height="1536" fetchpriority="high" decoding="async" />
         </div>
         <div class="hub-hero__content">
-          <span class="section-label">Отдельные услуги ВЕРХ</span>
+          <span class="section-label">Ремонт отдельных помещений</span>
           <h1>Отделочные работы в Краснодаре</h1>
-          <p>Берём комнату, санузел или полноценный этап ремонта. Мелкие бытовые выезды и замену отдельных элементов не выполняем.</p>
-          <a class="button button--gold" href="#services">Выбрать работу</a>
+          <p>Сделаем отдельный этап ремонта в комнате или квартире: уложим пол и плитку, подготовим стены, разведём сантехнику или установим потолок.</p>
+          <a class="button button--gold" href="#services">Выбрать услугу</a>
           <ul class="hero-trust">
-            <li><strong>6 направлений</strong><span>от пола до потолка</span></li>
-            <li><strong>Один исполнитель</strong><span>на весь этап работ</span></li>
-            <li><strong>Цена заранее</strong><span>фиксируем в смете</span></li>
+            <li><strong>Гарантия 3 года</strong><span>на выполненные работы</span></li>
+            <li><strong>Цена в смете</strong><span>до начала работ</span></li>
+            <li><strong>Работа по договору</strong><span>официально</span></li>
           </ul>
         </div>
       </section>
@@ -333,9 +353,9 @@ function hubPage(services) {
       <section class="hub-services section-light" id="services">
         <div class="section-shell">
           <header class="section-heading">
-            <span class="section-label">Работаем с полноценным объёмом</span>
-            <h2>Выбери нужную работу</h2>
-            <p>Берём одну комнату, санузел или полноценный этап. Стоимость зависит от объёма и состояния основания.</p>
+            <span class="section-label">Выбери, что нужно сделать</span>
+            <h2>Отделочные работы для квартиры</h2>
+            <p>Можно заказать одну услугу или собрать несколько работ в один ремонт. Перед началом осмотрим объект и согласуем смету.</p>
           </header>
           <div class="service-card-grid">${cards}
           </div>
@@ -344,8 +364,8 @@ function hubPage(services) {
 
       <section class="hub-note section-dark">
         <div class="section-shell hub-note__grid">
-          <div><span class="section-label">Ремонт целиком</span><h2>Нужно больше одной услуги?</h2></div>
-          <div><p>Соберём работы в один проект: от подготовки стен и инженерии до чистовой отделки.</p><a href="/" class="button button--outline">Посмотреть ремонт под ключ</a></div>
+          <div><span class="section-label">Ремонт под ключ</span><h2>Нужно сделать всю квартиру?</h2></div>
+          <div><p>Возьмём на себя весь ремонт: от подготовки стен и коммуникаций до чистовой отделки.</p><a href="/" class="button button--outline">Рассчитать ремонт квартиры</a></div>
         </div>
       </section>
     </main>

@@ -44,5 +44,5 @@
 Для пересборки HTML после изменения `service-data.json`:
 
 ```sh
-node services-preview/generate.mjs
+node uslugi/generate.mjs
 ```
