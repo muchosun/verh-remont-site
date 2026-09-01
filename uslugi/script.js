@@ -100,6 +100,7 @@
         }
 
         reachGoal("service_lead_submit", { request: "measurement", local_preview: isLocal });
+        reachGoal("service_lead_success", { request: "measurement", local_preview: isLocal });
         status.dataset.state = "success";
         status.textContent = isLocal
           ? "Форма заполнена корректно."
@@ -109,6 +110,7 @@
         form.elements.consent.disabled = true;
       } catch (error) {
         console.error("Service lead submission failed", error);
+        reachGoal("service_lead_failure", { request: "measurement" });
         status.dataset.state = "error";
         status.textContent = "Не удалось отправить. Позвони по номеру +7 (918) 238-30-59.";
         submit.disabled = false;

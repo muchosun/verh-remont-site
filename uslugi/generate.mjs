@@ -293,7 +293,7 @@ function servicePage(service) {
         <span>Позвонить</span>
       </a>
     </div>
-    <script src="../script.js?v=20260803-measurement" defer></script>
+    <script src="../script.js?v=20260901-metrica-funnel" defer></script>
   </body>
 </html>`;
 }
@@ -360,7 +360,7 @@ function hubPage(services) {
       </section>
     </main>
     ${footer()}
-    <script src="script.js?v=20260803-measurement" defer></script>
+    <script src="script.js?v=20260901-metrica-funnel" defer></script>
   </body>
 </html>`;
 }

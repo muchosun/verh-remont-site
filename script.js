@@ -466,8 +466,8 @@ function initDeferredProjectGallery() {
   observer.observe(gallery);
 }
 
-function trackMetricGoal(goal) {
-  if (typeof window.ym === "function") window.ym(110859289, "reachGoal", goal);
+function trackMetricGoal(goal, params = {}) {
+  if (typeof window.ym === "function") window.ym(110859289, "reachGoal", goal, params);
 }
 
 function initYandexReviews() {
@@ -500,23 +500,28 @@ function initYandexReviews() {
 function initCallActions() {
   callButtons.forEach((button) => {
     button.addEventListener("click", (event) => {
+      const placement = button.closest(".site-header")
+        ? "header"
+        : button.closest(".sticky-cta")
+          ? "sticky"
+          : "page";
       if (!stickyBreakpoint.matches && !button.classList.contains("is-phone-revealed")) {
         event.preventDefault();
         const phoneLabel = button.dataset.phoneLabel || button.textContent.trim();
         button.classList.add("is-phone-revealed");
         button.textContent = phoneLabel;
         button.setAttribute("aria-label", `Позвонить по номеру ${phoneLabel}`);
-        trackMetricGoal("phone_reveal");
+        trackMetricGoal("phone_reveal", { placement });
         return;
       }
 
-      trackMetricGoal("phone_call");
+      trackMetricGoal("phone_call", { placement });
     });
   });
 }
 
 function initMobileCallAction() {
-  mobileCallButton?.addEventListener("click", () => trackMetricGoal("phone_call"));
+  mobileCallButton?.addEventListener("click", () => trackMetricGoal("phone_call", { placement: "mobile_sticky" }));
 }
 
 function formatMoney(value) {
@@ -665,6 +670,10 @@ function openQuiz(trigger) {
   callbackSuppressed = true;
   hideCallbackPrompt(true);
   lastQuizTrigger = trigger || document.activeElement;
+  trackMetricGoal("quiz_open", {
+    placement: trigger?.dataset?.tariffOpen ? "tariff" : "general",
+    tariff: trigger?.dataset?.tariffOpen || state.level,
+  });
   prepareQuizMedia();
   quizModal.classList.add("is-open");
   quizModal.setAttribute("aria-hidden", "false");
@@ -909,6 +918,7 @@ quizOpenButtons.forEach((button) => {
 document.querySelectorAll("[data-tariff-open]").forEach((button) => {
   button.addEventListener("click", () => {
     state.level = button.dataset.tariffOpen;
+    trackMetricGoal("tariff_selected", { tariff: state.level });
     resetLeadResult();
     render();
     state.maxStep = 0;
@@ -933,6 +943,7 @@ window.addEventListener("resize", updateStickyCta);
 document.querySelectorAll("[data-apartment]").forEach((button) => {
   button.addEventListener("click", () => {
     state.apartment = button.dataset.apartment;
+    trackMetricGoal("quiz_apartment_selected", { apartment: state.apartment });
     resetLeadResult();
     render();
     setStep(1);
@@ -942,6 +953,7 @@ document.querySelectorAll("[data-apartment]").forEach((button) => {
 document.querySelectorAll("[data-area]").forEach((button) => {
   button.addEventListener("click", () => {
     setArea(button.dataset.area, button.dataset.areaLabel);
+    trackMetricGoal("quiz_area_selected", { area: state.area, area_label: state.areaLabel });
     setStep(2);
   });
 });
@@ -956,6 +968,7 @@ document.querySelector("#area-form").addEventListener("submit", (event) => {
   }
   areaInput.setCustomValidity("");
   setArea(area);
+  trackMetricGoal("quiz_area_selected", { area: state.area, area_label: state.areaLabel });
   setStep(2);
 });
 
@@ -973,6 +986,7 @@ areaInput.addEventListener("input", () => {
 document.querySelectorAll("[data-level]").forEach((button) => {
   button.addEventListener("click", () => {
     state.level = button.dataset.level;
+    trackMetricGoal("quiz_tariff_selected", { tariff: state.level });
     resetLeadResult();
     render();
     setStep(3);
@@ -1023,6 +1037,7 @@ callbackForm?.addEventListener("submit", async (event) => {
   submitButton.disabled = true;
   submitButton.textContent = "Отправляю…";
   callbackStatus.textContent = "";
+  trackMetricGoal("callback_submit_attempt");
 
   try {
     await sendLeadToMax({
@@ -1037,7 +1052,9 @@ callbackForm?.addEventListener("submit", async (event) => {
     callbackSuppressed = true;
     rememberCallbackDismissal();
     trackMetricGoal("callback_requested");
+    trackMetricGoal("callback_lead_success");
   } catch {
+    trackMetricGoal("callback_lead_failure");
     callbackStatus.textContent = "Не получилось отправить номер. Попробуй ещё раз или позвони нам с сайта.";
     callbackStatus.classList.remove("is-success");
     submitButton.disabled = false;
@@ -1056,6 +1073,12 @@ leadForm.addEventListener("submit", async (event) => {
   }
   if (!leadForm.reportValidity()) return;
   state.leadPhone = phoneInput.value.trim();
+  const leadMetricParams = {
+    apartment: state.apartment,
+    area: state.area,
+    tariff: state.level,
+  };
+  trackMetricGoal("quiz_submit_attempt", leadMetricParams);
   state.leadSubmitted = false;
   leadForm.hidden = true;
   leadOffer.hidden = true;
@@ -1093,8 +1116,10 @@ leadForm.addEventListener("submit", async (event) => {
       ${deliveryNote}
       ${getPaymentPlanHtml()}
     `;
+    trackMetricGoal(delivery.status === "sent" ? "quiz_lead_success" : "quiz_calculation_viewed", leadMetricParams);
     render();
   } catch (error) {
+    trackMetricGoal("quiz_lead_failure", leadMetricParams);
     state.leadSubmitted = true;
     leadPanel.classList.add("is-success");
     leadTitle.textContent = "Предварительный расчёт готов";
