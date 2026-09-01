@@ -621,7 +621,23 @@ h2 {
   margin-top: 18px;
   color: var(--muted);
   font-size: 12px;
+  line-height: 1.45;
   text-align: center;
+}
+
+.trust-line strong,
+.trust-line span {
+  display: block;
+}
+
+.trust-line strong {
+  color: var(--text);
+  font-size: 13px;
+  font-weight: 720;
+}
+
+.trust-line span {
+  margin-top: 5px;
 }
 
 .result-screen__mark {
