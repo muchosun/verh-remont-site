@@ -199,6 +199,9 @@ input:focus-visible {
   display: grid;
   min-width: 0;
   grid-template-columns: minmax(0, 1fr);
+  animation: none;
+  opacity: 1;
+  transform: none;
 }
 
 .intro-copy {
