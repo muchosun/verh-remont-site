@@ -31,8 +31,8 @@ const TARIFFS = {
     workPrice: 10000,
     image: "../assets/tariffs/finish-comfort-aircon.webp",
     alt: "Квартира после ремонта Комфорт с кондиционером",
-    visualTitle: "Больше выбора в отделке",
-    visualCaption: "Расширенная комплектация и кондиционер в подарок от 50 м².",
+    visualTitle: "Ремонт квартиры под ключ",
+    visualCaption: "Работы и материалы включены в расчет.",
   },
   lux: {
     title: "Люкс",
@@ -64,12 +64,10 @@ const state = {
 
 const steps = [...document.querySelectorAll("[data-step]")];
 const progressLabel = document.querySelector("#progress-label");
-const progressName = document.querySelector("#progress-name");
 const progressBar = document.querySelector("#progress-bar");
 const backButton = document.querySelector("#back-button");
 const visual = document.querySelector(".visual");
 const visualImage = document.querySelector("#visual-image");
-const visualKicker = document.querySelector("#visual-kicker");
 const visualTitle = document.querySelector("#visual-title");
 const visualCaption = document.querySelector("#visual-caption");
 const areaForm = document.querySelector("#area-form");
@@ -120,7 +118,6 @@ function updateVisual(level = state.level) {
   const swap = () => {
     visualImage.src = tariff.image;
     visualImage.alt = tariff.alt;
-    visualKicker.textContent = `${tariff.title} · результат`;
     visualTitle.textContent = tariff.visualTitle;
     visualCaption.textContent = tariff.visualCaption;
     requestAnimationFrame(() => visual.classList.remove("is-changing"));
@@ -144,8 +141,7 @@ function setStep(nextStep, { track = true } = {}) {
   document.querySelector(".progress").hidden = isResult;
   backButton.hidden = state.step === 0 || isResult;
   if (!isResult) {
-    progressLabel.textContent = `Шаг ${state.step + 1} из 4`;
-    progressName.textContent = STEP_NAMES[state.step];
+    progressLabel.textContent = `${state.step + 1} / 4`;
     progressBar.style.width = `${(state.step + 1) * 25}%`;
   }
 

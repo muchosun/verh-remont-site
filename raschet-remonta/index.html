@@ -58,13 +58,6 @@
   <body>
     <noscript><div><img src="https://mc.yandex.ru/watch/110859289" class="metrika-pixel" alt="" /></div></noscript>
 
-    <header class="topbar">
-      <a class="brand" href="/" aria-label="ВЕРХ — на главную">
-        <img src="../assets/brand/verh-wordmark-white-transparent.webp" alt="ВЕРХ" width="3360" height="1060" />
-      </a>
-      <a class="site-link" href="/">На основной сайт</a>
-    </header>
-
     <main class="calculator" id="calculator">
       <section class="visual" aria-label="Выбранный результат ремонта">
         <img
@@ -77,19 +70,19 @@
           fetchpriority="high"
         />
         <div class="visual__shade" aria-hidden="true"></div>
-        <span class="visual__watermark" aria-hidden="true">ВЕРХ</span>
+        <div class="visual__brand" aria-label="ВЕРХ">
+          <img src="../assets/brand/verh-wordmark-white-transparent.webp" alt="ВЕРХ" width="3360" height="1060" />
+        </div>
         <div class="visual__copy">
-          <span id="visual-kicker">Результат ремонта</span>
-          <strong id="visual-title">Квартира готова к заезду</strong>
-          <p id="visual-caption">Работы и материалы уже учтены в расчете.</p>
+          <strong id="visual-title">Ремонт квартиры под ключ</strong>
+          <p id="visual-caption">Работы и материалы включены в расчет.</p>
         </div>
       </section>
 
       <section class="flow" aria-labelledby="flow-title">
         <div class="progress" aria-label="Прогресс расчета">
           <div class="progress__meta">
-            <span id="progress-label">Шаг 1 из 4</span>
-            <strong id="progress-name">Квартира</strong>
+            <span id="progress-label">1 / 4</span>
           </div>
           <div class="progress__track" aria-hidden="true"><span id="progress-bar"></span></div>
         </div>
@@ -99,9 +92,7 @@
         <div class="steps" aria-live="polite">
           <section class="step is-active" data-step="0" aria-labelledby="flow-title">
             <div class="step__head">
-              <span class="eyebrow">Начнем с квартиры</span>
-              <h1 id="flow-title">Что будем ремонтировать?</h1>
-              <p>Нажми на свой вариант — дальше перейдем сразу.</p>
+              <h1 id="flow-title">Какая у тебя квартира?</h1>
             </div>
             <div class="choice-grid choice-grid--apartments">
               <button class="image-choice" type="button" data-apartment="Новостройка">
@@ -127,9 +118,7 @@
 
           <section class="step" data-step="1" aria-labelledby="area-title" hidden>
             <div class="step__head">
-              <span class="eyebrow">Площадь квартиры</span>
-              <h2 id="area-title">Сколько квадратных метров?</h2>
-              <p>Можно выбрать готовый вариант или указать свою площадь.</p>
+              <h2 id="area-title">Какая площадь?</h2>
             </div>
             <div class="area-grid">
               <button type="button" data-area="28" data-area-label="Студия"><strong>Студия</strong><span>28 м²</span></button>
@@ -150,36 +139,33 @@
 
           <section class="step" data-step="2" aria-labelledby="result-title" hidden>
             <div class="step__head">
-              <span class="eyebrow">Готовый результат</span>
-              <h2 id="result-title">Каким будет ремонт?</h2>
-              <p>Работы и материалы уже входят в каждый вариант.</p>
+              <h2 id="result-title">Выбери результат</h2>
             </div>
             <div class="result-grid">
               <button class="result-choice" type="button" data-level="cosmetic">
                 <img src="../assets/tariffs/finish-cosmetic.webp" alt="Косметический ремонт квартиры" width="1024" height="1536" loading="lazy" />
-                <span><strong>Косметический</strong><small>Обновить отделку</small><em>от 6 000 ₽/м²</em></span>
+                <span><strong>Косметический</strong><small>Обновить отделку</small></span>
               </button>
               <button class="result-choice" type="button" data-level="standard">
                 <img src="../assets/tariffs/finish-standard.webp" alt="Ремонт квартиры Стандарт" width="1024" height="1536" loading="lazy" />
-                <span><strong>Стандарт</strong><small>Готово к заезду</small><em>20 000 ₽/м²</em></span>
+                <span><strong>Стандарт</strong><small>Готово к заезду</small></span>
               </button>
               <button class="result-choice result-choice--accent" type="button" data-level="comfort">
                 <span class="result-choice__label">Чаще выбирают</span>
                 <img src="../assets/tariffs/finish-comfort-aircon.webp" alt="Ремонт квартиры Комфорт с кондиционером" width="1007" height="1562" loading="lazy" />
-                <span><strong>Комфорт</strong><small>Больше выбора</small><em>25 000 ₽/м²</em></span>
+                <span><strong>Комфорт</strong><small>Больше выбора</small></span>
               </button>
               <button class="result-choice" type="button" data-level="lux">
                 <img src="../assets/tariffs/finish-lux.webp" alt="Ремонт квартиры Люкс по дизайн-проекту" width="985" height="1597" loading="lazy" />
-                <span><strong>Люкс</strong><small>По дизайн-проекту</small><em>29 000 ₽/м²</em></span>
+                <span><strong>Люкс</strong><small>По дизайн-проекту</small></span>
               </button>
             </div>
           </section>
 
           <section class="step" data-step="3" aria-labelledby="phone-title" hidden>
             <div class="step__head step__head--phone">
-              <span class="eyebrow">Расчет почти готов</span>
-              <h2 id="phone-title">Куда тебе позвонить?</h2>
-              <p>Сразу покажем сумму на экране. Игорь свяжется с тобой и согласует бесплатный замер.</p>
+              <h2 id="phone-title">Оставь телефон</h2>
+              <p>Покажем расчет и согласуем бесплатный замер.</p>
             </div>
 
             <div class="selection-summary" id="selection-summary"></div>
@@ -199,17 +185,12 @@
               <p class="form-status" id="form-status" role="status" aria-live="polite"></p>
             </form>
 
-            <div class="trust-row" aria-label="Условия работы">
-              <span>Официальный договор</span>
-              <span>Оплата по этапам</span>
-              <span>Гарантия 3 года</span>
-            </div>
+            <p class="trust-line">Договор · оплата по этапам · гарантия 3 года</p>
           </section>
 
           <section class="step result-screen" data-step="4" aria-labelledby="estimate-title" hidden>
             <div class="result-screen__mark" aria-hidden="true">✓</div>
             <div class="step__head">
-              <span class="eyebrow">Заявка отправлена</span>
               <h2 id="estimate-title">Предварительный бюджет</h2>
             </div>
             <div class="estimate-card">
@@ -220,8 +201,7 @@
             <div class="payment-grid" id="payment-grid"></div>
             <p class="estimate-note" id="estimate-note"></p>
             <div class="result-actions">
-              <a class="call-action" href="tel:+79182383059" data-call-action>Позвонить сейчас</a>
-              <a class="secondary-action" href="/">Посмотреть сайт</a>
+              <a class="call-action" href="tel:+79182383059" data-call-action>Позвонить</a>
             </div>
           </section>
         </div>
