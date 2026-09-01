@@ -7,6 +7,8 @@ const TARIFFS = {
     prefix: "от ",
     materialPrice: null,
     workPrice: null,
+    image: "../assets/tariffs/finish-cosmetic.webp",
+    alt: "Готовая квартира после косметического ремонта",
   },
   standard: {
     title: "Стандарт",
@@ -14,6 +16,8 @@ const TARIFFS = {
     prefix: "",
     materialPrice: 10000,
     workPrice: 10000,
+    image: "../assets/tariffs/finish-standard.webp",
+    alt: "Готовая квартира после ремонта Стандарт",
   },
   comfort: {
     title: "Комфорт",
@@ -21,6 +25,8 @@ const TARIFFS = {
     prefix: "",
     materialPrice: 15000,
     workPrice: 10000,
+    image: "../assets/tariffs/finish-comfort-aircon.webp",
+    alt: "Готовая квартира после ремонта Комфорт",
   },
   lux: {
     title: "Люкс",
@@ -28,6 +34,8 @@ const TARIFFS = {
     prefix: "от ",
     materialPrice: 19000,
     workPrice: 10000,
+    image: "../assets/tariffs/finish-lux.webp",
+    alt: "Готовая квартира после ремонта Люкс",
   },
 };
 
@@ -57,6 +65,7 @@ const leadForm = document.querySelector("#lead-form");
 const phoneInput = document.querySelector("#phone-input");
 const formStatus = document.querySelector("#form-status");
 const selectionSummary = document.querySelector("#selection-summary");
+const closingOfferImage = document.querySelector("#closing-offer-image");
 const estimateLine = document.querySelector("#estimate-line");
 const estimateTotal = document.querySelector("#estimate-total");
 const estimateBreakdown = document.querySelector("#estimate-breakdown");
@@ -127,11 +136,14 @@ function markSelection(selector, value, dataName) {
 }
 
 function renderSummary() {
+  const tariff = selectedTariff();
   selectionSummary.innerHTML = `
     <span>${state.apartment}</span>
     <span>${areaText(state.area)}</span>
-    <span>${selectedTariff().title}</span>
+    <span>${tariff.title}</span>
   `;
+  closingOfferImage.src = tariff.image;
+  closingOfferImage.alt = tariff.alt;
 }
 
 function normalizePhone(rawValue) {
@@ -305,7 +317,7 @@ leadForm.addEventListener("submit", async (event) => {
     });
     formStatus.textContent = "Не получилось отправить номер. Проверь интернет и попробуй еще раз.";
     submitButton.disabled = false;
-    submitButton.querySelector("span:first-child").textContent = "Показать мой расчет";
+    submitButton.querySelector("span:first-child").textContent = "Получить расчет и подарки";
   }
 });
 

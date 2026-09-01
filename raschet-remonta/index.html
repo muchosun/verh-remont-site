@@ -22,7 +22,7 @@
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
     <link rel="manifest" href="/site.webmanifest" />
     <link rel="preload" as="font" href="../assets/fonts/onest-cyrillic.woff2" type="font/woff2" crossorigin />
-    <link rel="stylesheet" href="styles.css?v=20260901-3" />
+    <link rel="stylesheet" href="styles.css?v=20260901-4" />
     <script type="application/ld+json">
       {
         "@context": "https://schema.org",
@@ -148,7 +148,29 @@
           <section class="step" data-step="3" aria-labelledby="phone-title" hidden>
             <div class="step__head step__head--phone">
               <h2 id="phone-title">Оставь телефон</h2>
-              <p>Покажем расчет и согласуем бесплатный замер.</p>
+              <p>Покажем расчет и добавим подарки к заявке.</p>
+            </div>
+
+            <div class="closing-offer">
+              <figure class="closing-offer__visual">
+                <img
+                  id="closing-offer-image"
+                  src="../assets/tariffs/finish-comfort-aircon.webp"
+                  alt="Готовая квартира после ремонта Комфорт"
+                  width="1007"
+                  height="1562"
+                  loading="lazy"
+                />
+                <figcaption>Готовая квартира</figcaption>
+              </figure>
+              <div class="closing-offer__body">
+                <strong>Три подарка к ремонту</strong>
+                <ul>
+                  <li><span>01</span>Кондиционер в подарок</li>
+                  <li><span>02</span>Дизайн-проект в подарок</li>
+                  <li><span>03</span>Выезд на замер бесплатно</li>
+                </ul>
+              </div>
             </div>
 
             <div class="selection-summary" id="selection-summary"></div>
@@ -162,7 +184,7 @@
               </label>
               <input class="honeypot" type="text" name="website" tabindex="-1" autocomplete="off" aria-hidden="true" />
               <button class="submit-button" type="submit">
-                <span>Показать мой расчет</span>
+                <span>Получить расчет и подарки</span>
                 <span class="submit-button__arrow" aria-hidden="true">→</span>
               </button>
               <p class="form-status" id="form-status" role="status" aria-live="polite"></p>
@@ -194,6 +216,6 @@
     <script>
       window.VERH_LEAD_ENDPOINT = "https://functions.yandexcloud.net/d4e8j84veok7kjc043kk";
     </script>
-    <script src="script.js?v=20260901-2"></script>
+    <script src="script.js?v=20260901-4"></script>
   </body>
 </html>
