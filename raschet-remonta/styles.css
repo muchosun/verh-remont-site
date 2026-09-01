@@ -319,14 +319,6 @@ h2 {
   grid-template-columns: minmax(0, 1fr) auto auto;
   align-items: center;
   min-height: 62px;
-  overflow: hidden;
-  border: 1px solid var(--line);
-  border-radius: var(--radius);
-  background: var(--surface);
-}
-
-.area-form__control:focus-within {
-  border-color: var(--accent);
 }
 
 .area-form input,
@@ -343,18 +335,36 @@ h2 {
 .area-form input {
   width: 100%;
   padding: 0 0 0 18px;
+  border: 1px solid var(--line);
+  border-right: 0;
+  border-radius: var(--radius) 0 0 var(--radius);
+  background: var(--surface);
 }
 
 .area-form__control > span {
+  min-height: 60px;
+  display: flex;
+  align-items: center;
+  padding: 0 18px 0 10px;
+  border: 1px solid var(--line);
+  border-left: 0;
+  border-radius: 0 var(--radius) var(--radius) 0;
+  background: var(--surface);
   color: var(--muted);
   font-weight: 650;
+}
+
+.area-form__control:focus-within input,
+.area-form__control:focus-within > span {
+  border-color: var(--accent);
 }
 
 .area-form__control button {
   align-self: stretch;
   min-width: 116px;
-  margin-left: 14px;
+  margin-left: 12px;
   border: 0;
+  border-radius: var(--radius);
   background: var(--accent);
   color: var(--ink);
   cursor: pointer;
@@ -710,7 +720,7 @@ h2 {
   .area-form__control button {
     grid-column: 1 / -1;
     min-height: 52px;
-    margin: 0;
+    margin: 10px 0 0;
   }
 
   .result-grid {
