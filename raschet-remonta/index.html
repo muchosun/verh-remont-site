@@ -15,14 +15,14 @@
     <meta property="og:locale" content="ru_RU" />
     <meta property="og:site_name" content="ВЕРХ" />
     <meta property="og:title" content="Узнайте стоимость ремонта своей квартиры" />
-    <meta property="og:description" content="Три параметра — и предварительный бюджет ремонта готов." />
+    <meta property="og:description" content="Четыре вопроса — и предварительный бюджет ремонта готов." />
     <meta property="og:url" content="https://verhremont.ru/raschet-remonta/" />
     <meta property="og:image" content="https://verhremont.ru/assets/yandex-business-cover-v2.jpg" />
     <link rel="icon" type="image/png" sizes="120x120" href="/favicon.png" />
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
     <link rel="manifest" href="/site.webmanifest" />
     <link rel="preload" as="font" href="../assets/fonts/onest-cyrillic.woff2" type="font/woff2" crossorigin />
-    <link rel="stylesheet" href="styles.css?v=20260901-6" />
+    <link rel="stylesheet" href="styles.css?v=20260901-7" />
     <script type="application/ld+json">
       {
         "@context": "https://schema.org",
@@ -65,26 +65,70 @@
     <noscript><div><img src="https://mc.yandex.ru/watch/110859289" class="metrika-pixel" alt="" /></div></noscript>
 
     <main class="calculator" id="calculator">
-      <section class="flow" aria-labelledby="flow-title">
-        <div class="flow__brand">
-          <a href="/" aria-label="Перейти на главную страницу ВЕРХ">
+      <section class="flow" aria-label="Расчет стоимости ремонта квартиры">
+        <div class="flow__topbar">
+          <a class="flow__brand" href="/" aria-label="Перейти на главную страницу ВЕРХ">
             <img src="../assets/brand/verh-wordmark-white-transparent.webp" alt="ВЕРХ" width="3360" height="1060" />
           </a>
+          <a class="flow__site-link" href="/">Перейти на сайт <span aria-hidden="true">→</span></a>
         </div>
 
-        <div class="progress" aria-label="Прогресс расчета">
+        <div class="progress" aria-label="Прогресс расчета" hidden>
           <div class="progress__meta">
             <span id="progress-label">1 / 4</span>
           </div>
           <div class="progress__track" aria-hidden="true"><span id="progress-bar"></span></div>
         </div>
 
-        <button class="back-button" id="back-button" type="button" hidden>Назад</button>
+        <button class="back-button" id="back-button" type="button" hidden><span aria-hidden="true">←</span> Назад</button>
 
         <div class="steps" aria-live="polite">
-          <section class="step is-active" data-step="0" aria-labelledby="flow-title">
+          <section class="step step--intro is-active" data-step="0" aria-labelledby="flow-title">
+            <div class="intro-copy">
+              <p class="intro-copy__kicker">Ремонт квартиры под ключ</p>
+              <h1 id="flow-title">Узнай стоимость ремонта своей квартиры</h1>
+              <p>Посмотри наши работы и ответь на четыре вопроса. Сразу покажем предварительный бюджет.</p>
+            </div>
+
+            <div class="intro-gallery" aria-label="Примеры выполненных работ ВЕРХ">
+              <figure class="intro-gallery__item intro-gallery__item--main">
+                <img
+                  src="../assets/projects/comfort/comfort_fresh_20260718_msg340.webp"
+                  alt="Спальня после ремонта квартиры ВЕРХ"
+                  width="960"
+                  height="1280"
+                  fetchpriority="high"
+                />
+                <figcaption>Наши работы в Краснодаре</figcaption>
+              </figure>
+              <figure class="intro-gallery__item">
+                <img
+                  src="../assets/projects/comfort/comfort_06_msg175.webp"
+                  alt="Ванная комната после ремонта ВЕРХ"
+                  width="1280"
+                  height="1706"
+                />
+              </figure>
+              <figure class="intro-gallery__item">
+                <img
+                  src="../assets/projects/standard/standard_01_msg184.webp"
+                  alt="Комната после ремонта квартиры ВЕРХ"
+                  width="1280"
+                  height="1921"
+                />
+              </figure>
+            </div>
+
+            <button class="submit-button intro-start" id="start-calculator" type="button">
+              <span>Рассчитать ремонт</span>
+              <span class="submit-button__arrow" aria-hidden="true">→</span>
+            </button>
+            <p class="intro-trust">Работы и материалы включены · договор · гарантия 3 года</p>
+          </section>
+
+          <section class="step" data-step="1" aria-labelledby="apartment-title" hidden>
             <div class="step__head">
-              <h1 id="flow-title">Какая у тебя квартира?</h1>
+              <h2 id="apartment-title">Какая у тебя квартира?</h2>
             </div>
             <div class="choice-grid choice-grid--apartments">
               <button class="image-choice" type="button" data-apartment="Новостройка">
@@ -108,7 +152,7 @@
             </div>
           </section>
 
-          <section class="step" data-step="1" aria-labelledby="area-title" hidden>
+          <section class="step" data-step="2" aria-labelledby="area-title" hidden>
             <div class="step__head">
               <h2 id="area-title">Какая площадь?</h2>
             </div>
@@ -129,7 +173,7 @@
             </form>
           </section>
 
-          <section class="step" data-step="2" aria-labelledby="result-title" hidden>
+          <section class="step" data-step="3" aria-labelledby="result-title" hidden>
             <div class="step__head">
               <h2 id="result-title">Выбери результат</h2>
             </div>
@@ -154,7 +198,7 @@
             </div>
           </section>
 
-          <section class="step" data-step="3" aria-labelledby="phone-title" hidden>
+          <section class="step" data-step="4" aria-labelledby="phone-title" hidden>
             <div class="step__head step__head--phone">
               <h2 id="phone-title">Оставь телефон</h2>
               <p>Покажем расчет и добавим подарки к заявке.</p>
@@ -206,7 +250,7 @@
             </div>
           </section>
 
-          <section class="step result-screen" data-step="4" aria-labelledby="estimate-title" hidden>
+          <section class="step result-screen" data-step="5" aria-labelledby="estimate-title" hidden>
             <div class="result-screen__mark" aria-hidden="true">✓</div>
             <div class="step__head">
               <h2 id="estimate-title">Предварительный бюджет</h2>
@@ -229,6 +273,6 @@
     <script>
       window.VERH_LEAD_ENDPOINT = "https://functions.yandexcloud.net/d4e8j84veok7kjc043kk";
     </script>
-    <script src="script.js?v=20260901-4"></script>
+    <script src="script.js?v=20260901-5"></script>
   </body>
 </html>
