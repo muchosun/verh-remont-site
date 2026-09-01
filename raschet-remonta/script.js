@@ -7,10 +7,6 @@ const TARIFFS = {
     prefix: "от ",
     materialPrice: null,
     workPrice: null,
-    image: "../assets/tariffs/finish-cosmetic.webp",
-    alt: "Квартира после косметического ремонта",
-    visualTitle: "Свежая отделка без лишних работ",
-    visualCaption: "Обновим стены, пол и потолок в согласованном объеме.",
   },
   standard: {
     title: "Стандарт",
@@ -18,10 +14,6 @@ const TARIFFS = {
     prefix: "",
     materialPrice: 10000,
     workPrice: 10000,
-    image: "../assets/tariffs/finish-standard.webp",
-    alt: "Квартира после ремонта Стандарт",
-    visualTitle: "Квартира готова к заезду",
-    visualCaption: "Базовая комплектация, работы и материалы под ключ.",
   },
   comfort: {
     title: "Комфорт",
@@ -29,10 +21,6 @@ const TARIFFS = {
     prefix: "",
     materialPrice: 15000,
     workPrice: 10000,
-    image: "../assets/tariffs/finish-comfort-aircon.webp",
-    alt: "Квартира после ремонта Комфорт с кондиционером",
-    visualTitle: "Ремонт квартиры под ключ",
-    visualCaption: "Работы и материалы включены в расчет.",
   },
   lux: {
     title: "Люкс",
@@ -40,10 +28,6 @@ const TARIFFS = {
     prefix: "от ",
     materialPrice: 19000,
     workPrice: 10000,
-    image: "../assets/tariffs/finish-lux.webp",
-    alt: "Квартира после ремонта Люкс по дизайн-проекту",
-    visualTitle: "Ремонт по дизайн-проекту",
-    visualCaption: "Согласуем материалы, свет и сложные узлы до начала работ.",
   },
 };
 
@@ -66,10 +50,6 @@ const steps = [...document.querySelectorAll("[data-step]")];
 const progressLabel = document.querySelector("#progress-label");
 const progressBar = document.querySelector("#progress-bar");
 const backButton = document.querySelector("#back-button");
-const visual = document.querySelector(".visual");
-const visualImage = document.querySelector("#visual-image");
-const visualTitle = document.querySelector("#visual-title");
-const visualCaption = document.querySelector("#visual-caption");
 const areaForm = document.querySelector("#area-form");
 const areaInput = document.querySelector("#area-input");
 const areaError = document.querySelector("#area-error");
@@ -106,25 +86,6 @@ function secondarySurcharge() {
 
 function estimate() {
   return state.area * selectedTariff().price + secondarySurcharge();
-}
-
-function updateVisual(level = state.level) {
-  const tariff = TARIFFS[level];
-  if (!tariff) return;
-
-  visual.classList.add("is-changing");
-  const preload = new Image();
-  preload.src = tariff.image;
-  const swap = () => {
-    visualImage.src = tariff.image;
-    visualImage.alt = tariff.alt;
-    visualTitle.textContent = tariff.visualTitle;
-    visualCaption.textContent = tariff.visualCaption;
-    requestAnimationFrame(() => visual.classList.remove("is-changing"));
-  };
-
-  if (preload.complete) swap();
-  else preload.addEventListener("load", swap, { once: true });
 }
 
 function setStep(nextStep, { track = true } = {}) {
@@ -289,7 +250,6 @@ document.querySelectorAll("[data-level]").forEach((button) => {
   button.addEventListener("click", () => {
     state.level = button.dataset.level;
     markSelection("[data-level]", state.level, "level");
-    updateVisual(state.level);
     trackGoal("calculator_result_selected", { tariff: state.level });
     window.setTimeout(() => setStep(3), 150);
   });
@@ -357,7 +317,6 @@ function applyQueryDefaults() {
   const params = new URLSearchParams(window.location.search);
   const level = String(params.get("level") || "").toLowerCase();
   if (TARIFFS[level]) state.level = level;
-  updateVisual(state.level);
 }
 
 applyQueryDefaults();

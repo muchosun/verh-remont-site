@@ -76,77 +76,8 @@ input:focus-visible {
 }
 
 .calculator {
-  display: grid;
-  grid-template-columns: minmax(0, 1.03fr) minmax(520px, 0.97fr);
   min-height: 100vh;
   min-height: 100dvh;
-}
-
-.visual {
-  position: relative;
-  min-height: 100vh;
-  min-height: 100dvh;
-  overflow: hidden;
-  background: #22201b;
-}
-
-.visual__image {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: center 58%;
-  transform: scale(1.002);
-  transition: opacity 180ms ease, transform 300ms ease;
-}
-
-.visual.is-changing .visual__image {
-  opacity: 0.35;
-  transform: scale(1.025);
-}
-
-.visual__shade {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(180deg, rgba(4, 4, 3, 0.36) 0%, rgba(4, 4, 3, 0.02) 42%, rgba(4, 4, 3, 0.74) 100%);
-}
-
-.visual__brand {
-  position: absolute;
-  z-index: 2;
-  top: 28px;
-  left: var(--page-pad);
-  width: 112px;
-}
-
-.visual__brand img {
-  display: block;
-  width: 100%;
-  height: auto;
-}
-
-.visual__copy {
-  position: absolute;
-  left: var(--page-pad);
-  right: var(--page-pad);
-  bottom: 40px;
-}
-
-.visual__copy strong {
-  display: block;
-  max-width: 620px;
-  font-size: clamp(31px, 3.15vw, 58px);
-  line-height: 1;
-  font-weight: 760;
-}
-
-.visual__copy p {
-  max-width: 520px;
-  margin: 14px 0 0;
-  color: rgba(255, 248, 237, 0.78);
-  font-size: clamp(15px, 1.15vw, 18px);
-  line-height: 1.5;
 }
 
 .flow {
@@ -157,6 +88,17 @@ input:focus-visible {
   flex-direction: column;
   padding: 40px var(--page-pad);
   background: var(--bg);
+}
+
+.flow__brand {
+  width: min(100%, 680px);
+  margin: 0 auto 24px;
+}
+
+.flow__brand img {
+  display: block;
+  width: 92px;
+  height: auto;
 }
 
 .progress {
@@ -678,57 +620,23 @@ h2 {
 }
 
 @media (max-width: 1120px) {
-  .calculator {
-    grid-template-columns: minmax(0, 0.88fr) minmax(500px, 1.12fr);
-  }
-
   .result-choice {
     grid-template-columns: 92px minmax(0, 1fr);
   }
 }
 
 @media (max-width: 860px) {
-  .calculator {
-    display: block;
-  }
-
-  .visual {
-    min-height: 27svh;
-    height: 27svh;
-    max-height: 280px;
-  }
-
-  .visual__image {
-    object-position: center 54%;
-  }
-
-  .visual__shade {
-    background: linear-gradient(180deg, rgba(4, 4, 3, 0.44) 0%, rgba(4, 4, 3, 0.02) 50%, rgba(4, 4, 3, 0.7) 100%);
-  }
-
-  .visual__copy {
-    left: 18px;
-    right: 18px;
-    bottom: 18px;
-  }
-
-  .visual__copy strong {
-    font-size: clamp(24px, 7vw, 34px);
-  }
-
-  .visual__copy p {
-    display: none;
-  }
-
-  .visual__brand {
-    top: 18px;
-    left: 18px;
-    width: 88px;
-  }
-
   .flow {
-    min-height: 73svh;
+    min-height: 100svh;
     padding: 24px 18px calc(28px + env(safe-area-inset-bottom));
+  }
+
+  .flow__brand {
+    margin-bottom: 20px;
+  }
+
+  .flow__brand img {
+    width: 80px;
   }
 
   .steps {
@@ -770,15 +678,6 @@ h2 {
 }
 
 @media (max-width: 560px) {
-  .visual {
-    min-height: 25svh;
-    height: 25svh;
-  }
-
-  .flow {
-    min-height: 75svh;
-  }
-
   .choice-grid--apartments,
   .result-grid {
     gap: 9px;
