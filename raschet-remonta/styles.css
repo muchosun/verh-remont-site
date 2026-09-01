@@ -251,8 +251,7 @@ input:focus-visible {
   text-align: center;
 }
 
-.intro-showcase__controls button,
-.project-lightbox button {
+.intro-showcase__controls button {
   display: grid;
   place-items: center;
   border: 1px solid var(--line);
@@ -268,8 +267,7 @@ input:focus-visible {
   font-size: 17px;
 }
 
-.intro-showcase__controls button:hover,
-.project-lightbox button:hover {
+.intro-showcase__controls button:hover {
   border-color: var(--line-strong);
   background: var(--surface-raised);
 }
@@ -308,6 +306,7 @@ input:focus-visible {
   background: var(--surface-raised);
   color: #fff8ed;
   cursor: zoom-in;
+  text-decoration: none;
   text-align: left;
 }
 
@@ -330,8 +329,7 @@ input:focus-visible {
   transform: scale(1.025);
 }
 
-.intro-carousel__slide span,
-.intro-carousel__slide i {
+.intro-carousel__slide span {
   position: absolute;
   z-index: 1;
 }
@@ -344,110 +342,44 @@ input:focus-visible {
   font-weight: 720;
 }
 
-.intro-carousel__slide i {
-  top: 9px;
-  right: 9px;
-  width: 28px;
-  height: 28px;
-  display: grid;
-  place-items: center;
-  border-radius: 50%;
-  background: rgba(8, 8, 6, 0.72);
-  font-size: 14px;
-  font-style: normal;
+.pswp {
+  --pswp-bg: #050504;
+  --pswp-placeholder-bg: #171713;
+  font-family: "Onest", Arial, sans-serif;
 }
 
-.project-lightbox {
-  width: 100vw;
-  max-width: none;
-  height: 100vh;
-  height: 100dvh;
-  max-height: none;
-  margin: 0;
-  padding: 0;
-  border: 0;
-  background: rgba(5, 5, 4, 0.97);
-  color: var(--text);
+.pswp__button {
+  min-width: 44px;
+  min-height: 44px;
 }
 
-.project-lightbox::backdrop {
-  background: rgba(5, 5, 4, 0.94);
-}
-
-.project-lightbox__surface {
-  position: relative;
-  width: 100%;
-  height: 100%;
-  display: grid;
-  place-items: center;
-  padding: 34px 90px;
-}
-
-.project-lightbox figure {
-  min-width: 0;
-  max-width: min(1120px, 100%);
-  height: 100%;
-  display: grid;
-  grid-template-rows: minmax(0, 1fr) auto;
-  gap: 14px;
-  margin: 0;
-}
-
-.project-lightbox figure img {
-  width: 100%;
-  height: 100%;
-  min-height: 0;
-  display: block;
-  object-fit: contain;
-}
-
-.project-lightbox figcaption {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 24px;
-  color: var(--muted);
+.pswp__counter {
+  color: #fff8ed;
   font-size: 13px;
+  font-weight: 650;
+  text-shadow: none;
+  opacity: 0.9;
 }
 
-.project-lightbox figcaption strong {
-  color: var(--text);
-  font-size: 14px;
-}
-
-.project-lightbox__close,
-.project-lightbox__nav {
+.pswp__custom-caption {
   position: absolute;
   z-index: 2;
-  border-radius: 50%;
-}
-
-.project-lightbox__close {
-  top: max(20px, env(safe-area-inset-top));
-  right: max(20px, env(safe-area-inset-right));
-  width: 46px;
-  height: 46px;
-  font-size: 28px;
-}
-
-.project-lightbox__nav {
-  top: 50%;
-  width: 52px;
-  height: 52px;
-  transform: translateY(-50%);
-  font-size: 24px;
-}
-
-.project-lightbox__nav--prev {
-  left: 22px;
-}
-
-.project-lightbox__nav--next {
-  right: 22px;
-}
-
-html.lightbox-open {
-  overflow: hidden;
+  right: 50%;
+  bottom: max(22px, env(safe-area-inset-bottom));
+  max-width: min(80vw, 520px);
+  padding: 9px 14px;
+  transform: translateX(50%);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 999px;
+  background: rgba(8, 8, 6, 0.72);
+  color: #fff8ed;
+  font-size: 13px;
+  font-weight: 620;
+  line-height: 1.35;
+  text-align: center;
+  pointer-events: none;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
 }
 
 .intro-start {
@@ -1144,38 +1076,10 @@ h2 {
     flex-basis: 78%;
   }
 
-  .project-lightbox__surface {
-    padding: max(70px, calc(env(safe-area-inset-top) + 56px)) 14px max(24px, env(safe-area-inset-bottom));
-  }
-
-  .project-lightbox figure {
-    width: 100%;
-  }
-
-  .project-lightbox__nav {
-    top: auto;
-    bottom: max(20px, env(safe-area-inset-bottom));
-    width: 46px;
-    height: 46px;
-    transform: none;
-    background: rgba(17, 17, 15, 0.9);
-  }
-
-  .project-lightbox__nav--prev {
-    left: 14px;
-  }
-
-  .project-lightbox__nav--next {
-    right: 14px;
-  }
-
-  .project-lightbox figcaption {
-    min-height: 48px;
-    padding: 0 54px;
-    font-size: 11px;
-  }
-
-  .project-lightbox figcaption strong {
+  .pswp__custom-caption {
+    bottom: max(16px, env(safe-area-inset-bottom));
+    max-width: calc(100vw - 96px);
+    padding: 8px 12px;
     font-size: 12px;
   }
 

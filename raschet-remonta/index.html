@@ -22,7 +22,8 @@
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
     <link rel="manifest" href="/site.webmanifest" />
     <link rel="preload" as="font" href="../assets/fonts/onest-cyrillic.woff2" type="font/woff2" crossorigin />
-    <link rel="stylesheet" href="styles.css?v=20260901-8" />
+    <link rel="stylesheet" href="../assets/vendor/photoswipe/photoswipe.css?v=5.4.4" />
+    <link rel="stylesheet" href="styles.css?v=20260901-9" />
     <script type="application/ld+json">
       {
         "@context": "https://schema.org",
@@ -99,47 +100,39 @@
                   <button type="button" data-gallery-next aria-label="Следующая фотография" title="Следующая фотография">→</button>
                 </div>
               </div>
-              <div class="intro-carousel" data-intro-track role="list" aria-label="Примеры выполненных работ ВЕРХ" tabindex="0">
-                <button class="intro-carousel__slide" type="button" role="listitem" data-gallery-index="0" aria-label="Открыть кухню-гостиную на весь экран">
-                  <img src="../assets/projects/comfort/comfort_01_msg170.webp" alt="Кухня-гостиная после ремонта ВЕРХ" width="1280" height="1707" fetchpriority="high" draggable="false" />
+              <div class="intro-carousel" data-intro-track role="region" aria-roledescription="карусель" aria-label="Примеры выполненных работ ВЕРХ" tabindex="0">
+                <a class="intro-carousel__slide" href="../assets/projects/comfort/comfort_01_msg170.webp" data-gallery-index="0" data-pswp-width="1280" data-pswp-height="1543" data-cropped="true" data-caption="Кухня-гостиная" aria-label="Открыть кухню-гостиную на весь экран">
+                  <img src="../assets/projects/comfort/comfort_01_msg170.webp" alt="Кухня-гостиная после ремонта ВЕРХ" width="1280" height="1543" fetchpriority="high" draggable="false" />
                   <span>Кухня-гостиная</span>
-                  <i aria-hidden="true">↗</i>
-                </button>
-                <button class="intro-carousel__slide" type="button" role="listitem" data-gallery-index="1" aria-label="Открыть гостиную на весь экран">
-                  <img src="../assets/projects/lux/lux_04_msg181.webp" alt="Гостиная после ремонта ВЕРХ" width="1280" height="1707" loading="lazy" draggable="false" />
+                </a>
+                <a class="intro-carousel__slide" href="../assets/projects/lux/lux_04_msg181.webp" data-gallery-index="1" data-pswp-width="1280" data-pswp-height="1705" data-cropped="true" data-caption="Гостиная" aria-label="Открыть гостиную на весь экран">
+                  <img src="../assets/projects/lux/lux_04_msg181.webp" alt="Гостиная после ремонта ВЕРХ" width="1280" height="1705" loading="lazy" draggable="false" />
                   <span>Гостиная</span>
-                  <i aria-hidden="true">↗</i>
-                </button>
-                <button class="intro-carousel__slide" type="button" role="listitem" data-gallery-index="2" aria-label="Открыть спальню на весь экран">
-                  <img src="../assets/projects/lux/lux_01_msg178.webp" alt="Спальня после ремонта ВЕРХ" width="1280" height="1707" loading="lazy" draggable="false" />
+                </a>
+                <a class="intro-carousel__slide" href="../assets/projects/lux/lux_01_msg178.webp" data-gallery-index="2" data-pswp-width="1280" data-pswp-height="1705" data-cropped="true" data-caption="Спальня" aria-label="Открыть спальню на весь экран">
+                  <img src="../assets/projects/lux/lux_01_msg178.webp" alt="Спальня после ремонта ВЕРХ" width="1280" height="1705" loading="lazy" draggable="false" />
                   <span>Спальня</span>
-                  <i aria-hidden="true">↗</i>
-                </button>
-                <button class="intro-carousel__slide" type="button" role="listitem" data-gallery-index="3" aria-label="Открыть ванную на весь экран">
+                </a>
+                <a class="intro-carousel__slide" href="../assets/projects/comfort/comfort_03_msg172.webp" data-gallery-index="3" data-pswp-width="1280" data-pswp-height="1707" data-cropped="true" data-caption="Ванная" aria-label="Открыть ванную на весь экран">
                   <img src="../assets/projects/comfort/comfort_03_msg172.webp" alt="Ванная после ремонта ВЕРХ" width="1280" height="1707" loading="lazy" draggable="false" />
                   <span>Ванная</span>
-                  <i aria-hidden="true">↗</i>
-                </button>
-                <button class="intro-carousel__slide" type="button" role="listitem" data-gallery-index="4" aria-label="Открыть спальню с панорамными окнами на весь экран">
-                  <img src="../assets/projects/comfort/comfort_12_msg218.webp" alt="Спальня с панорамными окнами после ремонта ВЕРХ" width="1280" height="1707" loading="lazy" draggable="false" />
+                </a>
+                <a class="intro-carousel__slide" href="../assets/projects/comfort/comfort_12_msg218.webp" data-gallery-index="4" data-pswp-width="1280" data-pswp-height="1705" data-cropped="true" data-caption="Спальня с панорамными окнами" aria-label="Открыть спальню с панорамными окнами на весь экран">
+                  <img src="../assets/projects/comfort/comfort_12_msg218.webp" alt="Спальня с панорамными окнами после ремонта ВЕРХ" width="1280" height="1705" loading="lazy" draggable="false" />
                   <span>Спальня</span>
-                  <i aria-hidden="true">↗</i>
-                </button>
-                <button class="intro-carousel__slide" type="button" role="listitem" data-gallery-index="5" aria-label="Открыть комнату на весь экран">
-                  <img src="../assets/projects/lux/lux_03_msg180.webp" alt="Комната после ремонта ВЕРХ" width="1280" height="1707" loading="lazy" draggable="false" />
+                </a>
+                <a class="intro-carousel__slide" href="../assets/projects/lux/lux_03_msg180.webp" data-gallery-index="5" data-pswp-width="1280" data-pswp-height="1705" data-cropped="true" data-caption="Комната" aria-label="Открыть комнату на весь экран">
+                  <img src="../assets/projects/lux/lux_03_msg180.webp" alt="Комната после ремонта ВЕРХ" width="1280" height="1705" loading="lazy" draggable="false" />
                   <span>Комната</span>
-                  <i aria-hidden="true">↗</i>
-                </button>
-                <button class="intro-carousel__slide" type="button" role="listitem" data-gallery-index="6" aria-label="Открыть санузел на весь экран">
-                  <img src="../assets/projects/lux/lux_06_msg183.webp" alt="Санузел после ремонта ВЕРХ" width="1280" height="1707" loading="lazy" draggable="false" />
+                </a>
+                <a class="intro-carousel__slide" href="../assets/projects/lux/lux_06_msg183.webp" data-gallery-index="6" data-pswp-width="1280" data-pswp-height="1705" data-cropped="true" data-caption="Санузел" aria-label="Открыть санузел на весь экран">
+                  <img src="../assets/projects/lux/lux_06_msg183.webp" alt="Санузел после ремонта ВЕРХ" width="1280" height="1705" loading="lazy" draggable="false" />
                   <span>Санузел</span>
-                  <i aria-hidden="true">↗</i>
-                </button>
-                <button class="intro-carousel__slide" type="button" role="listitem" data-gallery-index="7" aria-label="Открыть кухню на весь экран">
-                  <img src="../assets/projects/comfort/comfort_04_msg173.webp" alt="Кухня после ремонта ВЕРХ" width="1280" height="1707" loading="lazy" draggable="false" />
+                </a>
+                <a class="intro-carousel__slide" href="../assets/projects/comfort/comfort_04_msg173.webp" data-gallery-index="7" data-pswp-width="1280" data-pswp-height="1538" data-cropped="true" data-caption="Кухня" aria-label="Открыть кухню на весь экран">
+                  <img src="../assets/projects/comfort/comfort_04_msg173.webp" alt="Кухня после ремонта ВЕРХ" width="1280" height="1538" loading="lazy" draggable="false" />
                   <span>Кухня</span>
-                  <i aria-hidden="true">↗</i>
-                </button>
+                </a>
               </div>
             </div>
 
@@ -294,24 +287,10 @@
       </section>
     </main>
 
-    <dialog class="project-lightbox" id="project-lightbox" aria-label="Фотография выполненного ремонта">
-      <div class="project-lightbox__surface">
-        <button class="project-lightbox__close" type="button" data-lightbox-close aria-label="Закрыть фотографию" title="Закрыть">×</button>
-        <button class="project-lightbox__nav project-lightbox__nav--prev" type="button" data-lightbox-prev aria-label="Предыдущая фотография" title="Предыдущая фотография">←</button>
-        <figure>
-          <img data-lightbox-image src="" alt="" />
-          <figcaption>
-            <strong data-lightbox-caption></strong>
-            <span data-lightbox-count></span>
-          </figcaption>
-        </figure>
-        <button class="project-lightbox__nav project-lightbox__nav--next" type="button" data-lightbox-next aria-label="Следующая фотография" title="Следующая фотография">→</button>
-      </div>
-    </dialog>
-
     <script>
       window.VERH_LEAD_ENDPOINT = "https://functions.yandexcloud.net/d4e8j84veok7kjc043kk";
     </script>
-    <script src="script.js?v=20260901-6"></script>
+    <script src="script.js?v=20260901-7"></script>
+    <script type="module" src="gallery.js?v=20260901-1"></script>
   </body>
 </html>

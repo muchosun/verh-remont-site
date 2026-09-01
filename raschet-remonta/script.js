@@ -79,10 +79,6 @@ const gallerySlides = [...document.querySelectorAll("[data-gallery-index]")];
 const galleryPrev = document.querySelector("[data-gallery-prev]");
 const galleryNext = document.querySelector("[data-gallery-next]");
 const galleryCount = document.querySelector("[data-gallery-count]");
-const lightbox = document.querySelector("#project-lightbox");
-const lightboxImage = document.querySelector("[data-lightbox-image]");
-const lightboxCaption = document.querySelector("[data-lightbox-caption]");
-const lightboxCount = document.querySelector("[data-lightbox-count]");
 
 function trackGoal(name, params = {}) {
   if (typeof window.ym !== "function") return;
@@ -149,22 +145,11 @@ function markSelection(selector, value, dataName) {
 }
 
 function initIntroGallery() {
-  if (!introGallery || !introTrack || !gallerySlides.length || !lightbox) return;
+  if (!introGallery || !introTrack || !gallerySlides.length) return;
 
   const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
   let activeIndex = 0;
-  let lightboxIndex = 0;
   let scrollFrame = 0;
-  let touchStartX = 0;
-
-  const slideData = gallerySlides.map((slide) => {
-    const image = slide.querySelector("img");
-    return {
-      src: image.currentSrc || image.src,
-      alt: image.alt,
-      caption: slide.querySelector("span")?.textContent || "Выполненный ремонт",
-    };
-  });
 
   const updateCarouselState = () => {
     const currentLeft = introTrack.scrollLeft;
@@ -186,27 +171,6 @@ function initIntroGallery() {
     });
   };
 
-  const renderLightbox = () => {
-    const item = slideData[lightboxIndex];
-    lightboxImage.src = item.src;
-    lightboxImage.alt = item.alt;
-    lightboxCaption.textContent = item.caption;
-    lightboxCount.textContent = `${lightboxIndex + 1} / ${slideData.length}`;
-  };
-
-  const moveLightbox = (direction) => {
-    lightboxIndex = (lightboxIndex + direction + slideData.length) % slideData.length;
-    renderLightbox();
-  };
-
-  const openLightbox = (index) => {
-    lightboxIndex = index;
-    renderLightbox();
-    lightbox.showModal();
-    document.documentElement.classList.add("lightbox-open");
-    trackGoal("calculator_gallery_open", { image: index + 1, caption: slideData[index].caption });
-  };
-
   galleryPrev.addEventListener("click", () => scrollToSlide(activeIndex - 1));
   galleryNext.addEventListener("click", () => scrollToSlide(activeIndex + 1));
 
@@ -220,37 +184,6 @@ function initIntroGallery() {
       event.preventDefault();
       scrollToSlide(activeIndex + (event.key === "ArrowRight" ? 1 : -1));
     }
-  });
-
-  gallerySlides.forEach((slide, index) => {
-    slide.addEventListener("click", () => openLightbox(index));
-  });
-
-  lightbox.querySelector("[data-lightbox-close]").addEventListener("click", () => lightbox.close());
-  lightbox.querySelector("[data-lightbox-prev]").addEventListener("click", () => moveLightbox(-1));
-  lightbox.querySelector("[data-lightbox-next]").addEventListener("click", () => moveLightbox(1));
-
-  lightbox.addEventListener("click", (event) => {
-    if (event.target === lightbox || event.target.classList.contains("project-lightbox__surface")) lightbox.close();
-  });
-
-  lightbox.addEventListener("keydown", (event) => {
-    if (event.key === "ArrowLeft") moveLightbox(-1);
-    if (event.key === "ArrowRight") moveLightbox(1);
-  });
-
-  lightbox.addEventListener("touchstart", (event) => {
-    touchStartX = event.changedTouches[0].clientX;
-  }, { passive: true });
-
-  lightbox.addEventListener("touchend", (event) => {
-    const distance = event.changedTouches[0].clientX - touchStartX;
-    if (Math.abs(distance) > 48) moveLightbox(distance > 0 ? -1 : 1);
-  }, { passive: true });
-
-  lightbox.addEventListener("close", () => {
-    document.documentElement.classList.remove("lightbox-open");
-    gallerySlides[lightboxIndex]?.focus({ preventScroll: true });
   });
 
   updateCarouselState();
