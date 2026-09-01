@@ -326,58 +326,9 @@ function initTariffGalleries() {
   });
 }
 
-const freshTelegramProjectSeries = [
-  ["comfort", "Комфорт", [305, 306, 307, 308, 329, 330, 331, 332, 333, 340, 341, 342, 343, 344, 345, 346, 347, 348, 349, 350, 351]],
-  ["lux", "Люкс", [309, 310, 311, 312, 313, 314, 315, 316, 317, 318, 319, 320, 321, 322, 323, 324, 325, 326, 327, 328]],
-  ["standard", "Стандарт", [334, 335, 336, 337, 338, 339, 352, 353, 354, 355, 356, 357, 358, 359, 360, 361, 362, 363, 364]],
-].flatMap(([category, tier, messageIds]) => messageIds.map((messageId, index) => [
-  category,
-  tier,
-  `Готовая квартира · ${String(index + 1).padStart(2, "0")}`,
-  `${category}/${category}_fresh_20260718_msg${messageId}.webp`,
-]));
-
-const projectGalleryItems = [
-  ["standard", "Стандарт", "Кухня-гостиная", "standard/standard_01_msg184.webp"],
-  ["standard", "Стандарт", "Коридор", "standard/standard_02_msg185.webp"],
-  ["standard", "Стандарт", "Санузел", "standard/standard_03_msg186.webp"],
-  ["standard", "Стандарт", "Комната", "standard/standard_04_msg187.webp"],
-  ["standard", "Стандарт", "Ванная", "standard/standard_05_msg188.webp"],
-  ["standard", "Стандарт", "Пол", "standard/standard_06_msg189.webp"],
-  ["standard", "Стандарт", "Комната", "standard/standard_07_msg221.webp"],
-  ["standard", "Стандарт", "Спальня", "standard/standard_08_msg222.webp"],
-  ["standard", "Стандарт", "Комната", "standard/standard_09_msg223.webp"],
-  ["standard", "Стандарт", "Комната", "standard/standard_10_msg224.webp"],
-  ["standard", "Стандарт", "Санузел", "standard/standard_11_msg225.webp"],
-  ["standard", "Стандарт", "Балкон", "standard/standard_12_msg226.webp"],
-  ["comfort", "Комфорт", "Кухня-гостиная", "comfort/comfort_01_msg170.webp"],
-  ["comfort", "Комфорт", "Зеркала", "comfort/comfort_02_msg171.webp"],
-  ["comfort", "Комфорт", "Душевая", "comfort/comfort_03_msg172.webp"],
-  ["comfort", "Комфорт", "Кухня", "comfort/comfort_04_msg173.webp"],
-  ["comfort", "Комфорт", "Комната", "comfort/comfort_05_msg174.webp"],
-  ["comfort", "Комфорт", "Санузел", "comfort/comfort_06_msg175.webp"],
-  ["comfort", "Комфорт", "Ванная", "comfort/comfort_07_msg176.webp"],
-  ["comfort", "Комфорт", "Санузел", "comfort/comfort_08_msg214.webp"],
-  ["comfort", "Комфорт", "Ванная", "comfort/comfort_09_msg215.webp"],
-  ["comfort", "Комфорт", "Санузел", "comfort/comfort_10_msg216.webp"],
-  ["comfort", "Комфорт", "Кухня", "comfort/comfort_11_msg217.webp"],
-  ["comfort", "Комфорт", "Спальня", "comfort/comfort_12_msg218.webp"],
-  ["comfort", "Комфорт", "Спальня", "comfort/comfort_13_msg219.webp"],
-  ["comfort", "Комфорт", "Комната", "comfort/comfort_14_msg220.webp"],
-  ["lux", "Люкс", "Спальня", "lux/lux_01_msg178.webp"],
-  ["lux", "Люкс", "Панорамные окна", "lux/lux_02_msg179.webp"],
-  ["lux", "Люкс", "Гостиная", "lux/lux_03_msg180.webp"],
-  ["lux", "Люкс", "Кухня-гостиная", "lux/lux_04_msg181.webp"],
-  ["lux", "Люкс", "Санузел", "lux/lux_05_msg182.webp"],
-  ["lux", "Люкс", "Ванная", "lux/lux_06_msg183.webp"],
-  ...Array.from({ length: 24 }, (_, index) => [
-    "details",
-    "Свет и детали",
-    `Свет и потолок · ${String(index + 1).padStart(2, "0")}`,
-    `details/unclassified_${String(index + 1).padStart(2, "0")}_msg${190 + index}.webp`,
-  ]),
-  ...freshTelegramProjectSeries,
-].map(([category, tier, title, path]) => ({ category, tier, title, path }));
+const projectGalleryItems = Array.isArray(window.VERH_PROJECT_GALLERY_ITEMS)
+  ? window.VERH_PROJECT_GALLERY_ITEMS
+  : [];
 
 function initProjectGallery() {
   const gallery = document.querySelector("[data-project-gallery]");

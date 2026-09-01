@@ -197,9 +197,13 @@ input:focus-visible {
 
 .step--intro {
   display: grid;
+  min-width: 0;
+  grid-template-columns: minmax(0, 1fr);
 }
 
 .intro-copy {
+  width: 100%;
+  min-width: 0;
   max-width: 650px;
 }
 
@@ -220,6 +224,8 @@ input:focus-visible {
 }
 
 .intro-showcase {
+  width: 100%;
+  min-width: 0;
   margin-top: 26px;
 }
 
@@ -296,7 +302,7 @@ input:focus-visible {
 .intro-carousel__slide {
   position: relative;
   min-width: 0;
-  height: 214px;
+  height: clamp(280px, 29vw, 340px);
   flex: 0 0 calc((100% - 16px) / 3);
   padding: 0;
   overflow: hidden;
@@ -1017,7 +1023,7 @@ h2 {
   }
 
   .intro-carousel__slide {
-    height: 194px;
+    height: clamp(260px, 42vw, 310px);
   }
 
   .image-choice__media {
@@ -1072,8 +1078,9 @@ h2 {
   }
 
   .intro-carousel__slide {
-    height: 170px;
-    flex-basis: 78%;
+    height: min(38vh, 310px);
+    min-height: 250px;
+    flex-basis: 84%;
   }
 
   .pswp__custom-caption {
@@ -1224,7 +1231,8 @@ h2 {
 
 @media (max-height: 720px) and (max-width: 560px) {
   .intro-carousel__slide {
-    height: 142px;
+    height: 250px;
+    min-height: 250px;
   }
 
   .intro-copy > p:last-child {
