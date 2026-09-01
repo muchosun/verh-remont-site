@@ -1,0 +1,236 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Рассчитать стоимость ремонта квартиры в Краснодаре — ВЕРХ</title>
+    <meta
+      name="description"
+      content="Рассчитайте предварительную стоимость ремонта квартиры в Краснодаре: выберите тип квартиры, площадь и готовый результат. Работы и материалы учитываются в расчете."
+    />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#080806" />
+    <link rel="canonical" href="https://verhremont.ru/raschet-remonta/" />
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="ru_RU" />
+    <meta property="og:site_name" content="ВЕРХ" />
+    <meta property="og:title" content="Узнайте стоимость ремонта своей квартиры" />
+    <meta property="og:description" content="Три параметра — и предварительный бюджет ремонта готов." />
+    <meta property="og:url" content="https://verhremont.ru/raschet-remonta/" />
+    <meta property="og:image" content="https://verhremont.ru/assets/yandex-business-cover-v2.jpg" />
+    <link rel="icon" type="image/png" sizes="120x120" href="/favicon.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+    <link rel="preload" as="font" href="../assets/fonts/onest-cyrillic.woff2" type="font/woff2" crossorigin />
+    <link rel="preload" as="image" href="../assets/tariffs/finish-comfort-aircon.webp" type="image/webp" fetchpriority="high" />
+    <link rel="stylesheet" href="styles.css?v=20260901" />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebPage",
+        "name": "Расчет стоимости ремонта квартиры в Краснодаре",
+        "url": "https://verhremont.ru/raschet-remonta/",
+        "description": "Предварительный расчет ремонта квартиры с работами и материалами.",
+        "about": {
+          "@type": "Service",
+          "name": "Ремонт квартир под ключ",
+          "provider": {
+            "@type": "HomeAndConstructionBusiness",
+            "name": "ВЕРХ",
+            "telephone": "+79182383059",
+            "areaServed": "Краснодар"
+          }
+        }
+      }
+    </script>
+    <!-- Yandex.Metrika counter -->
+    <script>
+      (function(m,e,t,r,i,k,a){
+        m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
+        m[i].l=1*new Date();
+        for (var j=0;j<document.scripts.length;j++){if(document.scripts[j].src===r){return;}}
+        k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a);
+      })(window,document,"script","https://mc.yandex.ru/metrika/tag.js?id=110859289","ym");
+      ym(110859289,"init",{ssr:true,webvisor:true,clickmap:true,ecommerce:"dataLayer",referrer:document.referrer,url:location.href,accurateTrackBounce:true,trackLinks:true});
+    </script>
+    <!-- /Yandex.Metrika counter -->
+  </head>
+  <body>
+    <noscript><div><img src="https://mc.yandex.ru/watch/110859289" class="metrika-pixel" alt="" /></div></noscript>
+
+    <header class="topbar">
+      <a class="brand" href="/" aria-label="ВЕРХ — на главную">
+        <img src="../assets/brand/verh-wordmark-white-transparent.webp" alt="ВЕРХ" width="3360" height="1060" />
+      </a>
+      <a class="site-link" href="/">На основной сайт</a>
+    </header>
+
+    <main class="calculator" id="calculator">
+      <section class="visual" aria-label="Выбранный результат ремонта">
+        <img
+          class="visual__image"
+          id="visual-image"
+          src="../assets/tariffs/finish-comfort-aircon.webp"
+          alt="Готовая квартира после ремонта уровня Комфорт"
+          width="1007"
+          height="1562"
+          fetchpriority="high"
+        />
+        <div class="visual__shade" aria-hidden="true"></div>
+        <span class="visual__watermark" aria-hidden="true">ВЕРХ</span>
+        <div class="visual__copy">
+          <span id="visual-kicker">Результат ремонта</span>
+          <strong id="visual-title">Квартира готова к заезду</strong>
+          <p id="visual-caption">Работы и материалы уже учтены в расчете.</p>
+        </div>
+      </section>
+
+      <section class="flow" aria-labelledby="flow-title">
+        <div class="progress" aria-label="Прогресс расчета">
+          <div class="progress__meta">
+            <span id="progress-label">Шаг 1 из 4</span>
+            <strong id="progress-name">Квартира</strong>
+          </div>
+          <div class="progress__track" aria-hidden="true"><span id="progress-bar"></span></div>
+        </div>
+
+        <button class="back-button" id="back-button" type="button" hidden>Назад</button>
+
+        <div class="steps" aria-live="polite">
+          <section class="step is-active" data-step="0" aria-labelledby="flow-title">
+            <div class="step__head">
+              <span class="eyebrow">Начнем с квартиры</span>
+              <h1 id="flow-title">Что будем ремонтировать?</h1>
+              <p>Нажми на свой вариант — дальше перейдем сразу.</p>
+            </div>
+            <div class="choice-grid choice-grid--apartments">
+              <button class="image-choice" type="button" data-apartment="Новостройка">
+                <span class="image-choice__media">
+                  <img src="../v14/assets/web/quiz-newbuild.webp" alt="Квартира в новостройке до ремонта" width="640" height="1138" />
+                </span>
+                <span class="image-choice__body">
+                  <strong>Новостройка</strong>
+                  <small>Бетон или предчистовая</small>
+                </span>
+              </button>
+              <button class="image-choice" type="button" data-apartment="Вторичка">
+                <span class="image-choice__media">
+                  <img src="../v14/assets/web/quiz-secondary.webp" alt="Квартира во вторичном фонде до ремонта" width="640" height="1138" />
+                </span>
+                <span class="image-choice__body">
+                  <strong>Вторичка</strong>
+                  <small>Есть старая отделка</small>
+                </span>
+              </button>
+            </div>
+          </section>
+
+          <section class="step" data-step="1" aria-labelledby="area-title" hidden>
+            <div class="step__head">
+              <span class="eyebrow">Площадь квартиры</span>
+              <h2 id="area-title">Сколько квадратных метров?</h2>
+              <p>Можно выбрать готовый вариант или указать свою площадь.</p>
+            </div>
+            <div class="area-grid">
+              <button type="button" data-area="28" data-area-label="Студия"><strong>Студия</strong><span>28 м²</span></button>
+              <button type="button" data-area="36" data-area-label="1-комн."><strong>1-комн.</strong><span>36 м²</span></button>
+              <button type="button" data-area="58" data-area-label="2-комн."><strong>2-комн.</strong><span>58 м²</span></button>
+              <button type="button" data-area="78" data-area-label="3-комн."><strong>3-комн.</strong><span>78 м²</span></button>
+            </div>
+            <form class="area-form" id="area-form">
+              <label for="area-input">Своя площадь</label>
+              <div class="area-form__control">
+                <input id="area-input" name="area" type="number" inputmode="decimal" min="20" max="300" step="0.1" placeholder="Например, 47" required />
+                <span>м²</span>
+                <button type="submit">Дальше</button>
+              </div>
+              <p class="field-error" id="area-error" role="alert"></p>
+            </form>
+          </section>
+
+          <section class="step" data-step="2" aria-labelledby="result-title" hidden>
+            <div class="step__head">
+              <span class="eyebrow">Готовый результат</span>
+              <h2 id="result-title">Каким будет ремонт?</h2>
+              <p>Работы и материалы уже входят в каждый вариант.</p>
+            </div>
+            <div class="result-grid">
+              <button class="result-choice" type="button" data-level="cosmetic">
+                <img src="../assets/tariffs/finish-cosmetic.webp" alt="Косметический ремонт квартиры" width="1024" height="1536" loading="lazy" />
+                <span><strong>Косметический</strong><small>Обновить отделку</small><em>от 6 000 ₽/м²</em></span>
+              </button>
+              <button class="result-choice" type="button" data-level="standard">
+                <img src="../assets/tariffs/finish-standard.webp" alt="Ремонт квартиры Стандарт" width="1024" height="1536" loading="lazy" />
+                <span><strong>Стандарт</strong><small>Готово к заезду</small><em>20 000 ₽/м²</em></span>
+              </button>
+              <button class="result-choice result-choice--accent" type="button" data-level="comfort">
+                <span class="result-choice__label">Чаще выбирают</span>
+                <img src="../assets/tariffs/finish-comfort-aircon.webp" alt="Ремонт квартиры Комфорт с кондиционером" width="1007" height="1562" loading="lazy" />
+                <span><strong>Комфорт</strong><small>Больше выбора</small><em>25 000 ₽/м²</em></span>
+              </button>
+              <button class="result-choice" type="button" data-level="lux">
+                <img src="../assets/tariffs/finish-lux.webp" alt="Ремонт квартиры Люкс по дизайн-проекту" width="985" height="1597" loading="lazy" />
+                <span><strong>Люкс</strong><small>По дизайн-проекту</small><em>29 000 ₽/м²</em></span>
+              </button>
+            </div>
+          </section>
+
+          <section class="step" data-step="3" aria-labelledby="phone-title" hidden>
+            <div class="step__head step__head--phone">
+              <span class="eyebrow">Расчет почти готов</span>
+              <h2 id="phone-title">Куда тебе позвонить?</h2>
+              <p>Сразу покажем сумму на экране. Игорь свяжется с тобой и согласует бесплатный замер.</p>
+            </div>
+
+            <div class="selection-summary" id="selection-summary"></div>
+
+            <form class="lead-form" id="lead-form">
+              <label for="phone-input">Телефон</label>
+              <input id="phone-input" name="phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="+7 (___) ___-__-__" required />
+              <label class="consent">
+                <input type="checkbox" name="personal_data_consent" checked required />
+                <span>Даю <a href="../consent.html" target="_blank" rel="noopener">согласие на обработку данных</a>. <a href="../privacy.html" target="_blank" rel="noopener">Политика</a>.</span>
+              </label>
+              <input class="honeypot" type="text" name="website" tabindex="-1" autocomplete="off" aria-hidden="true" />
+              <button class="submit-button" type="submit">
+                <span>Показать мой расчет</span>
+                <span class="submit-button__arrow" aria-hidden="true">→</span>
+              </button>
+              <p class="form-status" id="form-status" role="status" aria-live="polite"></p>
+            </form>
+
+            <div class="trust-row" aria-label="Условия работы">
+              <span>Официальный договор</span>
+              <span>Оплата по этапам</span>
+              <span>Гарантия 3 года</span>
+            </div>
+          </section>
+
+          <section class="step result-screen" data-step="4" aria-labelledby="estimate-title" hidden>
+            <div class="result-screen__mark" aria-hidden="true">✓</div>
+            <div class="step__head">
+              <span class="eyebrow">Заявка отправлена</span>
+              <h2 id="estimate-title">Предварительный бюджет</h2>
+            </div>
+            <div class="estimate-card">
+              <span id="estimate-line"></span>
+              <strong id="estimate-total"></strong>
+              <p id="estimate-breakdown"></p>
+            </div>
+            <div class="payment-grid" id="payment-grid"></div>
+            <p class="estimate-note" id="estimate-note"></p>
+            <div class="result-actions">
+              <a class="call-action" href="tel:+79182383059" data-call-action>Позвонить сейчас</a>
+              <a class="secondary-action" href="/">Посмотреть сайт</a>
+            </div>
+          </section>
+        </div>
+      </section>
+    </main>
+
+    <script>
+      window.VERH_LEAD_ENDPOINT = "https://functions.yandexcloud.net/d4e8j84veok7kjc043kk";
+    </script>
+    <script src="script.js?v=20260901"></script>
+  </body>
+</html>
