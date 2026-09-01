@@ -95,10 +95,20 @@ input:focus-visible {
   margin: 0 auto 24px;
 }
 
+.flow__brand a {
+  width: max-content;
+  display: block;
+}
+
 .flow__brand img {
   display: block;
   width: 92px;
   height: auto;
+  transition: opacity 160ms ease;
+}
+
+.flow__brand a:hover img {
+  opacity: 0.76;
 }
 
 .progress {
