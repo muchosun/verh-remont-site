@@ -134,7 +134,7 @@ function setStep(nextStep, { track = true } = {}) {
     trackGoal("calculator_step_view", { step: state.step, step_name: STEP_NAMES[state.step] });
   }
 
-  window.scrollTo({ top: 0, behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
+  window.scrollTo({ top: 0, behavior: "auto" });
 }
 
 function markSelection(selector, value, dataName) {
