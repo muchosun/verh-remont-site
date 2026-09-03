@@ -23,7 +23,7 @@
     <link rel="manifest" href="/site.webmanifest" />
     <link rel="preload" as="font" href="../assets/fonts/onest-cyrillic.woff2" type="font/woff2" crossorigin />
     <link rel="stylesheet" href="../assets/vendor/photoswipe/photoswipe.css?v=5.4.4" />
-    <link rel="stylesheet" href="styles.css?v=20260901-10-safari" />
+    <link rel="stylesheet" href="styles.css?v=20260903-1-igor-welcome" />
     <script type="application/ld+json">
       {
         "@context": "https://schema.org",
@@ -66,7 +66,7 @@
     <noscript><div><img src="https://mc.yandex.ru/watch/110859289" class="metrika-pixel" alt="" /></div></noscript>
 
     <main class="calculator" id="calculator">
-      <section class="flow" aria-label="Расчет стоимости ремонта квартиры">
+      <section class="flow is-welcome" aria-label="Расчет стоимости ремонта квартиры">
         <div class="flow__topbar">
           <a class="flow__brand" href="/" aria-label="Перейти на главную страницу ВЕРХ">
             <img src="../assets/brand/verh-wordmark-white-transparent.webp" alt="ВЕРХ" width="3360" height="1060" />
@@ -83,8 +83,59 @@
 
         <button class="back-button" id="back-button" type="button" hidden><span aria-hidden="true">←</span> Назад</button>
 
-        <div class="steps" aria-live="polite">
-          <section class="step step--intro is-active" data-step="0" aria-labelledby="flow-title">
+        <div class="steps is-welcome" aria-live="polite">
+          <section class="step step--welcome is-active" data-step="0" aria-labelledby="welcome-title">
+            <div class="welcome-layout">
+              <div class="welcome-copy">
+                <p class="welcome-copy__kicker">Давай познакомимся</p>
+                <h1 id="welcome-title">Привет, меня зовут Игорь.</h1>
+                <p class="welcome-copy__lead">Я занимаюсь ремонтом и строительством уже 12 лет. Вместе с командой ВЕРХ мы сделали больше 800 квартир.</p>
+
+                <div class="welcome-proof" aria-label="Опыт команды ВЕРХ">
+                  <div><strong>12 лет</strong><span>в ремонте и строительстве</span></div>
+                  <div><strong>800+</strong><span>готовых квартир</span></div>
+                </div>
+                <p class="welcome-copy__projects">Работали на объектах DOGMA и ИНСИТИ.</p>
+
+                <div class="welcome-question">
+                  <strong>С чего начнем?</strong>
+                  <span>Расскажи немного о квартире и выбери результат, который хочешь получить.</span>
+                </div>
+
+                <div class="welcome-actions">
+                  <button class="welcome-action welcome-action--primary" id="welcome-start" type="button">
+                    <strong>Узнать стоимость ремонта</strong>
+                    <span>4 вопроса · около минуты</span>
+                  </button>
+                  <a class="welcome-action" href="tel:+79182383059" data-welcome-call>
+                    <strong>Позвонить Игорю</strong>
+                    <span>Бесплатно обсудить ремонт</span>
+                  </a>
+                  <a class="welcome-action" href="/" data-welcome-site>
+                    <strong>Посмотреть сайт</strong>
+                    <span>Работы, цены и условия</span>
+                  </a>
+                </div>
+              </div>
+
+              <figure class="welcome-visual">
+                <picture>
+                  <source media="(max-width: 680px)" srcset="../assets/team/igor-quality-supervisor-responsive-v4-realistic-lighting-mobile-4x5.webp" />
+                  <img
+                    src="../assets/team/igor-quality-supervisor-responsive-v4-realistic-lighting-desktop.webp"
+                    alt="Игорь Пономаренко на объекте ВЕРХ"
+                    width="1536"
+                    height="1024"
+                    fetchpriority="high"
+                    decoding="async"
+                  />
+                </picture>
+                <figcaption><strong>Игорь Пономаренко</strong><span>руководитель ВЕРХ</span></figcaption>
+              </figure>
+            </div>
+          </section>
+
+          <section class="step step--intro" data-step="1" aria-labelledby="flow-title" hidden>
             <div class="intro-copy">
               <p class="intro-copy__kicker">Ремонт квартиры под ключ</p>
               <h1 id="flow-title">Узнай стоимость ремонта своей квартиры</h1>
@@ -110,7 +161,7 @@
             <p class="intro-trust">Работы и материалы включены · договор · гарантия 3 года</p>
           </section>
 
-          <section class="step" data-step="1" aria-labelledby="apartment-title" hidden>
+          <section class="step" data-step="2" aria-labelledby="apartment-title" hidden>
             <div class="step__head">
               <h2 id="apartment-title">Какая у тебя квартира?</h2>
             </div>
@@ -136,7 +187,7 @@
             </div>
           </section>
 
-          <section class="step" data-step="2" aria-labelledby="area-title" hidden>
+          <section class="step" data-step="3" aria-labelledby="area-title" hidden>
             <div class="step__head">
               <h2 id="area-title">Какая площадь?</h2>
             </div>
@@ -157,7 +208,7 @@
             </form>
           </section>
 
-          <section class="step" data-step="3" aria-labelledby="result-title" hidden>
+          <section class="step" data-step="4" aria-labelledby="result-title" hidden>
             <div class="step__head">
               <h2 id="result-title">Выбери результат</h2>
             </div>
@@ -182,7 +233,7 @@
             </div>
           </section>
 
-          <section class="step" data-step="4" aria-labelledby="phone-title" hidden>
+          <section class="step" data-step="5" aria-labelledby="phone-title" hidden>
             <div class="step__head step__head--phone">
               <h2 id="phone-title">Оставь телефон</h2>
               <p>Покажем расчет и добавим подарки к заявке.</p>
@@ -234,7 +285,7 @@
             </div>
           </section>
 
-          <section class="step result-screen" data-step="5" aria-labelledby="estimate-title" hidden>
+          <section class="step result-screen" data-step="6" aria-labelledby="estimate-title" hidden>
             <div class="result-screen__mark" aria-hidden="true">✓</div>
             <div class="step__head">
               <h2 id="estimate-title">Предварительный бюджет</h2>
@@ -258,7 +309,7 @@
       window.VERH_LEAD_ENDPOINT = "https://functions.yandexcloud.net/d4e8j84veok7kjc043kk";
     </script>
     <script src="../assets/js/project-gallery-data.js?v=20260901-1"></script>
-    <script src="script.js?v=20260901-8"></script>
+    <script src="script.js?v=20260903-1-igor-welcome"></script>
     <script type="module" src="gallery.js?v=20260901-2"></script>
   </body>
 </html>

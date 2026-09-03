@@ -39,7 +39,7 @@ const TARIFFS = {
   },
 };
 
-const STEP_NAMES = ["Старт", "Квартира", "Площадь", "Результат", "Телефон"];
+const STEP_NAMES = ["Знакомство", "Работы", "Квартира", "Площадь", "Результат", "Телефон"];
 const SECONDARY_SURCHARGE = 100000;
 const leadEndpoint = String(window.VERH_LEAD_ENDPOINT || "").trim();
 const isLocalPreview = ["localhost", "127.0.0.1", ""].includes(window.location.hostname);
@@ -55,9 +55,12 @@ const state = {
 };
 
 const steps = [...document.querySelectorAll("[data-step]")];
+const flow = document.querySelector(".flow");
+const stepsContainer = document.querySelector(".steps");
 const progressLabel = document.querySelector("#progress-label");
 const progressBar = document.querySelector("#progress-bar");
 const backButton = document.querySelector("#back-button");
+const welcomeStartButton = document.querySelector("#welcome-start");
 const startCalculatorButton = document.querySelector("#start-calculator");
 const siteLink = document.querySelector(".flow__site-link");
 const areaForm = document.querySelector("#area-form");
@@ -109,16 +112,20 @@ function setStep(nextStep, { track = true } = {}) {
     step.classList.toggle("is-active", active);
   });
 
-  const isIntro = state.step === 0;
-  const isResult = state.step === 5;
+  const isWelcome = state.step === 0;
+  const isIntro = state.step <= 1;
+  const isResult = state.step === 6;
+  flow.classList.toggle("is-welcome", isWelcome);
+  stepsContainer.classList.toggle("is-welcome", isWelcome);
   document.querySelector(".progress").hidden = isIntro || isResult;
-  backButton.hidden = isIntro || isResult;
+  backButton.hidden = isWelcome || isResult;
   if (!isIntro && !isResult) {
-    progressLabel.textContent = `${state.step} / 4`;
-    progressBar.style.width = `${state.step * 25}%`;
+    const progressStep = state.step - 1;
+    progressLabel.textContent = `${progressStep} / 4`;
+    progressBar.style.width = `${progressStep * 25}%`;
   }
 
-  if (state.step === 4) {
+  if (state.step === 5) {
     renderSummary();
     window.setTimeout(() => phoneInput.focus({ preventScroll: true }), 180);
   }
@@ -227,7 +234,7 @@ document.querySelectorAll("[data-apartment]").forEach((button) => {
     state.apartment = button.dataset.apartment;
     markSelection("[data-apartment]", state.apartment, "apartment");
     trackGoal("calculator_apartment_selected", { apartment: state.apartment });
-    window.setTimeout(() => setStep(2), 130);
+    window.setTimeout(() => setStep(3), 130);
   });
 });
 
@@ -238,7 +245,7 @@ document.querySelectorAll("[data-area]").forEach((button) => {
     areaInput.value = state.area;
     markSelection("[data-area]", state.area, "area");
     trackGoal("calculator_area_selected", { area: state.area, area_label: state.areaLabel });
-    window.setTimeout(() => setStep(3), 130);
+    window.setTimeout(() => setStep(4), 130);
   });
 });
 
@@ -258,7 +265,7 @@ areaForm.addEventListener("submit", (event) => {
   state.areaLabel = "Своя площадь";
   markSelection("[data-area]", state.area, "area");
   trackGoal("calculator_area_selected", { area: state.area, area_label: state.areaLabel });
-  setStep(3);
+  setStep(4);
 });
 
 document.querySelectorAll("[data-level]").forEach((button) => {
@@ -266,13 +273,18 @@ document.querySelectorAll("[data-level]").forEach((button) => {
     state.level = button.dataset.level;
     markSelection("[data-level]", state.level, "level");
     trackGoal("calculator_result_selected", { tariff: state.level });
-    window.setTimeout(() => setStep(4), 150);
+    window.setTimeout(() => setStep(5), 150);
   });
+});
+
+welcomeStartButton.addEventListener("click", () => {
+  trackGoal("calculator_welcome_start");
+  setStep(1, { track: false });
 });
 
 startCalculatorButton.addEventListener("click", () => {
   trackGoal("calculator_intro_start");
-  setStep(1);
+  setStep(2);
 });
 
 backButton.addEventListener("click", () => setStep(state.step - 1));
@@ -316,7 +328,7 @@ leadForm.addEventListener("submit", async (event) => {
       tariff: state.level,
     });
     renderEstimate();
-    setStep(5, { track: false });
+    setStep(6, { track: false });
   } catch (error) {
     trackGoal("calculator_lead_failure", {
       apartment: state.apartment,
@@ -331,6 +343,14 @@ leadForm.addEventListener("submit", async (event) => {
 
 document.querySelector("[data-call-action]")?.addEventListener("click", () => {
   trackGoal("calculator_phone_call", { placement: "result" });
+});
+
+document.querySelector("[data-welcome-call]")?.addEventListener("click", () => {
+  trackGoal("calculator_phone_call", { placement: "welcome" });
+});
+
+document.querySelector("[data-welcome-site]")?.addEventListener("click", () => {
+  trackGoal("calculator_site_link", { step: state.step, placement: "welcome" });
 });
 
 siteLink.addEventListener("click", () => {
@@ -349,3 +369,4 @@ trackGoal("calculator_page_view", {
   initial_tariff: state.level,
   theme: "dark",
 });
+trackGoal("calculator_welcome_view");
