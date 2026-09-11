@@ -418,8 +418,16 @@ function initDeferredProjectGallery() {
 }
 
 function trackMetricGoal(goal, params = {}) {
-  if (typeof window.ym === "function") window.ym(110859289, "reachGoal", goal, params);
+  const heroVariant = window.VERH_HERO_VARIANT;
+  const experimentParams = heroVariant === "control" || heroVariant === "trust"
+    ? { experiment: "hero-headline-v1", variant: heroVariant }
+    : {};
+  if (typeof window.ym === "function") {
+    window.ym(110859289, "reachGoal", goal, { ...params, ...experimentParams });
+  }
 }
+
+trackMetricGoal("hero_headline_exposure");
 
 function initYandexReviews() {
   if (!yandexReviewsSection) return;
@@ -578,7 +586,10 @@ function resetTimer() {
   }
   state.timerStarted = false;
   state.timerLeft = 120;
-  if (timerElement) timerElement.textContent = "02:00";
+  if (timerElement) {
+    timerElement.textContent = "02:00";
+    timerElement.classList.remove("is-ready");
+  }
 }
 
 function resetLeadResult() {
@@ -591,7 +602,7 @@ function resetLeadResult() {
   resetTimer();
   leadPanel.classList.remove("is-success");
   leadTitle.textContent = "Оставь телефон";
-  leadDescription.textContent = "После отправки покажу предварительную стоимость и график платежей.";
+  leadDescription.textContent = "После отправки покажу предварительный расчёт и добавлю подарки к заявке.";
   leadForm.hidden = false;
   leadOffer.hidden = false;
   leadLoading.hidden = true;
@@ -806,6 +817,7 @@ function startTimer() {
     if (state.timerLeft === 0 && timerId) {
       window.clearInterval(timerId);
       timerId = null;
+      timerElement.classList.add("is-ready");
       timerElement.textContent = "можно отправить";
     }
   }, 1000);

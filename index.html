@@ -46,12 +46,40 @@
         const params = new URLSearchParams(window.location.search);
         const explicitTheme = params.get("theme");
         const validTheme = (value) => value === "light" || value === "dark";
+        const explicitHeroVariant = params.get("hero_variant");
+        const validHeroVariant = (value) => value === "control" || value === "trust";
         let sessionTheme = "";
+        let heroVariant = validHeroVariant(explicitHeroVariant) ? explicitHeroVariant : "";
 
         try {
           sessionTheme = sessionStorage.getItem("verh-theme") || "";
         } catch (error) {
           sessionTheme = "";
+        }
+
+        if (!heroVariant) {
+          try {
+            heroVariant = localStorage.getItem("verh-hero-headline-v1") || "";
+          } catch (error) {
+            heroVariant = "";
+          }
+        }
+
+        if (!validHeroVariant(heroVariant)) {
+          let randomValue = Math.random();
+          try {
+            const randomValues = new Uint32Array(1);
+            window.crypto.getRandomValues(randomValues);
+            randomValue = randomValues[0] / 4294967296;
+          } catch (error) {
+            // Math.random remains available when secure randomness is unavailable.
+          }
+          heroVariant = randomValue < 0.5 ? "control" : "trust";
+          try {
+            localStorage.setItem("verh-hero-headline-v1", heroVariant);
+          } catch (error) {
+            // The selected variant still applies when storage is unavailable.
+          }
         }
 
         const intent = [
@@ -93,25 +121,27 @@
 
         root.dataset.theme = theme;
         root.dataset.themeSource = source;
+        root.dataset.heroVariant = heroVariant;
         root.style.colorScheme = theme;
         if (themeColor) themeColor.content = theme === "dark" ? "#070707" : "#f7f2ea";
 
         lightStylesheet.id = "site-theme-stylesheet";
         lightStylesheet.rel = "stylesheet";
-        lightStylesheet.href = "styles-light.css?v=20260728-all-reviews";
+        lightStylesheet.href = "styles-light.css?v=20260911-hero-ab";
         lightStylesheet.media = theme === "light" ? "all" : "not all";
         document.head.appendChild(lightStylesheet);
 
         darkStylesheet.id = "site-theme-dark-stylesheet";
         darkStylesheet.rel = "stylesheet";
-        darkStylesheet.href = "styles.css?v=20260728-all-reviews";
+        darkStylesheet.href = "styles.css?v=20260911-hero-ab";
         darkStylesheet.media = theme === "dark" ? "all" : "not all";
         document.head.appendChild(darkStylesheet);
 
         window.VERH_THEME = theme;
+        window.VERH_HERO_VARIANT = heroVariant;
       })();
     </script>
-    <noscript><link rel="stylesheet" href="styles.css?v=20260728-all-reviews" /></noscript>
+    <noscript><link rel="stylesheet" href="styles.css?v=20260911-hero-ab" /></noscript>
     <link rel="stylesheet" href="theme-switch.css?v=20260728-brand-zone" />
     <link rel="stylesheet" href="marketing-legal.css?v=20260819-igor-trust-banner" />
     <link rel="stylesheet" href="service-links.css?v=20260803" />
@@ -271,7 +301,10 @@
           <span class="photo-watermark" aria-hidden="true">ВЕРХ</span>
         </div>
         <div class="hero__content">
-          <h1>Ремонт квартир под ключ в Краснодаре</h1>
+          <h1 class="hero-headline">
+            <span data-hero-variant="control">Ремонт квартир под ключ в Краснодаре</span>
+            <span data-hero-variant="trust">Ремонт без сюрпризов в смете и сроках</span>
+          </h1>
           <p>Материалы для ремонта — от 10 000 ₽/м². Работы считаем отдельно и фиксируем в смете.</p>
           <div class="hero-badges" aria-label="Ключевые условия">
             <span class="hero-price"><span class="hero-price__label">Косметический</span><strong>от&nbsp;6&nbsp;000&nbsp;₽/м²</strong></span>
@@ -787,11 +820,19 @@
               <div class="lead-panel">
                 <div class="slide-head">
                   <h2 id="lead-title">Оставь телефон</h2>
-                  <p id="lead-description">После отправки покажу предварительную стоимость и график платежей.</p>
+                  <p id="lead-description">После отправки покажу предварительный расчёт и добавлю подарки к заявке.</p>
                 </div>
-                <div class="lead-offer">
-                  <span>расчёт за минуту</span>
-                  <strong id="timer">02:00</strong>
+                <div class="lead-offer" aria-labelledby="lead-offer-title">
+                  <div class="lead-offer__head">
+                    <strong class="lead-offer__title" id="lead-offer-title">Четыре подарка к ремонту</strong>
+                    <span class="lead-offer__timer"><small>расчёт за минуту</small><strong id="timer">02:00</strong></span>
+                  </div>
+                  <ul class="lead-benefits">
+                    <li><span>01</span>Кондиционер в подарок</li>
+                    <li><span>02</span>Дизайн-проект в подарок</li>
+                    <li><span>03</span>Выезд на замер бесплатно</li>
+                    <li><span>04</span>Клининг после ремонта в подарок</li>
+                  </ul>
                 </div>
                 <form class="lead-form" id="lead-form">
                   <label for="phone-input">Телефон</label>
@@ -808,7 +849,8 @@
                     <input type="checkbox" name="personal_data_consent" checked required />
                     <span>Даю <a href="consent.html" target="_blank" rel="noopener">согласие на обработку данных</a>. <a href="privacy.html" target="_blank" rel="noopener">Политика</a>.</span>
                   </label>
-                  <button type="submit">Показать предварительный расчёт</button>
+                  <button type="submit">Получить расчёт и подарки</button>
+                  <p class="lead-terms">Условия подарков зависят от стоимости договора, площади и объёма работ. Точные условия фиксируем в договоре.</p>
                 </form>
                 <div class="lead-loading" id="lead-loading" hidden>
                   <span aria-hidden="true"></span>
@@ -831,6 +873,6 @@
       window.VERH_REVIEWS_WIDGET_ENABLED = true;
     </script>
     <script src="assets/js/project-gallery-data.js?v=20260901-1"></script>
-    <script src="script.js?v=20260901-shared-gallery"></script>
+    <script src="script.js?v=20260911-hero-ab"></script>
   </body>
 </html>
