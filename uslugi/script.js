@@ -4,6 +4,7 @@
   const leadEndpoint = window.VERH_LEAD_ENDPOINT || "";
   const serviceName = document.body.dataset.service || "Отделочные работы";
   const serviceSlug = document.body.dataset.serviceSlug || "uslugi";
+  const requestType = document.body.dataset.request || "measurement";
 
   const reachGoal = (goal, params = {}) => {
     if (typeof window.ym === "function") {
@@ -11,10 +12,13 @@
     }
   };
 
-  const scrollToLead = () => {
+  const scrollToLead = (event) => {
     const lead = document.querySelector("#lead");
     if (!lead) return;
-    reachGoal("service_lead_start");
+    const selectedPackage = event?.currentTarget?.dataset?.package || "";
+    const packageSelect = lead.querySelector("select[name='package']");
+    if (selectedPackage && packageSelect) packageSelect.value = selectedPackage;
+    reachGoal("service_lead_start", { request: requestType, offer: selectedPackage || undefined });
     lead.scrollIntoView({ behavior: "smooth", block: "start" });
     window.setTimeout(() => lead.querySelector("input[type='tel']")?.focus({ preventScroll: true }), 520);
   };
@@ -55,6 +59,7 @@
       const normalizedPhone = normalizePhone(phone.value);
       const consent = form.elements.consent.checked;
       const website = form.elements.website.value.trim();
+      const selectedPackage = form.elements.package?.value.trim() || "";
 
       phone.toggleAttribute("aria-invalid", !normalizedPhone);
 
@@ -81,7 +86,8 @@
           const source = new URL(location.href);
           source.hash = "";
           source.searchParams.set("service", serviceName);
-          source.searchParams.set("request", "measurement");
+          source.searchParams.set("request", requestType);
+          if (selectedPackage) source.searchParams.set("package", selectedPackage);
 
           const response = await fetch(leadEndpoint, {
             method: "POST",
@@ -99,18 +105,19 @@
           await new Promise((resolve) => window.setTimeout(resolve, 650));
         }
 
-        reachGoal("service_lead_submit", { request: "measurement", local_preview: isLocal });
-        reachGoal("service_lead_success", { request: "measurement", local_preview: isLocal });
+        reachGoal("service_lead_submit", { request: requestType, offer: selectedPackage || undefined, local_preview: isLocal });
+        reachGoal("service_lead_success", { request: requestType, offer: selectedPackage || undefined, local_preview: isLocal });
         status.dataset.state = "success";
         status.textContent = isLocal
           ? "Форма заполнена корректно."
-          : "Заявка отправлена. Скоро позвоним и договоримся о замере.";
+          : "Заявка отправлена. Скоро позвоним и уточним детали.";
         submit.textContent = "Заявка принята";
         phone.disabled = true;
+        if (form.elements.package) form.elements.package.disabled = true;
         form.elements.consent.disabled = true;
       } catch (error) {
         console.error("Service lead submission failed", error);
-        reachGoal("service_lead_failure", { request: "measurement" });
+        reachGoal("service_lead_failure", { request: requestType, offer: selectedPackage || undefined });
         status.dataset.state = "error";
         status.textContent = "Не удалось отправить. Позвони по номеру +7 (918) 238-30-59.";
         submit.disabled = false;

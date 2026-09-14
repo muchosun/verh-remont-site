@@ -293,9 +293,10 @@ function servicePage(service) {
         <span>Позвонить</span>
       </a>
     </div>
-    <script src="../script.js?v=20260901-metrica-funnel" defer></script>
+    <script src="../script.js?v=20260914-specialty" defer></script>
   </body>
-</html>`;
+</html>
+`;
 }
 
 function hubPage(services) {
@@ -315,8 +316,8 @@ function hubPage(services) {
           </article>`).join("");
 
   return `${head({
-    title: "Отделочные работы в Краснодаре — ВЕРХ",
-    description: "Отделочные работы в Краснодаре: полы, стены, плитка, сантехника и потолки.",
+    title: "Услуги для квартиры в Краснодаре — ВЕРХ",
+    description: "Дизайн-проект, приёмка квартиры от застройщика и отделочные работы в Краснодаре.",
     canonical: "https://verhremont.ru/uslugi/",
     stylesheet: "styles.css",
   })}
@@ -328,9 +329,9 @@ function hubPage(services) {
           <img src="/assets/tariffs/finish-cosmetic.webp" alt="" width="1024" height="1536" fetchpriority="high" decoding="async" />
         </div>
         <div class="hub-hero__content">
-          <span class="section-label">Ремонт отдельных помещений</span>
-          <h1>Отделочные работы в Краснодаре</h1>
-          <p>Сделаем отдельный этап ремонта в комнате или квартире: уложим пол и плитку, подготовим стены, разведём сантехнику или установим потолок.</p>
+          <span class="section-label">От приёмки до готового ремонта</span>
+          <h1>Услуги для квартиры в Краснодаре</h1>
+          <p>Примем квартиру у застройщика, подготовим дизайн-проект или выполним отдельный этап ремонта.</p>
           <a class="button button--gold" href="#services">Выбрать услугу</a>
           <ul class="hero-trust">
             <li><strong>Гарантия 3 года</strong><span>на выполненные работы</span></li>
@@ -344,8 +345,8 @@ function hubPage(services) {
         <div class="section-shell">
           <header class="section-heading">
             <span class="section-label">Выбери, что нужно сделать</span>
-            <h2>Отделочные работы для квартиры</h2>
-            <p>Можно заказать одну услугу или собрать несколько работ в один ремонт. Перед началом осмотрим объект и согласуем смету.</p>
+            <h2>Услуги для квартиры</h2>
+            <p>Можно заказать отдельную услугу или пройти весь путь с одной командой: от приёмки и проекта до ремонта.</p>
           </header>
           <div class="service-card-grid">${cards}
           </div>
@@ -360,12 +361,13 @@ function hubPage(services) {
       </section>
     </main>
     ${footer()}
-    <script src="script.js?v=20260901-metrica-funnel" defer></script>
+    <script src="script.js?v=20260914-specialty" defer></script>
   </body>
-</html>`;
+</html>
+`;
 }
 
-const hubHtml = hubPage(data.services);
+const hubHtml = hubPage([...(data.specialties || []), ...data.services]);
 validateClientCopy(hubHtml, "services index");
 await writeFile(join(currentDir, "index.html"), hubHtml, "utf8");
 

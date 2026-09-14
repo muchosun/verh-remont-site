@@ -1,5 +1,31 @@
 {
-  "generatedAt": "2026-08-03",
+  "generatedAt": "2026-09-14",
+  "specialties": [
+    {
+      "slug": "dizayn-proekt",
+      "shortTitle": "Дизайн-проект квартиры",
+      "price": "от 1 290 ₽/м²",
+      "priceNote": "три пакета на выбор",
+      "minimum": "Проект для ремонта",
+      "heroImage": "/assets/design/renovation-project-plan.webp",
+      "heroWidth": 1448,
+      "heroHeight": 1086,
+      "heroPosition": "center center",
+      "heroMobilePosition": "center center"
+    },
+    {
+      "slug": "priemka-kvartiry",
+      "shortTitle": "Приёмка квартиры",
+      "price": "от 2 990 ₽",
+      "priceNote": "за выезд и осмотр",
+      "minimum": "От застройщика",
+      "heroImage": "/v14/assets/web/quiz-newbuild.webp",
+      "heroWidth": 640,
+      "heroHeight": 1138,
+      "heroPosition": "center 48%",
+      "heroMobilePosition": "center 45%"
+    }
+  ],
   "services": [
     {
       "slug": "ukladka-laminata",
