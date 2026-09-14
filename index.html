@@ -261,6 +261,8 @@
       });
     </script>
     <!-- /Yandex.Metrika counter -->
+    <script src="/assets/js/lead-support.js?v=20260914" defer></script>
+    <link rel="stylesheet" href="conversion.css?v=20260914" />
   </head>
   <body>
     <noscript><div><img src="https://mc.yandex.ru/watch/110859289" style="position: absolute; left: -9999px;" alt="" /></div></noscript>
@@ -316,11 +318,37 @@
           </div>
           <div class="hero__actions">
             <button class="primary-action cta-glint" type="button" data-quiz-open>
-              Получить точный расчёт за минуту
+              Рассчитать бюджет ремонта
             </button>
             <a class="secondary-action call-action" href="tel:+79182383059" data-call-button data-phone-label="+7 (918) 238-30-59">Позвонить</a>
           </div>
         </div>
+      </section>
+
+      <section class="projects section" id="projects">
+        <div class="section-head projects__head">
+          <div>
+            <span class="section-kicker">Реальные объекты</span>
+            <h2>Посмотри, как выглядит готовый ремонт</h2>
+          </div>
+        </div>
+
+        <div class="project-gallery" data-project-gallery data-project-assets-prefix="assets/projects">
+          <div class="project-gallery__topbar">
+            <div class="project-gallery__filters" role="tablist" aria-label="Фильтр объектов">
+              <button class="project-gallery__filter is-active" type="button" role="tab" aria-selected="true" data-project-filter="all">Все <span>116</span></button>
+              <button class="project-gallery__filter" type="button" role="tab" aria-selected="false" data-project-filter="standard">Стандарт <span>31</span></button>
+              <button class="project-gallery__filter" type="button" role="tab" aria-selected="false" data-project-filter="comfort">Комфорт <span>35</span></button>
+              <button class="project-gallery__filter" type="button" role="tab" aria-selected="false" data-project-filter="lux">Люкс <span>26</span></button>
+              <button class="project-gallery__filter" type="button" role="tab" aria-selected="false" data-project-filter="details">Свет и детали <span>24</span></button>
+            </div>
+            <output class="project-gallery__count" data-project-count aria-live="polite">116 фото</output>
+          </div>
+
+          <div class="project-gallery__track" data-project-track role="list" aria-label="Фотографии выбранной категории" tabindex="0"></div>
+        </div>
+
+        <p class="projects__privacy" id="projects-privacy"><strong>Адреса квартир не публикуем.</strong> Площадь, ЖК и детали объекта добавим только после согласования с собственниками.</p>
       </section>
 
       <section class="tariffs section" id="tariffs">
@@ -449,7 +477,7 @@
           <div class="design-gift__content">
             <span class="design-gift__eyebrow">Для ремонта под ключ</span>
             <h2>Проект ремонта в подарок</h2>
-            <p>Бесплатно приедем на замер. После заключения договора подготовим для тебя план квартиры: расстановку мебели, свет, электрику и разводку коммуникаций.</p>
+            <p>Бесплатно приедем на замер. При заключении договора на ремонт «Комфорт» или «Люкс» подготовим рабочий проект: расстановку мебели, свет, электрику и разводку коммуникаций.</p>
             <ol class="design-gift__steps" aria-label="Как получить проект ремонта">
               <li><span>01</span><strong>Бесплатный замер</strong></li>
               <li><span>02</span><strong>Договор на ремонт</strong></li>
@@ -581,32 +609,6 @@
         <a class="service-links__all" href="/uslugi/">Все услуги для квартиры</a>
       </section>
 
-      <section class="projects section" id="projects">
-        <div class="section-head projects__head">
-          <div>
-            <span class="section-kicker">Реальные объекты</span>
-            <h2>Посмотри, как выглядит готовый ремонт</h2>
-          </div>
-        </div>
-
-        <div class="project-gallery" data-project-gallery data-project-assets-prefix="assets/projects">
-          <div class="project-gallery__topbar">
-            <div class="project-gallery__filters" role="tablist" aria-label="Фильтр объектов">
-              <button class="project-gallery__filter is-active" type="button" role="tab" aria-selected="true" data-project-filter="all">Все <span>116</span></button>
-              <button class="project-gallery__filter" type="button" role="tab" aria-selected="false" data-project-filter="standard">Стандарт <span>31</span></button>
-              <button class="project-gallery__filter" type="button" role="tab" aria-selected="false" data-project-filter="comfort">Комфорт <span>35</span></button>
-              <button class="project-gallery__filter" type="button" role="tab" aria-selected="false" data-project-filter="lux">Люкс <span>26</span></button>
-              <button class="project-gallery__filter" type="button" role="tab" aria-selected="false" data-project-filter="details">Свет и детали <span>24</span></button>
-            </div>
-            <output class="project-gallery__count" data-project-count aria-live="polite">116 фото</output>
-          </div>
-
-          <div class="project-gallery__track" data-project-track role="list" aria-label="Фотографии выбранной категории" tabindex="0"></div>
-        </div>
-
-        <p class="projects__privacy" id="projects-privacy"><strong>Адреса квартир не публикуем.</strong> Площадь, ЖК и детали объекта добавим только после согласования с собственниками.</p>
-      </section>
-
       <section class="reviews-section section" id="reviews" data-yandex-reviews>
         <div class="reviews-section__inner">
           <h2 class="reviews-section__title">Что о нас говорят</h2>
@@ -633,7 +635,7 @@
       <section class="site-cta" id="contacts">
         <h2>Готов прикинуть бюджет своей квартиры?</h2>
         <div class="site-cta__actions">
-          <button class="primary-action cta-glint" type="button" data-quiz-open>Получить точный расчёт за минуту</button>
+          <button class="primary-action cta-glint" type="button" data-quiz-open>Рассчитать бюджет ремонта</button>
           <a class="secondary-action secondary-action--light call-action" href="tel:+79182383059" data-call-button data-phone-label="+7 (918) 238-30-59">Позвонить</a>
         </div>
         <p class="site-cta__links">
@@ -830,16 +832,15 @@
               <div class="lead-panel">
                 <div class="slide-head">
                   <h2 id="lead-title">Оставь телефон</h2>
-                  <p id="lead-description">После отправки покажу предварительный расчёт и добавлю подарки к заявке.</p>
+                  <p id="lead-description">После отправки покажем ориентир стоимости. Точную смету закрепим после замера.</p>
                 </div>
                 <div class="lead-offer" aria-labelledby="lead-offer-title">
                   <div class="lead-offer__head">
-                    <strong class="lead-offer__title" id="lead-offer-title">Четыре подарка к ремонту</strong>
-                    <span class="lead-offer__timer"><small>расчёт за минуту</small><strong id="timer">02:00</strong></span>
+                    <strong class="lead-offer__title" id="lead-offer-title">Условия ремонта</strong>
                   </div>
                   <ul class="lead-benefits">
-                    <li><span>01</span>Кондиционер в подарок</li>
-                    <li><span>02</span>Дизайн-проект в подарок</li>
+                    <li><span>01</span>Подарки по условиям договора</li>
+                    <li data-design-gift><span>02</span>Рабочий проект в подарок: «Комфорт» и «Люкс»</li>
                     <li><span>03</span>Выезд на замер бесплатно</li>
                     <li><span>04</span>Клининг после ремонта в подарок</li>
                   </ul>
@@ -859,7 +860,7 @@
                     <input type="checkbox" name="personal_data_consent" checked required />
                     <span>Даю <a href="consent.html" target="_blank" rel="noopener">согласие на обработку данных</a>. <a href="privacy.html" target="_blank" rel="noopener">Политика</a>.</span>
                   </label>
-                  <button type="submit">Получить расчёт и подарки</button>
+                  <button type="submit">Получить предварительный расчёт</button>
                   <p class="lead-terms">Условия подарков зависят от стоимости договора, площади и объёма работ. Точные условия фиксируем в договоре.</p>
                 </form>
                 <div class="lead-loading" id="lead-loading" hidden>
@@ -867,7 +868,7 @@
                   <strong>Собираю расчёт</strong>
                   <p>Тип квартиры, метраж и уровень ремонта уже учтены.</p>
                 </div>
-                <div class="success-message" id="success-message" hidden></div>
+                <div class="success-message" id="success-message" role="status" aria-live="polite" hidden></div>
               </div>
             </article>
           </div>
@@ -883,6 +884,6 @@
       window.VERH_REVIEWS_WIDGET_ENABLED = true;
     </script>
     <script src="assets/js/project-gallery-data.js?v=20260901-1"></script>
-    <script src="script.js?v=20260911-hero-ab"></script>
+    <script src="script.js?v=20260914-conversion"></script>
   </body>
 </html>

@@ -120,7 +120,7 @@ function formatMentions() {
 function normalizeSource(rawSource, origin) {
   try {
     const url = new URL(String(rawSource || ""));
-    if (url.origin === origin) return `${url.pathname}${url.search}`.slice(0, 240);
+    if (url.origin === origin) return `${url.pathname}${url.search}`.slice(0, 2048);
   } catch {
     // The source is only metadata for the manager; an invalid value is replaced below.
   }

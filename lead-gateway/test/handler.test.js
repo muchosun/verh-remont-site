@@ -155,6 +155,20 @@ test("normalizes, recalculates and sends a lead to MAX", async () => {
   }]);
 });
 
+test("preserves campaign metadata beyond 240 characters in a service lead", async () => {
+  process.env.MAX_BOT_TOKEN = "test-token";
+  process.env.MAX_CHAT_ID = "987654";
+  let message = "";
+  const testHandler = createHandler({ maxRequest: async (_url, options) => {
+    message = JSON.parse(options.body).text;
+    return { ok: true, status: 200 };
+  } });
+  const source = `https://verhremont.ru/uslugi/dizayn-proekt/?utm_campaign=${"a".repeat(260)}&utm_source=yandex`;
+  const result = await testHandler(leadEvent({ kind: "callback", phone: "+79991234567", source }));
+  assert.equal(result.statusCode, 201);
+  assert.ok(message.includes("utm_source=yandex"));
+});
+
 test("returns a neutral error when MAX does not accept the lead", async () => {
   process.env.MAX_BOT_TOKEN = "test-token";
   process.env.MAX_CHAT_ID = "987654";

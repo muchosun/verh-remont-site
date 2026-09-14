@@ -601,8 +601,10 @@ function resetLeadResult() {
   }
   resetTimer();
   leadPanel.classList.remove("is-success");
+  leadPanel.classList.remove("is-error");
+  leadForm.querySelector('[type="submit"]').textContent = "Получить предварительный расчёт";
   leadTitle.textContent = "Оставь телефон";
-  leadDescription.textContent = "После отправки покажу предварительный расчёт и добавлю подарки к заявке.";
+  leadDescription.textContent = "После отправки покажем ориентир стоимости. Точную смету закрепим после замера.";
   leadForm.hidden = false;
   leadOffer.hidden = false;
   leadLoading.hidden = true;
@@ -629,6 +631,7 @@ function preloadQuizMediaWhenIdle() {
 }
 
 function openQuiz(trigger) {
+  slides.forEach((slide) => { slide.inert = !slide.classList.contains("is-active"); });
   callbackSuppressed = true;
   hideCallbackPrompt(true);
   lastQuizTrigger = trigger || document.activeElement;
@@ -642,6 +645,7 @@ function openQuiz(trigger) {
   document.body.classList.add("modal-open");
   updateStickyCta();
   setTimeout(() => {
+    if (!quizModal.classList.contains("is-open")) return;
     const activeChoice = document.querySelector(".slide.is-active button:not([disabled])");
     if (activeChoice) activeChoice.focus();
   }, 120);
@@ -673,6 +677,7 @@ function setStep(nextStep) {
   slides.forEach((slide, index) => {
     slide.classList.toggle("is-active", index === step);
     slide.classList.toggle("is-before", index < step);
+    slide.inert = index !== step;
   });
 
   progressButtons.forEach((button, index) => {
@@ -687,7 +692,9 @@ function setStep(nextStep) {
   if (step === 3) {
     startTimer();
     if (!state.leadSubmitted) {
-      setTimeout(() => phoneInput.focus(), 120);
+      setTimeout(() => {
+        if (quizModal.classList.contains("is-open") && state.step === 3 && !leadForm.hidden) phoneInput.focus();
+      }, 120);
     }
   }
 }
@@ -722,6 +729,8 @@ function renderSelections() {
 function render() {
   renderSelections();
   renderSummary();
+  const designGift = document.querySelector('[data-design-gift]');
+  if (designGift) designGift.hidden = !["comfort", "lux"].includes(state.level);
 }
 
 function normalizeArea(value) {
@@ -784,22 +793,13 @@ function createLeadPayload() {
     secondarySurcharge: getSecondarySurcharge(),
     preliminaryEstimate: getEstimate(),
     phone: state.leadPhone,
-    source: window.location.href,
+    source: window.VerhLead.source().href,
     submittedAt: new Date().toISOString(),
   };
 }
 
 async function sendLeadToMax(payload) {
-  if (!leadEndpoint) return { status: "not-configured" };
-
-  const response = await fetch(leadEndpoint, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(payload),
-  });
-
-  if (!response.ok) throw new Error(`Lead endpoint responded with ${response.status}`);
-  return { status: "sent" };
+  return window.VerhLead.send(leadEndpoint, payload);
 }
 
 function waitFor(milliseconds) {
@@ -807,6 +807,7 @@ function waitFor(milliseconds) {
 }
 
 function startTimer() {
+  if (!timerElement) return;
   if (state.timerStarted) return;
   state.timerStarted = true;
   timerId = window.setInterval(() => {
@@ -897,6 +898,16 @@ quizCloseButtons.forEach((button) => {
 document.addEventListener("keydown", (event) => {
   if (event.key === "Escape" && quizModal.classList.contains("is-open")) {
     closeQuiz();
+  }
+  if (event.key === "Tab" && quizModal.classList.contains("is-open")) {
+    const items = [...quizModal.querySelectorAll('button, a[href], input, select, textarea, [tabindex]')]
+      .filter((element) => !element.disabled && element.tabIndex >= 0 && !element.closest('[inert]') && element.getClientRects().length && getComputedStyle(element).visibility !== "hidden");
+    const first = items[0];
+    const last = items[items.length - 1];
+    if (first && ((!event.shiftKey && document.activeElement === last) || (event.shiftKey && document.activeElement === first) || !quizModal.contains(document.activeElement))) {
+      event.preventDefault();
+      (event.shiftKey ? last : first).focus();
+    }
   }
 });
 
@@ -1006,7 +1017,7 @@ callbackForm?.addEventListener("submit", async (event) => {
     await sendLeadToMax({
       kind: "callback",
       phone: callbackPhone.value.trim(),
-      source: window.location.href,
+      source: window.VerhLead.source().href,
       submittedAt: new Date().toISOString(),
     });
     callbackForm.hidden = true;
@@ -1027,6 +1038,7 @@ callbackForm?.addEventListener("submit", async (event) => {
 
 leadForm.addEventListener("submit", async (event) => {
   event.preventDefault();
+  if (leadForm.dataset.sending === "true") return;
   phoneInput.setCustomValidity("");
   const digits = phoneInput.value.replace(/\D/g, "");
   if (digits.length < 11) {
@@ -1035,6 +1047,8 @@ leadForm.addEventListener("submit", async (event) => {
     return;
   }
   if (!leadForm.reportValidity()) return;
+  leadForm.dataset.sending = "true";
+  leadPanel.classList.remove("is-error");
   state.leadPhone = phoneInput.value.trim();
   const leadMetricParams = {
     apartment: state.apartment,
@@ -1083,20 +1097,26 @@ leadForm.addEventListener("submit", async (event) => {
     render();
   } catch (error) {
     trackMetricGoal("quiz_lead_failure", leadMetricParams);
-    state.leadSubmitted = true;
-    leadPanel.classList.add("is-success");
-    leadTitle.textContent = "Предварительный расчёт готов";
-    leadDescription.textContent = "Показываем ориентир и график платежей ниже.";
+    state.leadSubmitted = false;
+    leadPanel.classList.remove("is-success");
+    leadPanel.classList.add("is-error");
+    leadTitle.textContent = "Отправка не подтверждена";
+    leadDescription.textContent = "Не получили подтверждение доставки. Номер и ответы сохранены: можно повторить отправку или позвонить.";
+    leadForm.hidden = false;
+    leadForm.querySelector('[type="submit"]').textContent = "Повторить отправку";
     leadLoading.hidden = true;
     successMessage.hidden = false;
     successMessage.innerHTML = `
       <strong>Предварительный расчёт: ${getEstimateText()}.</strong>
       <span>${getEstimateBreakdownText()}</span>
       <span>${state.apartment}, ${formatArea(state.area)}, ${getTariff().title}. Точную смету закрепим после замера.</span>
-      <span class="delivery-note">Не удалось передать заявку в рабочую группу. Позвони нам по номеру на сайте, чтобы согласовать замер.</span>
-      ${getPaymentPlanHtml()}
+      <a href="tel:+79182383059">Позвонить: +7 (918) 238-30-59</a>
     `;
     render();
+    leadTitle.tabIndex = -1;
+    if (quizModal.classList.contains("is-open")) leadTitle.focus();
+  } finally {
+    delete leadForm.dataset.sending;
   }
 });
 

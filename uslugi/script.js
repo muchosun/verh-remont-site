@@ -73,39 +73,33 @@
       }
 
       if (website) return;
+      if (submit.disabled) return;
+      const isLocal = location.protocol === "file:" || ["localhost", "127.0.0.1"].includes(location.hostname);
+      reachGoal("service_lead_submit", { request: requestType, offer: selectedPackage || undefined, local_preview: isLocal });
 
       submit.disabled = true;
       submit.textContent = "Отправляем…";
       status.textContent = "Формируем заявку";
 
-      const isLocal = location.protocol === "file:" || ["localhost", "127.0.0.1"].includes(location.hostname);
-
       try {
         if (!isLocal) {
           if (!leadEndpoint) throw new Error("Lead endpoint is not configured");
-          const source = new URL(location.href);
+          const source = window.VerhLead.source();
           source.hash = "";
           source.searchParams.set("service", serviceName);
           source.searchParams.set("request", requestType);
           if (selectedPackage) source.searchParams.set("package", selectedPackage);
 
-          const response = await fetch(leadEndpoint, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              kind: "callback",
-              phone: normalizedPhone,
-              website: "",
-              source: source.toString(),
-            }),
+          await window.VerhLead.send(leadEndpoint, {
+            kind: "callback",
+            phone: normalizedPhone,
+            website: "",
+            source: source.toString(),
           });
-
-          if (!response.ok) throw new Error(`Lead endpoint returned ${response.status}`);
         } else {
           await new Promise((resolve) => window.setTimeout(resolve, 650));
         }
 
-        reachGoal("service_lead_submit", { request: requestType, offer: selectedPackage || undefined, local_preview: isLocal });
         reachGoal("service_lead_success", { request: requestType, offer: selectedPackage || undefined, local_preview: isLocal });
         status.dataset.state = "success";
         status.textContent = isLocal
