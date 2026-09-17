@@ -97,6 +97,13 @@
   font-size: 12px;
 }
 
+.offer-card__minimum {
+  margin: -12px 0 24px;
+  color: #4d4841;
+  font-size: 15px;
+  font-weight: 700;
+}
+
 .offer-card ul {
   display: grid;
   gap: 12px;
