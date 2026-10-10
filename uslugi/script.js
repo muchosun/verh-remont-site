@@ -90,12 +90,16 @@
           source.searchParams.set("request", requestType);
           if (selectedPackage) source.searchParams.set("package", selectedPackage);
 
-          await window.VerhLead.send(leadEndpoint, {
+          const delivery = await window.VerhLead.send(leadEndpoint, {
             kind: "callback",
             phone: normalizedPhone,
             website: "",
             source: source.toString(),
           });
+          if (delivery?.status !== "sent") throw new Error("Lead delivery was not confirmed");
+          if (requestType === "design-project" && serviceSlug === "dizayn-proekt") {
+            reachGoal("design_project_lead_delivered", { request: requestType, offer: selectedPackage || undefined });
+          }
         } else {
           await new Promise((resolve) => window.setTimeout(resolve, 650));
         }

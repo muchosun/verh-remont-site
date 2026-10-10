@@ -234,6 +234,27 @@
   object-fit: cover;
 }
 
+.visual-proof .visual-proof__reference {
+  grid-column: 1 / -1;
+  min-height: 0;
+}
+
+.visual-proof .visual-proof__reference > img {
+  display: block;
+  height: auto;
+}
+
+.visual-proof .visual-proof__reference figcaption {
+  position: relative;
+  inset: auto;
+  padding: 20px 24px;
+  background: var(--ink);
+}
+
+.visual-proof .visual-proof__reference::after {
+  content: none;
+}
+
 .visual-proof figcaption {
   position: absolute;
   right: 24px;
