@@ -14,7 +14,11 @@
   const titles = ["Квартира", "Проект", "Контакт"];
   let step = 0, sending = false, delivered = false, token = "", widget, loading;
   const goal = (name, params = {}) => {
-    if (!local && typeof window.ym === "function") window.ym(110859289, "reachGoal", name, {service:"dizayn-proekt-online",...params});
+    try {
+      if (!local && typeof window.ym === "function") window.ym(110859289, "reachGoal", name, {service:"dizayn-proekt-online",...params});
+    } catch {
+      // Analytics must not turn an already delivered lead into a retryable failure.
+    }
   };
   const collect = () => Object.fromEntries(["customerName", "phone", "callbackTime", "city", "area", "package", "projectStart", "projectTask"].map(name => [name,form.elements[name]?.value || ""]).concat([["mode",mode.value],["consent",form.elements.consent.checked]]));
   const message = (text, state = "") => { status.textContent = text; status.dataset.state = state; };
@@ -126,7 +130,7 @@
         source.hash = "";
         source.searchParams.set("request","design-project");
         source.searchParams.set("lead_type",result.values.mode === "brief" ? "design_brief" : "callback");
-        const delivery = await window.VerhLead.send(window.VERH_LEAD_ENDPOINT, {kind:"callback",phone:result.values.phone,website:"",source:source.toString(),formVersion:3,designBrief:result.values,turnstileToken:token});
+        const delivery = await window.VerhLead.send(window.VERH_LEAD_ENDPOINT, {kind:"callback",phone:result.values.phone,website:"",source:source.toString(),formVersion:3,designBrief:result.values,turnstileToken:token}, {timeoutMs:35000});
         if (delivery?.status !== "sent" || delivery.qualification !== (result.values.mode === "brief" ? "design_brief_v3" : "callback_v3")) throw new Error("Delivery qualification mismatch");
         if (result.values.mode === "brief") goal("design_project_brief_delivered");
         goal("service_lead_success",{request:"design-project",mode:result.values.mode});

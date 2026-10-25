@@ -35,13 +35,13 @@
       });
     } catch { clearTimeout(timer); resolve(""); }
   });
-  const send = async (endpoint, payload) => {
+  const send = async (endpoint, payload, {timeoutMs = 15000} = {}) => {
     if (!endpoint) throw new Error("Lead endpoint is not configured");
     const clientId = await getClientId();
     const yclid = source().searchParams.get("yclid") || "";
     const attribution = { clientId, yclid: /^\d{1,128}$/.test(yclid) ? yclid : "" };
     const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 15000);
+    const timeout = setTimeout(() => controller.abort(), timeoutMs);
     try {
       const response = await fetch(endpoint, {
         method: "POST",
