@@ -18,6 +18,7 @@
     const selectedPackage = event?.currentTarget?.dataset?.package || "";
     const packageSelect = lead.querySelector("select[name='package']");
     if (selectedPackage && packageSelect) packageSelect.value = selectedPackage;
+    packageSelect?.dispatchEvent(new Event("change", { bubbles: true }));
     reachGoal("service_lead_start", { request: requestType, offer: selectedPackage || undefined });
     const scrollTarget = window.innerWidth <= 760 ? lead.querySelector('[data-service-form]') || lead : lead;
     scrollTarget.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -47,7 +48,21 @@
     const submit = form.querySelector("button[type='submit']");
     const status = form.querySelector("[data-form-status]");
     const mode = form.elements.leadMode;
-    const briefFields = ["city", "area", "package", "projectStart", "projectTask"];
+    const hardened = form.dataset?.briefVersion === "2";
+    let sending = false;
+    let delivered = false;
+    const collectBrief = () => Object.fromEntries(["customerName", "phone", "callbackTime", "city", "area", "package", "propertyStage", "projectStart", "projectTask"].map(name => [name, form.elements[name]?.value || ""]).concat([
+      ["mode", mode?.value || ""], ["consent", form.elements.consent.checked], ["ownsPhone", Boolean(form.elements.ownsPhone?.checked)],
+    ]));
+    const validation = () => window.VerhBriefValidation?.validate(collectBrief()) || {ok:false, message:"Форма временно недоступна. Обновите страницу."};
+    const updateReady = () => {
+      if (hardened) submit.disabled = sending || delivered || !validation().ok || Boolean(form.elements.website.value.trim());
+    };
+    if (hardened) {
+      form.addEventListener("input", updateReady);
+      form.addEventListener("change", updateReady);
+    }
+    const briefFields = ["city", "area", "package", "propertyStage", "projectStart", "projectTask"];
     const updateMode = () => {
       const isBrief = !mode || mode.value === "brief";
       form.querySelectorAll?.("[data-brief-field]").forEach(label => { label.hidden = !isBrief; });
@@ -55,6 +70,7 @@
         if (form.elements[name]) form.elements[name].disabled = !isBrief;
       });
       if (mode) submit.textContent = isBrief ? "Отправить заявку на проект" : "Заказать обратный звонок";
+      updateReady();
     };
     mode?.addEventListener("change", updateMode);
     updateMode();
@@ -72,6 +88,7 @@
 
     form.addEventListener("submit", async (event) => {
       event.preventDefault();
+      if (sending || delivered) return;
       status.textContent = "";
       status.removeAttribute("data-state");
 
@@ -84,6 +101,20 @@
       const isBrief = Boolean(mode && mode.value === "brief");
       const isCallback = Boolean(mode && mode.value === "callback");
       if (mode && !isBrief && !isCallback) return;
+      let qualifiedBrief;
+      if (hardened) {
+        const result = validation();
+        if (!result.ok) {
+          status.dataset.state = "error";
+          status.textContent = result.message;
+          form.elements[result.field]?.setAttribute("aria-invalid", "true");
+          form.elements[result.field]?.focus();
+          updateReady();
+          return;
+        }
+        qualifiedBrief = result.values;
+        Object.values(form.elements).forEach(element => element?.removeAttribute?.("aria-invalid"));
+      }
       if (!isCallback && cityInput && (!city || city.length > 80 || !/^[\p{L}\p{M} .()\-]+$/u.test(city))) {
         status.dataset.state = "error";
         status.textContent = "Укажите город квартиры.";
@@ -108,7 +139,7 @@
       if (isBrief) {
         const invalid = !selectedPackage || selectedPackage === "Не определился" ? "package"
           : !["В течение месяца", "Через 1–3 месяца", "Позже трёх месяцев"].includes(projectStart) ? "projectStart"
-          : projectTask.length < 20 || projectTask.length > 120 ? "projectTask" : "";
+          : !hardened && (projectTask.length < 20 || projectTask.length > 120) ? "projectTask" : "";
         if (invalid) {
           status.dataset.state = "error";
           status.textContent = invalid === "package" ? "Выберите пакет проекта или закажите обратный звонок."
@@ -140,6 +171,7 @@
       reachGoal("service_lead_submit", { request: requestType, offer: selectedPackage || undefined, local_preview: isLocal });
 
       submit.disabled = true;
+      sending = true;
       submit.textContent = "Отправляем…";
       status.textContent = "Формируем заявку";
 
@@ -156,7 +188,7 @@
           if (mode) source.searchParams.set("lead_type", isBrief ? "design_brief" : "callback");
           if (isBrief) {
             source.searchParams.set("project_start", projectStart);
-            source.searchParams.set("project_task", projectTask);
+            if (!hardened) source.searchParams.set("project_task", projectTask);
           }
 
           const delivery = await window.VerhLead.send(leadEndpoint, {
@@ -164,8 +196,10 @@
             phone: normalizedPhone,
             website: "",
             source: source.toString(),
+            ...(hardened ? {formVersion:2, designBrief:qualifiedBrief} : {}),
           });
           if (delivery?.status !== "sent") throw new Error("Lead delivery was not confirmed");
+          if (hardened && delivery.qualification !== (isBrief ? "design_brief_v2" : "callback_v2")) throw new Error("Server qualification was not confirmed");
           if (requestType === "design-project" && ["dizayn-proekt", "dizayn-proekt-online"].includes(serviceSlug)) {
             // Only the complete, delivered brief is eligible for the new paid goal.
             if (isBrief) reachGoal("design_project_brief_delivered", { request: requestType, offer: selectedPackage });
@@ -177,6 +211,7 @@
 
         reachGoal("service_lead_success", { request: requestType, offer: selectedPackage || undefined, local_preview: isLocal });
         status.dataset.state = "success";
+        delivered = true;
         status.textContent = isLocal
           ? "Предпросмотр: форма заполнена корректно, заявка не отправлена."
           : "Заявка отправлена. Скоро позвоним и уточним детали.";
@@ -189,13 +224,17 @@
         if (form.elements.projectStart) form.elements.projectStart.disabled = true;
         if (form.elements.projectTask) form.elements.projectTask.disabled = true;
         form.elements.consent.disabled = true;
+        if (hardened) ["customerName", "callbackTime", "ownsPhone", "propertyStage"].forEach(name => { if (form.elements[name]) form.elements[name].disabled = true; });
       } catch (error) {
         console.error("Service lead submission failed", error);
         reachGoal("service_lead_failure", { request: requestType, offer: selectedPackage || undefined });
         status.dataset.state = "error";
         status.textContent = "Не удалось отправить заявку. Позвоните по номеру +7 (918) 238-30-59.";
-        submit.disabled = false;
         submit.textContent = "Повторить отправку";
+      } finally {
+        sending = false;
+        if (hardened) updateReady();
+        else if (!delivered) submit.disabled = false;
       }
     });
   }

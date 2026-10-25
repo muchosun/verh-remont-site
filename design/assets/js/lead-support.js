@@ -52,7 +52,7 @@
       if (!response.ok) throw new Error(`Lead endpoint responded with ${response.status}`);
       const result = await response.json();
       if (result.status !== "accepted" || !result.leadId) throw new Error("Lead delivery was not confirmed");
-      return { status: "sent" };
+      return { status: "sent", qualification: result.qualification || "" };
     } finally { clearTimeout(timeout); }
   };
   window.VerhLead = { source, send };

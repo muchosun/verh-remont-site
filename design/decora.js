@@ -38,5 +38,6 @@
   packages.addEventListener('change', updateMinimum);
   document.querySelectorAll('[data-package]').forEach(button => button.addEventListener('click', updateMinimum));
   updateMinimum();
-  sync(estimate);
+  // The calculator estimate must not prefill the customer's apartment area.
+  if (!document.querySelector('[data-brief-version="2"]')) sync(estimate);
 })();

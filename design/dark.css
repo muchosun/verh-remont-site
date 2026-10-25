@@ -95,6 +95,11 @@ body, .selected-projects, .specialty-page .section-light { background: var(--can
 .service-form input[aria-invalid=true], .service-form select[aria-invalid=true] { border-color: #ffb5ab; }
 .specialty-page .service-form input:focus-visible, .specialty-page .service-form select:focus-visible { outline-color: #f0d8a7; }
 .service-form .form-status { font-size: 14px; }
+.service-form__submit { min-height: 52px; white-space: normal; }
+.service-form__submit:disabled { opacity: .55; cursor: not-allowed; }
+.service-form .consent-row { align-items: start; gap: 10px; }
+.service-form .consent-row input { flex: 0 0 20px; width: 20px; height: 20px; margin-top: 3px; }
+.service-form .consent-row span { min-width: 0; overflow-wrap: anywhere; }
 .service-form .form-status[data-state=error] { color: #ffb5ab; }
 .service-form .form-status[data-state=success] { color: #a3d9b1; }
 .specialty-page .preview-footer { background: #111213; border-top: 1px solid var(--line); }
