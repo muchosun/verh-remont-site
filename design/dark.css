@@ -102,6 +102,29 @@ body, .selected-projects, .specialty-page .section-light { background: var(--can
 .service-form .consent-row span { min-width: 0; overflow-wrap: anywhere; }
 .service-form .form-status[data-state=error] { color: #ffb5ab; }
 .service-form .form-status[data-state=success] { color: #a3d9b1; }
+.brief-quiz { scroll-margin-top: 0; }
+.brief-quiz fieldset { display: grid; gap: 20px; margin: 0; padding: 0; border: 0; min-width: 0; }
+.brief-quiz fieldset > label, .brief-quiz__optional label { display: grid; gap: 8px; min-width: 0; }
+.brief-quiz legend { margin-bottom: 24px; padding: 0; font-size: 24px; line-height: 1.25; font-weight: 600; }
+.brief-quiz legend:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; }
+.brief-quiz__progress { display: grid; gap: 12px; margin-bottom: 4px; font-size: 13px; color: #d0d5d0; }
+.brief-quiz progress { width: 100%; height: 4px; border: 0; accent-color: #dbc79f; background: #383c3a; }
+.brief-quiz progress::-webkit-progress-bar { background: #383c3a; }
+.brief-quiz progress::-webkit-progress-value { background: #dbc79f; }
+.brief-quiz__actions { display: flex; gap: 12px; }
+.brief-quiz__actions > button { min-height: 52px; }
+.brief-quiz__actions > button:not(.brief-quiz__back) { flex: 1; }
+.brief-quiz__summary { color: #d0d5d0; line-height: 1.6; margin: 0; overflow-wrap: anywhere; }
+.brief-quiz__optional summary { cursor: pointer; min-height: 44px; padding-block: 12px; color: #d0d5d0; }
+.brief-quiz__optional[open] { display: grid; gap: 16px; }
+.brief-quiz__muted { color: #aeb8b2; font-weight: 400; font-size: 13px; }
+.brief-quiz__mode, .brief-quiz__retry { padding: 12px 0; background: transparent; color: #e3cfaa; border: 0; text-align: left; text-decoration: underline; text-underline-offset: 4px; font: inherit; cursor: pointer; min-height: 44px; }
+.brief-quiz__mode:focus-visible, .brief-quiz__retry:focus-visible { outline: 2px solid #f0d8a7; }
+.brief-quiz [data-turnstile]:empty { display: none; }
+@media (max-width: 760px) {
+  .brief-quiz legend { font-size: 22px; }
+  .brief-quiz__actions { flex-wrap: wrap; }
+}
 .specialty-page .preview-footer { background: #111213; border-top: 1px solid var(--line); }
 .preview-footer__brand strong, .preview-footer__facts strong { color: var(--text); }
 .preview-footer__brand p, .preview-footer__facts span, .preview-footer__bottom, .template-credit { color: var(--secondary); }

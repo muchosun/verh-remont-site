@@ -23,7 +23,7 @@
     <link rel="stylesheet" href="city.css?v=20261017" />
     <link rel="stylesheet" href="studio.css?v=20261017" />
     <link rel="stylesheet" href="decora.css?v=20261019-mobile" />
-    <link rel="stylesheet" href="dark.css?v=20261018" />
+    <link rel="stylesheet" href="dark.css?v=20261025-quiz" />
     <script>
       if (!window.VERH_PREVIEW && !["localhost", "127.0.0.1"].includes(location.hostname)) {
       (function(m,e,t,r,i,k,a){
@@ -36,7 +36,8 @@
       }
       window.VERH_LEAD_ENDPOINT = "https://functions.yandexcloud.net/d4e8j84veok7kjc043kk";
     </script>
-    <script src="./brief-validation.js?v=20261025" defer></script>
+    <script src="./brief-validation-v3.js?v=20261025-quiz" defer></script>
+    <script src="./turnstile-config.js?v=20261025-quiz" defer></script>
     <script src="/design/assets/js/lead-support.js?v=20261025" defer></script>
   </head>
   <body class="specialty-page" data-service="Дизайн-проект квартиры онлайн" data-service-slug="dizayn-proekt-online" data-request="design-project">
@@ -287,49 +288,66 @@
             <strong data-lead-price aria-live="polite" aria-atomic="true">Рабочий проект · 500 ₽/м² · от 30 м²</strong>
             <a class="lead-contact" href="https://max.ru/id234207648329_biz" target="_blank" rel="noopener">Обсудить в MAX <span aria-hidden="true">↗</span></a>
           </header>
-          <form class="service-form" data-service-form data-brief-version="2" novalidate>
-            <label>Ваше имя
-              <input name="customerName" type="text" autocomplete="given-name" minlength="2" maxlength="80" required aria-describedby="lead-form-status" />
-            </label>
-            <label>Как с вами начать работу
-              <select name="leadMode"><option value="brief">Заполнить заявку на проект</option><option value="callback">Только обратный звонок</option></select>
-            </label>
+          <form class="service-form brief-quiz" data-service-form data-brief-version="3" novalidate>
+            <input name="leadMode" type="hidden" value="brief" />
+            <div class="brief-quiz__progress" data-quiz-progress hidden>
+              <span data-quiz-counter aria-live="polite">1 из 3 · Квартира</span>
+              <progress max="3" value="1" aria-label="Заполнение заявки"></progress>
+            </div>
+            <fieldset data-quiz-step="0">
+              <legend tabindex="-1">О вашей квартире</legend>
             <label data-brief-field>Город квартиры
               <input name="city" type="text" autocomplete="address-level2" maxlength="80" placeholder="Укажите город квартиры" aria-describedby="lead-form-status" required data-city-input />
             </label>
             <label data-brief-field>Площадь квартиры, м²
               <input name="area" type="number" inputmode="decimal" min="30" max="10000" step="0.1" placeholder="Площадь по плану квартиры" aria-describedby="lead-form-status" required data-form-area />
             </label>
+            </fieldset>
+            <fieldset data-quiz-step="1">
+              <legend tabindex="-1">Какой проект нужен</legend>
             <label data-brief-field>Какой вариант интересует
               <select name="package" required>
                 <option value="">Выберите пакет проекта</option>
                 <option value="Рабочий проект — 500 ₽/м², от 30 м², договор до 31 октября 2026">Рабочий проект — 500 ₽/м²</option>
                 <option value="Полный — 3 490 ₽/м², для квартир от 50 м²">Полный — 3 490 ₽/м²</option>
                 <option value="Рабочий проект в подарок + ремонт, любой тариф" data-krasnodar-only hidden disabled>Проект в подарок + ремонт</option>
-                <option value="Не определился">Помогите выбрать</option>
               </select>
-            </label>
-            <label data-brief-field>На каком этапе квартира
-              <select name="propertyStage" required aria-describedby="lead-form-status"><option value="">Выберите этап</option><option>Ключи получены</option><option>Ключи получу в течение 3 месяцев</option><option>Ключи получу позже</option><option>В квартире уже живу</option></select>
             </label>
             <label data-brief-field>Когда нужен проект
               <select name="projectStart" required aria-describedby="lead-form-status"><option value="">Выберите срок начала</option><option value="В течение месяца">В течение месяца</option><option value="Через 1–3 месяца">Через 1–3 месяца</option><option value="Позже трёх месяцев">Позже трёх месяцев</option></select>
             </label>
             <label data-brief-field>Что нужно спроектировать
-              <textarea name="projectTask" rows="4" minlength="30" maxlength="600" required placeholder="Например: квартира 60 м² для семьи, нужна перепланировка и рабочие чертежи. Обмерный план есть." aria-describedby="lead-form-status"></textarea>
+              <textarea name="projectTask" rows="3" minlength="20" maxlength="600" required placeholder="Например: нужна планировка и чертежи для ремонта двухкомнатной квартиры." aria-describedby="lead-form-status"></textarea>
             </label>
+            </fieldset>
+            <fieldset data-quiz-step="2">
+              <legend tabindex="-1">Куда вам позвонить</legend>
+              <p class="brief-quiz__summary" data-quiz-summary></p>
             <label>Номер телефона
               <input name="phone" type="tel" inputmode="tel" autocomplete="tel" enterkeyhint="send" maxlength="18" placeholder="+7 (___) ___-__-__" aria-describedby="lead-form-status" required />
             </label>
-            <label>Когда вам позвонить, по Москве
-              <select name="callbackTime" required aria-describedby="lead-form-status"><option value="">Выберите время</option><option>10:00–13:00</option><option>13:00–16:00</option><option>16:00–19:00</option><option>19:00–21:00</option></select>
-            </label>
+            <details class="brief-quiz__optional"><summary>Имя и удобное время звонка</summary>
+              <label>Ваше имя <span class="brief-quiz__muted">необязательно</span>
+                <input name="customerName" type="text" autocomplete="given-name" maxlength="80" aria-describedby="lead-form-status" />
+              </label>
+              <label>Когда вам позвонить, по Москве
+                <select name="callbackTime" aria-describedby="lead-form-status"><option value="">В рабочее время</option><option>10:00–13:00</option><option>13:00–16:00</option><option>16:00–19:00</option><option>19:00–21:00</option></select>
+              </label>
+            </details>
             <label class="honeypot" aria-hidden="true">Сайт<input name="website" tabindex="-1" autocomplete="off" /></label>
-            <label class="consent-row"><input name="ownsPhone" type="checkbox" required aria-describedby="lead-form-status" /><span>Это мой номер. Я оставляю заявку и жду звонка по проекту.</span></label>
             <label class="consent-row"><input name="consent" type="checkbox" required aria-describedby="lead-form-status" /><span>Даю <a href="/design/consent.html" target="_blank" rel="noopener">согласие на обработку данных</a>.</span></label>
-            <button class="button button--gold service-form__submit" type="submit" disabled>Отправить заявку на проект</button>
+            <div data-turnstile></div>
+            <button class="brief-quiz__retry" type="button" data-captcha-retry hidden>Повторить проверку</button>
             <p class="form-reassurance">Свяжемся, чтобы уточнить задачу и условия. Отправка заявки не обязывает заключать договор.</p>
+            </fieldset>
+            <div class="brief-quiz__actions">
+              <button class="button brief-quiz__back" type="button" data-quiz-back hidden>Назад</button>
+              <button class="button button--gold" type="button" data-quiz-next hidden>Далее</button>
+              <button class="button button--gold service-form__submit" type="submit" disabled>Отправить заявку на проект</button>
+            </div>
             <p class="form-status" id="lead-form-status" data-form-status role="status" aria-live="polite"></p>
+            <button class="brief-quiz__mode" type="button" data-quiz-mode>Нужна только консультация</button>
+            <noscript>Для отправки заявки включите JavaScript или свяжитесь с нами в MAX.</noscript>
           </form>
         </div>
       </section>
@@ -347,7 +365,7 @@
       <a class="button button--compact" href="tel:+79182383059" data-call-link aria-label="Позвонить в ВЕРХ"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2A19.79 19.79 0 0 1 11.19 18.85a19.5 19.5 0 0 1-6-6A19.79 19.79 0 0 1 2.12 4.18 2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.12.9.33 1.78.62 2.63a2 2 0 0 1-.45 2.11L8.01 9.73a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.85.29 1.73.5 2.63.62A2 2 0 0 1 22 16.92Z" /></svg><span>Позвонить</span></a>
     </div>
     <script src="city.js?v=20261019-copy" defer></script>
-    <script src="./service.js?v=20261025" defer></script>
+    <script src="./quiz.js?v=20261025-quiz" defer></script>
     <script src="./project-album.js?v=20261019-copy" defer></script>
     <script src="decora.js?v=20261025" defer></script>
   </body>
