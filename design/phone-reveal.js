@@ -10,8 +10,10 @@
     const originalAria = link.getAttribute("aria-label");
     let revealed = false;
     link.addEventListener("click", event => {
+      link.dataset && (link.dataset.phoneClick = "intent");
       if (!desktop.matches || revealed || event.ctrlKey || event.metaKey || event.shiftKey || event.altKey || event.button > 0) return;
       event.preventDefault();
+      link.dataset && (link.dataset.phoneClick = "reveal");
       revealed = true;
       label.textContent = number;
       link.setAttribute("aria-label", `Позвонить в ВЕРХ: ${number}`);

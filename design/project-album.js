@@ -21,6 +21,7 @@
   const path = (index, prefix = 'page') => `/design/assets/design/project-example/${prefix}-${String(index + 1).padStart(2, '0')}.webp`;
   let current = 0;
   let opener;
+  const track = (name, params = {}) => { try { window.VerhDesignAnalytics?.track(name, params); } catch {} };
   // Icons in the matching HTML use Lucide's MIT-licensed arrow/expand/zoom/x paths.
   titles.forEach((title, index) => {
     select.add(new Option(`${index + 1}. ${title}`, String(index)));
@@ -49,7 +50,9 @@
     pan.scrollTo(0, 0);
   };
   function show(index) {
+    const previous = current;
     current = Math.max(0, Math.min(titles.length - 1, index));
+    if (current !== previous) track('interaction', {action:'album_sheet',sheet:current+1});
     const alt = `Лист ${current + 1}. ${titles[current]}`;
     status.textContent = '';
     image.src = path(current);
@@ -73,16 +76,19 @@
     opener = el;
     large.src = path(current);
     dialog.showModal();
+    track('album_open', {sheet:current+1});
     document.documentElement.classList.add('album-modal-open');
   }));
   root.querySelector('[data-album-close]').addEventListener('click', () => dialog.close());
   dialog.addEventListener('close', () => {
+    track('interaction', {action:'album_close'});
     document.documentElement.classList.remove('album-modal-open');
     resetZoom();
     opener?.focus({ preventScroll: true });
   });
   zoom.addEventListener('click', () => {
     const enlarged = pan.classList.toggle('is-zoomed');
+    track('interaction', {action:enlarged ? 'album_zoom_in' : 'album_zoom_out',sheet:current+1});
     zoom.setAttribute('aria-pressed', String(enlarged));
     zoom.setAttribute('aria-label', enlarged ? 'Уменьшить масштаб' : 'Увеличить масштаб');
     zoom.title = enlarged ? 'Уменьшить масштаб' : 'Увеличить масштаб';

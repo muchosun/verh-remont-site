@@ -13,6 +13,7 @@
   const mode = form.elements.leadMode;
   const titles = ["Квартира", "Проект", "Контакт"];
   let step = 0, sending = false, delivered = false, token = "", widget, loading;
+  const diagnostic = (name, params = {}) => { try { window.VerhDesignAnalytics?.track(name, params); } catch {} };
   const goal = (name, params = {}) => {
     try {
       if (!local && typeof window.ym === "function") window.ym(110859289, "reachGoal", name, {service:"dizayn-proekt-online",...params});
@@ -24,6 +25,7 @@
   const message = (text, state = "") => { status.textContent = text; status.dataset.state = state; };
   const ready = () => { submit.disabled = sending || delivered || (!local && !token); };
   function captchaFailure() {
+    diagnostic("captcha_error", {mode:mode.value});
     token = "";
     ready();
     retry.hidden = false;
@@ -86,6 +88,7 @@
     ready();
   }
   function showInvalid(result) {
+    diagnostic("validation_error", {field:result.field === "projectTask" ? "project_task" : result.field === "projectStart" ? "project_start" : result.field,step:step+1,mode:mode.value});
     const field = form.elements[result.field];
     const fieldset = field?.closest("[data-quiz-step]");
     if (fieldset) show(Number(fieldset.dataset.quizStep),false);
@@ -98,12 +101,13 @@
     const result = window.VerhQuizValidation.validate(collect(),step);
     if (!result.ok) return showInvalid(result);
     goal("design_quiz_step",{step:step+1});
+    diagnostic(step === 0 ? "step_apartment" : "step_project", {mode:mode.value});
     message("");
     show(step+1);
   });
-  back.addEventListener("click", () => { if (sending || delivered) return; mode.value = "brief"; message(""); show(Math.max(0,step-1)); });
-  modeButton.addEventListener("click", () => { if (sending || delivered) return; mode.value = mode.value === "brief" ? "callback" : "brief"; message(""); show(mode.value === "callback" ? 2 : 0); });
-  retry.addEventListener("click", () => ensureCaptcha(true));
+  back.addEventListener("click", () => { if (sending || delivered) return; diagnostic("interaction",{action:"quiz_back",step:step+1}); mode.value = "brief"; message(""); show(Math.max(0,step-1)); });
+  modeButton.addEventListener("click", () => { if (sending || delivered) return; mode.value = mode.value === "brief" ? "callback" : "brief"; diagnostic("interaction",{action:"mode_change",mode:mode.value}); message(""); show(mode.value === "callback" ? 2 : 0); });
+  retry.addEventListener("click", () => { diagnostic("interaction",{action:"captcha_retry"}); ensureCaptcha(true); });
   form.addEventListener("input", event => { event.target.removeAttribute("aria-invalid"); if (status.dataset.state === "error" && (token || local || step < 2)) message(""); });
   form.addEventListener("keydown", event => {
     if (event.key === "Enter" && step === 0 && event.target.tagName === "INPUT") {
@@ -115,6 +119,7 @@
     event.preventDefault();
     if (sending || delivered) return;
     if (step < 2) { next.click(); return; }
+    diagnostic("submit_attempt",{mode:mode.value});
     const result = window.VerhQuizValidation.validate(collect());
     if (!result.ok) return showInvalid(result);
     if (form.elements.website.value.trim()) return;
@@ -133,6 +138,7 @@
         const delivery = await window.VerhLead.send(window.VERH_LEAD_ENDPOINT, {kind:"callback",phone:result.values.phone,website:"",source:source.toString(),formVersion:3,designBrief:result.values,turnstileToken:token}, {timeoutMs:35000});
         if (delivery?.status !== "sent" || delivery.qualification !== (result.values.mode === "brief" ? "design_brief_v3" : "callback_v3")) throw new Error("Delivery qualification mismatch");
         if (result.values.mode === "brief") goal("design_project_brief_delivered");
+        else diagnostic("callback_delivered");
         goal("service_lead_success",{request:"design-project",mode:result.values.mode});
       }
       delivered = true;
@@ -143,6 +149,7 @@
       message("Не удалось отправить заявку. Данные сохранены в форме, попробуйте ещё раз или напишите нам в MAX.","error");
       submit.textContent = "Повторить отправку";
       goal("service_lead_failure",{request:"design-project"});
+      diagnostic("delivery_error",{mode:mode.value});
       token = "";
       ensureCaptcha(true);
     } finally {
