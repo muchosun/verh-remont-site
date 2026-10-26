@@ -52,9 +52,7 @@ function setTheme(theme, { persist = false, track = false } = {}) {
     }
   }
 
-  if (track && typeof window.ym === "function") {
-    window.ym(110859289, "reachGoal", "theme_switch", { theme });
-  }
+  if (track) trackMetricGoal("theme_switch", { theme });
 }
 
 setTheme(window.VERH_THEME === "dark" ? "dark" : "light");
@@ -418,13 +416,15 @@ function initDeferredProjectGallery() {
 }
 
 function trackMetricGoal(goal, params = {}) {
+  if (window.VERH_PREVIEW || location.protocol === "file:" || ["localhost", "127.0.0.1"].includes(location.hostname)) return;
   const heroVariant = window.VERH_HERO_VARIANT;
   const experimentParams = heroVariant === "control" || heroVariant === "trust"
     ? { experiment: "hero-headline-v1", variant: heroVariant }
     : {};
-  if (typeof window.ym === "function") {
-    window.ym(110859289, "reachGoal", goal, { ...params, ...experimentParams });
-  }
+  try {
+    if (window.VerhMainAnalytics) window.VerhMainAnalytics.track(goal, { ...params, ...experimentParams });
+    else if (typeof window.ym === "function") window.ym(110859289, "reachGoal", goal, { ...params, ...experimentParams });
+  } catch { /* A delivered lead must never become a retry because analytics failed. */ }
 }
 
 trackMetricGoal("hero_headline_exposure");
@@ -636,7 +636,7 @@ function openQuiz(trigger) {
   hideCallbackPrompt(true);
   lastQuizTrigger = trigger || document.activeElement;
   trackMetricGoal("quiz_open", {
-    placement: trigger?.dataset?.tariffOpen ? "tariff" : "general",
+    placement: window.VerhMainAnalytics?.placement(trigger) || (trigger?.dataset?.tariffOpen ? "tariff" : "general"),
     tariff: trigger?.dataset?.tariffOpen || state.level,
   });
   prepareQuizMedia();
@@ -652,6 +652,7 @@ function openQuiz(trigger) {
 }
 
 function closeQuiz() {
+  if (quizModal.classList.contains("is-open")) trackMetricGoal("main_quiz_close", {step:state.step+1,outcome:state.leadSubmitted ? "delivered" : "not_delivered"});
   quizModal.classList.remove("is-open");
   quizModal.setAttribute("aria-hidden", "true");
   document.body.classList.remove("modal-open");
@@ -670,9 +671,14 @@ function updateStickyCta() {
 }
 
 function setStep(nextStep) {
+  const previousStep = state.step;
   const step = Math.max(0, Math.min(slides.length - 1, nextStep));
   state.step = step;
   state.maxStep = Math.max(state.maxStep, step);
+  if (step !== previousStep && quizModal.classList.contains("is-open")) {
+    if (step === 3) trackMetricGoal("main_quiz_contact", {step:4});
+    if (step < previousStep) trackMetricGoal("main_interaction", {action:"step_back",step:step+1,placement:"quiz"});
+  }
 
   slides.forEach((slide, index) => {
     slide.classList.toggle("is-active", index === step);
