@@ -14,7 +14,7 @@
     try { window.ym?.(110859289, "reachGoal", `design_${name}`, {design_landing:safe}); } catch { /* Analytics must not affect the landing. */ }
   }
   window.VerhDesignAnalytics = Object.freeze({track});
-  const place = element => element.closest("[data-mobile-actions]") ? "sticky" : element.closest("header") ? "header" : element.closest("footer") ? "footer" : element.closest("section")?.id || "page";
+  const place = element => element.closest("[data-mobile-actions]") ? "sticky" : element.closest(".preview-header") ? "header" : element.closest("footer") ? "footer" : element.closest("section")?.id || "page";
   const interaction = (element, action, control) => track("interaction", {action, control, location:place(element)});
   document.querySelectorAll("[data-scroll-lead]").forEach((el, index) => el.addEventListener("click", () => {
     const pack = el.dataset.package || "";
