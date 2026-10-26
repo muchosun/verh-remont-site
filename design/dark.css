@@ -31,6 +31,9 @@ body, .selected-projects, .specialty-page .section-light { background: var(--can
 .specialty-page .button--outline:hover { background: var(--text); border-color: var(--text); color: #191a19; }
 .specialty-page :focus-visible { outline-color: #f0d8a7; }
 .specialty-page .service-hero .button--ghost { color: #fff; border-color: #d9dcd9; background: #15161730; }
+@media (min-width: 761px) {
+  .service-hero__actions [data-call-link] { width: 248px; flex-shrink: 0; white-space: nowrap; }
+}
 .section-label, .estimate-band .section-label { color: var(--accent); }
 .editorial-heading h2, .section-heading h2, .story-heading h2, .lead-copy h2, .estimate-band h2,
 .selected-grid h3, .story-steps h3, .deliverable h3, .specialty-page .offer-card h3 { color: var(--text); }
