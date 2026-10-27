@@ -1135,3 +1135,10 @@ setStep(0);
 updateStickyCta();
 preloadQuizMediaWhenIdle();
 scheduleCallbackPrompt(callbackPromptDelay);
+function markLoadFormReady() {
+  if (typeof window.VerhLead?.send === "function") {
+    try { window.VerhLoad?.mark("form_ready"); } catch {}
+  }
+}
+if (document.readyState === "loading") document.addEventListener("DOMContentLoaded",markLoadFormReady,{once:true});
+else markLoadFormReady();

@@ -25,6 +25,7 @@
   const message = (text, state = "") => { status.textContent = text; status.dataset.state = state; };
   const ready = () => { submit.disabled = sending || delivered || (!local && !token); };
   function captchaFailure() {
+    try { window.VerhLoad?.mark("captcha_error"); } catch {}
     diagnostic("captcha_error", {mode:mode.value});
     token = "";
     ready();
@@ -49,8 +50,10 @@
   }
   async function ensureCaptcha(reset = false) {
     if (local) { ready(); return; }
+    try { window.VerhLoad?.mark("captcha_started"); } catch {}
     try {
       await loadCaptcha();
+      try { window.VerhLoad?.mark("captcha_ready"); } catch {}
       if (widget !== undefined) {
         if (reset) { token = ""; window.turnstile.reset(widget); }
       } else {
@@ -58,7 +61,7 @@
         widget = window.turnstile.render(form.querySelector("[data-turnstile]"), {
           sitekey:window.VERH_TURNSTILE_SITEKEY,
           action:"design_lead", language:"ru",
-          callback:value => { token = value; retry.hidden = true; if (!sending && !delivered) message(""); ready(); },
+          callback:value => { token = value; try { window.VerhLoad?.mark("captcha_passed"); } catch {} retry.hidden = true; if (!sending && !delivered) message(""); ready(); },
           "expired-callback":() => { token = ""; ready(); ensureCaptcha(true); },
           "error-callback":() => { captchaFailure(); return true; },
           "timeout-callback":captchaFailure,
@@ -180,4 +183,7 @@
     [document.querySelector(".service-hero"),form,document.querySelector("[data-page-footer]")].filter(Boolean).forEach(element => observer.observe(element));
   }
   show(0,false);
+  if (window.VerhQuizValidation && window.VerhLead) {
+    try { window.VerhLoad?.mark("form_ready"); } catch {}
+  }
 })();
