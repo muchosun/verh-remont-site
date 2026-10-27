@@ -30,7 +30,7 @@
       values.projectStart = text(data.projectStart);
       if (!starts.includes(values.projectStart)) return fail("projectStart", "Выберите срок начала проекта.");
       values.projectTask = text(data.projectTask);
-      if (values.projectTask.length < 20 || values.projectTask.length > 600 || !/\p{L}/u.test(values.projectTask) || /(.)\1{9}/u.test(values.projectTask)) return fail("projectTask", "Коротко опишите задачу: от 20 до 600 символов.");
+      if (values.projectTask.length > 600) return fail("projectTask", "Описание задачи должно быть не длиннее 600 символов.");
       if (step === 1) return {ok:true,values};
     }
     values.phone = phone(data.phone);
