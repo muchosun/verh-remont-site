@@ -4,11 +4,11 @@ const fs = require('node:fs');
 const vm = require('node:vm');
 const code = fs.readFileSync(require('node:path').join(__dirname, '../assets/js/lead-support.js'), 'utf8');
 
-function load({ href = 'https://verhremont.ru/', stored = null, blocked = false, fetch = async () => ({ ok: true, json: async () => ({ status: 'accepted', leadId: 'test' }) }), timeout = setTimeout } = {}) {
+function load({ href = 'https://verhremont.ru/', stored = null, blocked = false, captcha = {getToken:async()=> 'test-fresh-token'}, turnstile, scriptError=false, fetch = async () => ({ ok: true, json: async () => ({ status: 'accepted', leadId: 'test' }) }), timeout = setTimeout } = {}) {
   const link = { href: 'https://verhremont.ru/uslugi/dizayn-proekt/', getAttribute: () => '/uslugi/dizayn-proekt/' };
-  const window = {};
+  const window = {VerhCaptcha:captcha,turnstile};
   const context = { window, URL, AbortController, location: new URL(href), fetch, setTimeout: timeout, clearTimeout,
-    document: { querySelectorAll: () => [link] },
+    document: { querySelectorAll: () => [link],createElement:()=>({remove(){}}),body:{append(){}},head:{append:script=>{if(scriptError)setImmediate(()=>script.onerror());}} },
     sessionStorage: { getItem: () => { if (blocked) throw Error('blocked'); return stored; }, setItem: (_key, value) => { if (blocked) throw Error('blocked'); stored = value; } },
   };
   vm.runInNewContext(code, context);
@@ -44,6 +44,29 @@ test('requires delivery acknowledgment, not only HTTP success', async () => {
     await assert.rejects(api.send('/lead', {}), /not confirmed/);
   }
   assert.equal((await load().api.send('/lead', {})).status, 'sent');
+});
+test('CAPTCHA failure blocks the network send and a retry uses a fresh token',async()=>{
+  let calls=0,attempt=0;const actions=[],bodies=[];
+  const {api}=load({captcha:{getToken:async action=>{actions.push(action);if(++attempt===1)throw Error('Protection unavailable');return 'fresh-'+attempt;}},fetch:async(_url,options)=>{calls++;bodies.push(JSON.parse(options.body));return {ok:true,json:async()=>({status:'accepted',leadId:'test'})};}});
+  await assert.rejects(api.send('/lead',{source:'https://verhremont.ru/'}));assert.equal(calls,0);
+  await api.send('/lead',{source:'https://verhremont.ru/'});await api.send('/lead',{source:'https://verhremont.ru/'});
+  assert.deepEqual(actions,['repair_lead','repair_lead','repair_lead']);assert.equal(bodies[0].turnstileToken,'fresh-2');assert.equal(bodies[1].turnstileToken,'fresh-3');
+});
+test('legacy design forms use design action and existing tokens are not replaced',async()=>{
+  const actions=[];const {api}=load({captcha:{getToken:async a=>{actions.push(a);return 'fresh';}}});
+  await api.send('/lead',{source:'https://verhremont.ru/uslugi/dizayn-proekt/?request=design-project'});
+  await api.send('/lead',{source:'https://verhremont.ru/',turnstileToken:'existing'});assert.deepEqual(actions,['design_lead']);
+});
+test('real invisible adapter creates one-use widgets and removes them after each callback',async()=>{
+  const actions=[],removed=[],bodies=[];let count=0;
+  const turnstile={render:(_element,options)=>{const id=++count;actions.push(options.action);assert.equal(options['response-field'],false);setImmediate(()=>options.callback('token-'+id));return id;},remove:id=>removed.push(id)};
+  const {api}=load({captcha:null,turnstile,fetch:async(_url,o)=>{bodies.push(JSON.parse(o.body));return {ok:true,json:async()=>({status:'accepted',leadId:'test'})};}});
+  await api.send('/lead',{});await api.send('/lead',{});
+  assert.deepEqual(actions,['repair_lead','repair_lead']);assert.deepEqual(removed,[1,2]);assert.equal(bodies[0].turnstileToken,'token-1');assert.equal(bodies[1].turnstileToken,'token-2');
+});
+test('unavailable CAPTCHA script fails closed before the lead request',async()=>{
+  let posts=0;const {api}=load({captcha:null,scriptError:true,fetch:async()=>{posts++;}});
+  await assert.rejects(api.send('/lead',{}),/Protection unavailable/);assert.equal(posts,0);
 });
 
 test('network and HTTP failures reject; a subsequent retry may succeed', async () => {
