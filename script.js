@@ -922,6 +922,7 @@ window.addEventListener("resize", updateStickyCta);
 
 document.querySelectorAll("[data-apartment]").forEach((button) => {
   button.addEventListener("click", () => {
+    if (!quizModal.classList.contains("is-open") || state.step !== 0) return;
     state.apartment = button.dataset.apartment;
     trackMetricGoal("quiz_apartment_selected", { apartment: state.apartment });
     resetLeadResult();
@@ -932,6 +933,7 @@ document.querySelectorAll("[data-apartment]").forEach((button) => {
 
 document.querySelectorAll("[data-area]").forEach((button) => {
   button.addEventListener("click", () => {
+    if (!quizModal.classList.contains("is-open") || state.step !== 1) return;
     setArea(button.dataset.area, button.dataset.areaLabel);
     trackMetricGoal("quiz_area_selected", { area: state.area, area_label: state.areaLabel });
     setStep(2);
@@ -940,6 +942,7 @@ document.querySelectorAll("[data-area]").forEach((button) => {
 
 document.querySelector("#area-form").addEventListener("submit", (event) => {
   event.preventDefault();
+  if (!quizModal.classList.contains("is-open") || state.step !== 1) return;
   const area = validateAreaDraft(areaInput.value);
   if (area === null) {
     areaInput.setCustomValidity("Введи площадь от 20 до 300 м².");
@@ -965,6 +968,7 @@ areaInput.addEventListener("input", () => {
 
 document.querySelectorAll("[data-level]").forEach((button) => {
   button.addEventListener("click", () => {
+    if (!quizModal.classList.contains("is-open") || state.step !== 2) return;
     state.level = button.dataset.level;
     trackMetricGoal("quiz_tariff_selected", { tariff: state.level });
     resetLeadResult();
@@ -1061,7 +1065,7 @@ leadForm.addEventListener("submit", async (event) => {
     area: state.area,
     tariff: state.level,
   };
-  trackMetricGoal("quiz_submit_attempt", leadMetricParams);
+  if (!window.VerhMainAnalytics) trackMetricGoal("quiz_submit_attempt", leadMetricParams);
   state.leadSubmitted = false;
   leadForm.hidden = true;
   leadOffer.hidden = true;

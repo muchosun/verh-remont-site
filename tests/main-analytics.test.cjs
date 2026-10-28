@@ -5,7 +5,7 @@ const path = require('node:path');
 const vm = require('node:vm');
 const code = fs.readFileSync(path.join(__dirname,'../assets/js/main-analytics.js'),'utf8');
 const script = fs.readFileSync(path.join(__dirname,'../script.js'),'utf8');
-function fixture({preview=false,hostname='verhremont.ru',protocol='https:',designLink='/design/?city=krasnodar'}={}) {
+function fixture({preview=false,hostname='verhremont.ru',protocol='https:',designLink='/design/?city=krasnodar',delayed=false}={}) {
   const goals=[],events={},sections=[{id:'top'},{id:'tariffs'}];
   const node = extra => ({dataset:{},events:{},closest:()=>null,addEventListener(name,fn){this.events[name]=fn;},...extra});
   const link = raw => node({getAttribute:()=>raw,closest:s=>s==='section[id]'?{id:'contacts'}:null});
@@ -13,11 +13,13 @@ function fixture({preview=false,hostname='verhremont.ru',protocol='https:',desig
   const filter=node({dataset:{projectFilter:'comfort'}}),gallery=node({scrollLeft:0});
   let observer;
   const document={addEventListener:(name,fn)=>events[name]=fn,querySelector:()=>gallery,querySelectorAll:s=>({'a[href]':links,'[data-project-filter]':[filter],'main section[id]':sections})[s] || []};
-  const window={VERH_PREVIEW:preview,ym:(id,method,name,params)=>goals.push({id,method,name,params})};
+  const timers=[];
+  const collect=(id,method,name,params)=>goals.push({id,method,name,params});
+  const window={VERH_PREVIEW:preview,ym:delayed?undefined:collect,setTimeout:fn=>{timers.push(fn);return timers.length;}};
   class IntersectionObserver {constructor(fn){this.fn=fn;this.removed=[];observer=this;}observe(){}unobserve(el){this.removed.push(el);}}
   const context={window,document,URL,location:{hostname,protocol,origin:'https://verhremont.ru',href:'https://verhremont.ru/'},IntersectionObserver};
   vm.runInNewContext(code,context);
-  return {window,goals,events,links,filter,gallery,sections,observer,context};
+  return {window,goals,events,links,filter,gallery,sections,observer,context,timers,collect};
 }
 test('loads once and records main landing, not a conversion',()=>{
   const f=fixture();vm.runInNewContext(code,f.context);assert.equal(f.goals.length,1);assert.equal(f.goals[0].name,'main_landing_view');assert.equal(f.goals[0].params.landing,'repair_main');
@@ -66,4 +68,47 @@ test('delivery goal remains inside confirmed delivery branch; step/close hooks d
   const hooks=script.slice(script.indexOf('function closeQuiz()'),script.indexOf('function setArea('));
   assert.equal(hooks.includes('"quiz_lead_success"'),false);
   assert.match(script,/main_quiz_contact/);assert.match(script,/main_quiz_close/);
+});
+test('late Metrika receives queued events once in order, with sanitized parameters',()=>{
+  const f=fixture({delayed:true});
+  f.window.VerhMainAnalytics.track('quiz_open');
+  f.window.VerhMainAnalytics.track('quiz_apartment_selected',{phone:'private',apartment:'Новостройка'});
+  assert.equal(f.goals.length,0);
+  f.window.ym=f.collect;f.timers.shift()();
+  assert.deepEqual(f.goals.map(x=>x.name),['main_landing_view','quiz_open','quiz_apartment_selected']);
+  assert.equal(JSON.stringify(f.goals).includes('private'),false);
+  f.window.VerhMainAnalytics.track('quiz_area_selected');
+  assert.equal(f.goals.length,4);
+});
+test('unavailable Metrika queue expires and never blocks controls',()=>{
+  const f=fixture({delayed:true});
+  for(let i=0;i<65&&f.timers.length;i++) f.timers.shift()();
+  f.window.ym=f.collect;f.window.VerhMainAnalytics.track('quiz_open');
+  assert.deepEqual(f.goals.map(x=>x.name),['quiz_open']);
+});
+test('submit click, native invalid events and submit count one attempt per action, never delivery',()=>{
+  const f=fixture(),form={id:'lead-form',dataset:{}},button={form,disabled:false};
+  f.events.click({target:{closest:()=>button}});
+  f.events.invalid({target:{name:'phone',closest:()=>form}});
+  f.events.invalid({target:{name:'personal_data_consent',closest:()=>form}});
+  f.events.submit({target:form});
+  assert.equal(f.goals.filter(x=>x.name==='quiz_submit_attempt').length,1);
+  assert.equal(f.goals.filter(x=>x.name==='main_validation_error').length,2);
+  f.timers.shift()();f.events.submit({target:form});
+  assert.equal(f.goals.filter(x=>x.name==='quiz_submit_attempt').length,2);
+  f.timers.shift()();form.dataset.sending='true';f.events.submit({target:form});
+  assert.equal(f.goals.filter(x=>x.name==='quiz_submit_attempt').length,2);
+  assert.equal(f.goals.some(x=>x.name==='quiz_lead_success'),false);
+});
+test('hidden and out of order quiz choices cannot emit phantom selection goals',()=>{
+  for(const [selector,step,eventName] of [['[data-apartment]',0,'quiz_apartment_selected'],['[data-area]',1,'quiz_area_selected'],['[data-level]',2,'quiz_tariff_selected']]){
+    const start=script.indexOf(`document.querySelectorAll("${selector}")`,script.indexOf('window.addEventListener("resize"'));
+    const block=script.slice(start,script.indexOf('\n});',start)+4);
+    let click,open=false;
+    const goals=[],state={step},button={dataset:{apartment:'Новостройка',area:'58',level:'comfort'},addEventListener:(name,fn)=>{click=fn;}};
+    vm.runInNewContext(block,{document:{querySelectorAll:()=>[button]},state,quizModal:{classList:{contains:()=>open}},trackMetricGoal:name=>goals.push(name),resetLeadResult(){},render(){},setStep(n){state.step=n;},setArea(){}});
+    click();assert.equal(goals.length,0);
+    open=true;state.step=(step+1)%3;click();assert.equal(goals.length,0);
+    state.step=step;click();assert.deepEqual(goals,[eventName]);
+  }
 });

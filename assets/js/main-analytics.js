@@ -14,6 +14,22 @@
     control:["all", "standard", "comfort", "lux", "details", "contract", "privacy", "consent", "company", "top", "projects", "tariffs", "payments", "services", "contacts"],
     outcome:["delivered", "not_delivered"], theme:["light", "dark"], variant:["control", "trust"], experiment:["hero-headline-v1"],
   };
+  const pending = [];
+  let retryTimer = null;
+  let retryCount = 0;
+  function flush() {
+    retryTimer = null;
+    if (typeof window.ym !== "function") {
+      if (pending.length && retryCount++ < 60) retryTimer = window.setTimeout(flush, 1000);
+      else pending.length = 0;
+      return;
+    }
+    retryCount = 0;
+    while (pending.length) {
+      const event = pending.shift();
+      try { window.ym(110859289,"reachGoal",event.name,event.params); } catch { /* Do not retry ambiguous sends or interfere with the form. */ }
+    }
+  }
   function track(name, params = {}) {
     if (preview || !names.has(name)) return;
     if (name === "theme_switch") { name = "main_interaction"; params = {...params,action:"theme"}; }
@@ -24,15 +40,30 @@
       else if (key === "step" && Number.isInteger(value) && value >= 1 && value <= 4) safe.step = value;
       else if (key === "apartment" && ["Новостройка", "Вторичка"].includes(value)) safe.apartment_type = value === "Новостройка" ? "new" : "resale";
     }
-    try { window.ym?.(110859289,"reachGoal",name,safe); } catch { /* Tracking must never change delivery or UI state. */ }
+    if (pending.length < 100) pending.push({name,params:safe});
+    if (retryTimer === null) flush();
   }
   const placement = element => element?.closest(".mobile-sticky-cta") ? "mobile_sticky" : element?.closest(".site-header") ? "header" : element?.closest("footer") ? "footer" : element?.closest("section[id]")?.id || "page";
   window.VerhMainAnalytics = Object.freeze({track,placement});
   track("main_landing_view");
+  const attempted = new WeakSet();
+  function trackAttempt(form) {
+    if (form?.id !== "lead-form" || form.dataset?.sending === "true" || attempted.has(form)) return;
+    attempted.add(form);
+    window.setTimeout(() => attempted.delete(form), 0);
+    track("quiz_submit_attempt",{placement:"quiz",step:4});
+  }
+  // Native validation can prevent submit; count that attempt, not a delivered lead.
+  document.addEventListener("click", event => {
+    const button = event.target.closest('button[type="submit"], input[type="submit"]');
+    if (button && !button.disabled) trackAttempt(button.form);
+  },true);
+  document.addEventListener("submit", event => trackAttempt(event.target),true);
   // Native required/type validation can stop submission before the form handler runs.
   document.addEventListener("invalid", event => {
     const form = event.target.closest("form");
     if (!["lead-form", "callback-form", "area-form"].includes(form?.id)) return;
+    trackAttempt(form);
     const field = event.target.name === "personal_data_consent" ? "consent" : ["phone", "area"].includes(event.target.name) ? event.target.name : "form";
     track("main_validation_error", {field,placement:form.id === "callback-form" ? "callback" : "quiz",step:form.id === "area-form" ? 2 : 4});
   },true);
