@@ -67,7 +67,7 @@
     const raw = link.getAttribute("href");
     if (raw.startsWith("#")) return;
     const url = new URL(link.href);
-    if (url.origin === location.origin && /^\/(?:uslugi(?:\/|$)|$)/.test(url.pathname)) link.href = source(url.href).href;
+    if (url.origin === location.origin && /^\/(?:uslugi(?:\/|$)|design(?:\/|$)|$)/.test(url.pathname)) link.href = source(url.href).href;
   });
   const send = async (endpoint, payload) => {
     if (!endpoint) throw new Error("Lead endpoint is not configured");

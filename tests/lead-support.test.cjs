@@ -4,8 +4,8 @@ const fs = require('node:fs');
 const vm = require('node:vm');
 const code = fs.readFileSync(require('node:path').join(__dirname, '../assets/js/lead-support.js'), 'utf8');
 
-function load({ href = 'https://verhremont.ru/', stored = null, blocked = false, captcha = {getToken:async()=> 'test-fresh-token'}, turnstile, scriptError=false, fetch = async () => ({ ok: true, json: async () => ({ status: 'accepted', leadId: 'test' }) }), timeout = setTimeout } = {}) {
-  const link = { href: 'https://verhremont.ru/uslugi/dizayn-proekt/', getAttribute: () => '/uslugi/dizayn-proekt/' };
+function load({ href = 'https://verhremont.ru/', linkPath = '/uslugi/dizayn-proekt/', stored = null, blocked = false, captcha = {getToken:async()=> 'test-fresh-token'}, turnstile, scriptError=false, fetch = async () => ({ ok: true, json: async () => ({ status: 'accepted', leadId: 'test' }) }), timeout = setTimeout } = {}) {
+  const link = { href: new URL(linkPath,'https://verhremont.ru/').href, getAttribute: () => linkPath };
   const window = {VerhCaptcha:captcha,turnstile};
   const context = { window, URL, AbortController, location: new URL(href), fetch, setTimeout: timeout, clearTimeout,
     document: { querySelectorAll: () => [link],createElement:()=>({remove(){}}),body:{append(){}},head:{append:script=>{if(scriptError)setImmediate(()=>script.onerror());}} },
@@ -36,6 +36,15 @@ test('restores saved campaign and replaces it on new campaign entry', () => {
 test('works with blocked storage', () => {
   const { link } = load({ blocked: true, href: 'https://verhremont.ru/?utm_source=yandex' });
   assert.equal(new URL(link.href).searchParams.get('utm_source'), 'yandex');
+});
+test('current design destination retains campaign and its explicit city',()=>{
+  const {link}=load({href:'https://verhremont.ru/?utm_source=qa&utm_campaign=TEST_ROUTE&yclid=test&phone=private',linkPath:'/design/?city=krasnodar'});
+  const target=new URL(link.href);
+  assert.equal(target.searchParams.get('city'),'krasnodar');
+  assert.equal(target.searchParams.get('utm_source'),'qa');
+  assert.equal(target.searchParams.get('utm_campaign'),'TEST_ROUTE');
+  assert.equal(target.searchParams.get('yclid'),'test');
+  assert.equal(target.searchParams.has('phone'),false);
 });
 
 test('requires delivery acknowledgment, not only HTTP success', async () => {
