@@ -43,8 +43,8 @@
     let url;
     try { url = new URL(raw,location.href); } catch { return; }
     if (["max.ru", "t.me"].includes(url.hostname)) track("main_messenger_click",{channel:url.hostname === "max.ru" ? "max" : "telegram",placement:at});
-    else if (url.origin === location.origin && url.pathname.startsWith("/uslugi/")) {
-      const service = url.pathname.split("/").filter(Boolean)[1] || "all";
+    else if (url.origin === location.origin && (url.pathname.startsWith("/uslugi/") || url.pathname === "/design/" || url.pathname === "/design")) {
+      const service = url.pathname === "/design/" || url.pathname === "/design" ? "dizayn-proekt" : url.pathname.split("/").filter(Boolean)[1] || "all";
       track("main_service_click",{service,placement:at});
     } else if (raw.startsWith("#")) track("main_interaction",{action:"navigation",control:raw.slice(1),placement:at});
     else {

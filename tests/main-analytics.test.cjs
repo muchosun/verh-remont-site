@@ -5,11 +5,11 @@ const path = require('node:path');
 const vm = require('node:vm');
 const code = fs.readFileSync(path.join(__dirname,'../assets/js/main-analytics.js'),'utf8');
 const script = fs.readFileSync(path.join(__dirname,'../script.js'),'utf8');
-function fixture({preview=false,hostname='verhremont.ru',protocol='https:'}={}) {
+function fixture({preview=false,hostname='verhremont.ru',protocol='https:',designLink='/design/?city=krasnodar'}={}) {
   const goals=[],events={},sections=[{id:'top'},{id:'tariffs'}];
   const node = extra => ({dataset:{},events:{},closest:()=>null,addEventListener(name,fn){this.events[name]=fn;},...extra});
   const link = raw => node({getAttribute:()=>raw,closest:s=>s==='section[id]'?{id:'contacts'}:null});
-  const links=[link('tel:+79182383059'),link('https://max.ru/id234207648329_biz'),link('/uslugi/ukladka-laminata/?utm_source=qa'),link('#tariffs'),link('/privacy.html')];
+  const links=[link('tel:+79182383059'),link('https://max.ru/id234207648329_biz'),link('/uslugi/ukladka-laminata/?utm_source=qa'),link('#tariffs'),link('/privacy.html'),link(designLink)];
   const filter=node({dataset:{projectFilter:'comfort'}}),gallery=node({scrollLeft:0});
   let observer;
   const document={addEventListener:(name,fn)=>events[name]=fn,querySelector:()=>gallery,querySelectorAll:s=>({'a[href]':links,'[data-project-filter]':[filter],'main section[id]':sections})[s] || []};
@@ -41,6 +41,14 @@ test('service, anchor and legal links have bounded identifiers',()=>{
 test('native invalid field is captured before submit, without its value',()=>{
   const f=fixture();f.events.invalid({target:{name:'personal_data_consent',value:'private',closest:()=>({id:'lead-form'})}});
   assert.equal(f.goals.at(-1).name,'main_validation_error');assert.equal(f.goals.at(-1).params.field,'consent');assert.equal(f.goals.at(-1).params.step,4);assert.equal(JSON.stringify(f.goals).includes('private'),false);
+});
+test('current and legacy design links retain service analytics without paid goals',()=>{
+  for(const designLink of ['/design/?city=krasnodar','/design','/uslugi/dizayn-proekt/']){
+    const f=fixture({designLink});f.links.at(-1).events.click();
+    assert.equal(f.goals.at(-1).name,'main_service_click');
+    assert.equal(f.goals.at(-1).params.service,'dizayn-proekt');
+    assert.equal(f.goals.some(x=>x.name==='quiz_lead_success'),false);
+  }
 });
 test('section views deduplicate; project filter and scroll are diagnostics only',()=>{
   const f=fixture();f.observer.fn([{target:f.sections[1],isIntersecting:true}]);f.observer.fn([{target:f.sections[1],isIntersecting:true}]);
