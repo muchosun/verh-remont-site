@@ -6,14 +6,14 @@ const mainAnalytics = (() => {
   const preview = Boolean(window.VERH_PREVIEW) || location.protocol === "file:" || ["localhost", "127.0.0.1"].includes(location.hostname);
   const names = new Set(["main_landing_view", "main_section_view", "main_interaction", "main_messenger_click", "main_service_click", "main_quiz_contact", "main_quiz_close", "main_validation_error", "quiz_open", "quiz_apartment_selected", "quiz_area_selected", "quiz_tariff_selected", "quiz_submit_attempt", "quiz_lead_success", "quiz_lead_failure", "quiz_calculation_viewed", "tariff_selected", "phone_reveal", "phone_call", "callback_prompt_shown", "callback_prompt_dismissed", "callback_submit_attempt", "callback_requested", "callback_lead_success", "callback_lead_failure", "theme_switch", "hero_headline_exposure"]);
   const enums = {
-    action:["navigation", "legal", "project_filter", "project_scroll", "step_back", "theme", "callback_dismiss"],
+    action:["navigation", "legal", "project_filter", "project_scroll", "project_photo", "project_view", "step_back", "theme", "callback_dismiss"],
     placement:["header", "hero", "top", "tariffs", "design-gift", "materials", "payments", "services", "reviews", "contacts", "footer", "mobile_sticky", "tariff", "general", "page", "quiz", "callback"],
     tariff:["cosmetic", "standard", "comfort", "lux"],
     field:["phone", "consent", "area", "form"],
     channel:["max", "telegram"],
     service:["dizayn-proekt", "priemka-kvartiry", "ukladka-laminata", "pokleyka-oboev", "shpaklevka-sten", "ukladka-plitki", "razvodka-santehniki", "natyazhnoy-potolok", "all"],
     section:["top", "projects", "tariffs", "design-gift", "materials", "payments", "services", "reviews", "contacts"],
-    control:["all", "standard", "comfort", "lux", "details", "contract", "privacy", "consent", "company", "top", "projects", "tariffs", "payments", "services", "contacts"],
+    control:["all", "standard", "comfort", "lux", "details", "slider", "grid", "contract", "privacy", "consent", "company", "top", "projects", "tariffs", "payments", "services", "contacts"],
     outcome:["delivered", "not_delivered"], theme:["light", "dark"], variant:["control", "trust"], experiment:["hero-headline-v1"],
   };
   const pending = [];
@@ -56,6 +56,10 @@ const mainAnalytics = (() => {
   }
   document.addEventListener("click", event => {
     if (event.isTrusted === false) return;
+    const photo = event.target.closest("[data-project-photo]");
+    if (photo?.dataset?.projectPhoto !== undefined) track("main_interaction",{action:"project_photo",placement:"page"});
+    const view = event.target.closest("[data-project-view]");
+    if (view?.dataset?.projectView) track("main_interaction",{action:"project_view",control:view.dataset.projectView,placement:"page"});
     const button = event.target.closest('button[type="submit"], input[type="submit"]');
     if (button && !button.disabled) trackAttempt(button.form);
   },true);
@@ -435,97 +439,6 @@ function initTariffGalleries() {
       startAutoplay();
     }
   });
-}
-
-const projectGalleryItems = Array.isArray(window.VERH_PROJECT_GALLERY_ITEMS)
-  ? window.VERH_PROJECT_GALLERY_ITEMS
-  : [];
-
-function initProjectGallery() {
-  const gallery = document.querySelector("[data-project-gallery]");
-  if (!gallery) return;
-
-  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
-  const assetsPrefix = (gallery.dataset.projectAssetsPrefix || "assets/projects").replace(/\/$/, "");
-  const count = gallery.querySelector("[data-project-count]");
-  const track = gallery.querySelector("[data-project-track]");
-  const filters = [...gallery.querySelectorAll("[data-project-filter]")];
-
-  if (!count || !track) return;
-
-  let activeCategory = "all";
-
-  const getItems = () => projectGalleryItems.filter((item) => activeCategory === "all" || item.category === activeCategory);
-  const sourceFor = (item) => `${assetsPrefix}/${item.path}`;
-
-  const updateFilters = () => {
-    filters.forEach((filter) => {
-      const isActive = filter.dataset.projectFilter === activeCategory;
-      filter.classList.toggle("is-active", isActive);
-      filter.setAttribute("aria-selected", String(isActive));
-    });
-  };
-
-  const renderCards = () => {
-    const items = getItems();
-    count.textContent = `${items.length} фото`;
-    track.innerHTML = items
-      .map((item, index) => `
-        <article class="project-gallery__card" role="listitem">
-          <img src="${sourceFor(item)}" alt="${item.tier}: ${item.title}. Реальный объект ВЕРХ ремонта" loading="lazy" decoding="async" draggable="false" />
-          <span class="photo-watermark" aria-hidden="true">ВЕРХ</span>
-          <div class="project-gallery__card-caption">
-            <span>${item.tier}</span>
-            <strong>${item.title}</strong>
-          </div>
-        </article>
-      `)
-      .join("");
-    track.scrollLeft = 0;
-  };
-
-  const switchCategory = (category) => {
-    activeCategory = category;
-    updateFilters();
-    renderCards();
-  };
-
-  filters.forEach((filter) => {
-    filter.addEventListener("click", () => switchCategory(filter.dataset.projectFilter || "all"));
-  });
-
-  track.addEventListener("keydown", (event) => {
-    if (event.key === "ArrowLeft") {
-      event.preventDefault();
-      track.scrollBy({ left: -track.clientWidth * 0.84, behavior: reduceMotion.matches ? "auto" : "smooth" });
-    }
-    if (event.key === "ArrowRight") {
-      event.preventDefault();
-      track.scrollBy({ left: track.clientWidth * 0.84, behavior: reduceMotion.matches ? "auto" : "smooth" });
-    }
-  });
-
-  updateFilters();
-  renderCards();
-}
-
-function initDeferredProjectGallery() {
-  const gallery = document.querySelector("[data-project-gallery]");
-  if (!gallery) return;
-
-  const start = () => initProjectGallery();
-  if (!("IntersectionObserver" in window)) {
-    start();
-    return;
-  }
-
-  const observer = new IntersectionObserver((entries) => {
-    if (!entries.some((entry) => entry.isIntersecting)) return;
-    start();
-    observer.disconnect();
-  }, { rootMargin: "1400px 0px" });
-
-  observer.observe(gallery);
 }
 
 function trackMetricGoal(goal, params = {}) {
@@ -1257,7 +1170,6 @@ leadForm.addEventListener("submit", async (event) => {
 });
 
 render();
-initDeferredProjectGallery();
 initCallActions();
 initMobileCallAction();
 initYandexReviews();

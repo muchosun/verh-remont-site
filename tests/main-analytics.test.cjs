@@ -58,6 +58,16 @@ test('section views deduplicate; project filter and scroll are diagnostics only'
   assert.equal(f.goals.filter(x=>x.name==='main_section_view').length,1);
   f.filter.events.click();f.gallery.scrollLeft=80;f.gallery.events.scroll();f.gallery.events.scroll();assert.equal(f.goals.filter(x=>x.params.action==='project_scroll').length,1);assert.equal(f.goals.some(x=>x.name==='quiz_lead_success'),false);
 });
+test('gallery photo and view interactions never synthesize a paid delivery goal',()=>{
+  const f=fixture();
+  for(const dataset of [{projectPhoto:''},{projectView:'grid'}]) {
+    f.events.click({isTrusted:true,target:{closest:selector=>selector.includes(dataset.projectView ? 'data-project-view' : 'data-project-photo') ? {dataset} : null}});
+  }
+  assert.equal(f.goals.at(-2).params.action,'project_photo');
+  assert.equal(f.goals.at(-1).params.action,'project_view');
+  assert.equal(f.goals.at(-1).params.control,'grid');
+  assert.equal(f.goals.some(x=>x.name==='quiz_lead_success'),false);
+});
 test('tracking outage cannot affect page controls or delivered lead state',()=>{
   const f=fixture();f.window.ym=()=>{throw Error('offline');};assert.doesNotThrow(()=>f.links[1].events.click());
   const fn=script.slice(script.indexOf('function trackMetricGoal('),script.indexOf('\ntrackMetricGoal("hero_headline_exposure")'));

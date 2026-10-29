@@ -320,6 +320,8 @@
     <!-- /Yandex.Metrika counter -->
     <script src="/assets/js/lead-support.js?v=20261028-design-route" defer></script>
     <link rel="stylesheet" href="conversion.css?v=20260914" />
+    <link rel="stylesheet" href="assets/vendor/photoswipe/photoswipe.css?v=5.4.4" />
+    <link rel="stylesheet" href="assets/css/project-gallery.css?v=20261029-1" />
   </head>
   <body>
     <noscript><div><img src="https://mc.yandex.ru/watch/110859289" style="position: absolute; left: -9999px;" alt="" /></div></noscript>
@@ -390,7 +392,7 @@
           </div>
         </div>
 
-        <div class="project-gallery" data-project-gallery data-project-assets-prefix="assets/projects">
+        <div class="project-gallery" data-project-gallery data-project-assets-prefix="assets/projects" data-project-layout="slider">
           <div class="project-gallery__topbar">
             <div class="project-gallery__filters" role="tablist" aria-label="Фильтр объектов">
               <button class="project-gallery__filter is-active" type="button" role="tab" aria-selected="true" data-project-filter="all">Все <span>116</span></button>
@@ -402,7 +404,19 @@
             <output class="project-gallery__count" data-project-count aria-live="polite">116 фото</output>
           </div>
 
-          <div class="project-gallery__track" data-project-track role="list" aria-label="Фотографии выбранной категории" tabindex="0"></div>
+          <div class="project-gallery__toolbar">
+            <div class="project-gallery__views" role="group" aria-label="Вид галереи">
+              <button class="project-gallery__tool" type="button" data-project-view="slider" aria-label="Слайдер" title="Слайдер" aria-pressed="true" aria-controls="project-photos"><img src="assets/vendor/lucide/gallery-horizontal-end.svg" width="20" height="20" alt="" /></button>
+              <button class="project-gallery__tool" type="button" data-project-view="grid" aria-label="Сетка фотографий" title="Сетка фотографий" aria-pressed="false" aria-controls="project-photos"><img src="assets/vendor/lucide/grid-2x2.svg" width="20" height="20" alt="" /></button>
+            </div>
+            <div class="project-gallery__navigation" data-project-navigation>
+              <output class="project-gallery__position" data-project-position aria-live="polite">1 / 116</output>
+              <button class="project-gallery__tool" type="button" data-project-prev aria-label="Предыдущие фотографии" title="Предыдущие фотографии" aria-controls="project-photos" disabled><img src="assets/vendor/lucide/chevron-left.svg" width="20" height="20" alt="" /></button>
+              <button class="project-gallery__tool" type="button" data-project-next aria-label="Следующие фотографии" title="Следующие фотографии" aria-controls="project-photos"><img src="assets/vendor/lucide/chevron-right.svg" width="20" height="20" alt="" /></button>
+            </div>
+          </div>
+          <div class="project-gallery__track" id="project-photos" data-project-track role="list" aria-label="Фотографии выбранной категории"></div>
+          <button class="project-gallery__more" type="button" data-project-more hidden><img src="assets/vendor/lucide/plus.svg" width="20" height="20" alt="" />Показать ещё фотографии</button>
         </div>
 
         <p class="projects__privacy" id="projects-privacy"><strong>Адреса квартир не публикуем.</strong> Площадь, ЖК и детали объекта добавим только после согласования с собственниками.</p>
@@ -941,6 +955,7 @@
       window.VERH_REVIEWS_WIDGET_ENABLED = true;
     </script>
     <script src="assets/js/project-gallery-data.js?v=20260901-1"></script>
-    <script src="script.js?v=20261029-private-quiz"></script>
+    <script src="script.js?v=20261029-project-gallery"></script>
+    <script type="module" src="assets/js/project-gallery.js?v=20261029-1"></script>
   </body>
 </html>
