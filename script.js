@@ -1,3 +1,116 @@
+(() => {
+"use strict";
+
+// Keep tracking and quiz controls private, without changing file/preview support.
+const mainAnalytics = (() => {
+  const preview = Boolean(window.VERH_PREVIEW) || location.protocol === "file:" || ["localhost", "127.0.0.1"].includes(location.hostname);
+  const names = new Set(["main_landing_view", "main_section_view", "main_interaction", "main_messenger_click", "main_service_click", "main_quiz_contact", "main_quiz_close", "main_validation_error", "quiz_open", "quiz_apartment_selected", "quiz_area_selected", "quiz_tariff_selected", "quiz_submit_attempt", "quiz_lead_success", "quiz_lead_failure", "quiz_calculation_viewed", "tariff_selected", "phone_reveal", "phone_call", "callback_prompt_shown", "callback_prompt_dismissed", "callback_submit_attempt", "callback_requested", "callback_lead_success", "callback_lead_failure", "theme_switch", "hero_headline_exposure"]);
+  const enums = {
+    action:["navigation", "legal", "project_filter", "project_scroll", "step_back", "theme", "callback_dismiss"],
+    placement:["header", "hero", "top", "tariffs", "design-gift", "materials", "payments", "services", "reviews", "contacts", "footer", "mobile_sticky", "tariff", "general", "page", "quiz", "callback"],
+    tariff:["cosmetic", "standard", "comfort", "lux"],
+    field:["phone", "consent", "area", "form"],
+    channel:["max", "telegram"],
+    service:["dizayn-proekt", "priemka-kvartiry", "ukladka-laminata", "pokleyka-oboev", "shpaklevka-sten", "ukladka-plitki", "razvodka-santehniki", "natyazhnoy-potolok", "all"],
+    section:["top", "projects", "tariffs", "design-gift", "materials", "payments", "services", "reviews", "contacts"],
+    control:["all", "standard", "comfort", "lux", "details", "contract", "privacy", "consent", "company", "top", "projects", "tariffs", "payments", "services", "contacts"],
+    outcome:["delivered", "not_delivered"], theme:["light", "dark"], variant:["control", "trust"], experiment:["hero-headline-v1"],
+  };
+  const pending = [];
+  let retryTimer = null;
+  let retryCount = 0;
+  function flush() {
+    retryTimer = null;
+    if (typeof window.ym !== "function") {
+      if (pending.length && retryCount++ < 60) retryTimer = window.setTimeout(flush, 1000);
+      else pending.length = 0;
+      return;
+    }
+    retryCount = 0;
+    while (pending.length) {
+      const event = pending.shift();
+      try { window.ym(110859289,"reachGoal",event.name,event.params); } catch { /* Do not retry ambiguous sends or interfere with the form. */ }
+    }
+  }
+  function track(name, params = {}) {
+    if (preview || !names.has(name)) return;
+    if (name === "theme_switch") { name = "main_interaction"; params = {...params,action:"theme"}; }
+    if (name === "callback_prompt_dismissed") { name = "main_interaction"; params = {...params,action:"callback_dismiss",placement:"callback"}; }
+    const safe = {landing:"repair_main"};
+    for (const [key,value] of Object.entries(params)) {
+      if (enums[key]?.includes(value)) safe[key] = value;
+      else if (key === "step" && Number.isInteger(value) && value >= 1 && value <= 4) safe.step = value;
+      else if (key === "apartment" && ["Новостройка", "Вторичка"].includes(value)) safe.apartment_type = value === "Новостройка" ? "new" : "resale";
+    }
+    if (pending.length < 100) pending.push({name,params:safe});
+    if (retryTimer === null) flush();
+  }
+  const placement = element => element?.closest(".mobile-sticky-cta") ? "mobile_sticky" : element?.closest(".site-header") ? "header" : element?.closest("footer") ? "footer" : element?.closest("section[id]")?.id || "page";
+  track("main_landing_view");
+  const attempted = new WeakSet();
+  function trackAttempt(form) {
+    if (form?.id !== "lead-form" || !isQuizStep(3) || state.maxStep < 3 || form.dataset?.sending === "true" || attempted.has(form)) return;
+    attempted.add(form);
+    window.setTimeout(() => attempted.delete(form), 0);
+    track("quiz_submit_attempt",{placement:"quiz",step:4});
+  }
+  document.addEventListener("click", event => {
+    if (event.isTrusted === false) return;
+    const button = event.target.closest('button[type="submit"], input[type="submit"]');
+    if (button && !button.disabled) trackAttempt(button.form);
+  },true);
+  document.addEventListener("submit", event => {
+    if (event.isTrusted !== false) trackAttempt(event.target);
+  },true);
+  document.addEventListener("invalid", event => {
+    if (event.isTrusted === false) return;
+    const form = event.target.closest("form");
+    if (!["lead-form", "callback-form", "area-form"].includes(form?.id)) return;
+    if (form.id === "lead-form" && !isQuizStep(3) || form.id === "area-form" && !isQuizStep(1)) return;
+    trackAttempt(form);
+    const field = event.target.name === "personal_data_consent" ? "consent" : ["phone", "area"].includes(event.target.name) ? event.target.name : "form";
+    track("main_validation_error", {field,placement:form.id === "callback-form" ? "callback" : "quiz",step:form.id === "area-form" ? 2 : 4});
+  },true);
+  document.querySelectorAll("a[href]").forEach(link => link.addEventListener("click", event => {
+    if (event.isTrusted === false) return;
+    const raw = link.getAttribute("href") || "";
+    const at = placement(link);
+    if (raw.startsWith("tel:")) return;
+    let url;
+    try { url = new URL(raw,location.href); } catch { return; }
+    if (["max.ru", "t.me"].includes(url.hostname)) track("main_messenger_click",{channel:url.hostname === "max.ru" ? "max" : "telegram",placement:at});
+    else if (url.origin === location.origin && (url.pathname.startsWith("/uslugi/") || url.pathname === "/design/" || url.pathname === "/design")) {
+      const service = url.pathname === "/design/" || url.pathname === "/design" ? "dizayn-proekt" : url.pathname.split("/").filter(Boolean)[1] || "all";
+      track("main_service_click",{service,placement:at});
+    } else if (raw.startsWith("#")) track("main_interaction",{action:"navigation",control:raw.slice(1),placement:at});
+    else {
+      const control = url.pathname.endsWith("contract.html") ? "contract" : url.pathname.endsWith("privacy.html") ? "privacy" : url.pathname.endsWith("consent.html") ? "consent" : url.hostname === "www.rusprofile.ru" ? "company" : null;
+      if (control) track("main_interaction",{action:"legal",control,placement:at});
+    }
+  }));
+  document.querySelectorAll("[data-project-filter]").forEach(button => button.addEventListener("click", event => {
+    if (event.isTrusted !== false) track("main_interaction",{action:"project_filter",control:button.dataset.projectFilter,placement:"page"});
+  }));
+  const gallery = document.querySelector("[data-project-track]");
+  let galleryScrollTracked = false;
+  gallery?.addEventListener("scroll", () => {
+    if (galleryScrollTracked || gallery.scrollLeft < 40) return;
+    galleryScrollTracked = true;
+    track("main_interaction",{action:"project_scroll",placement:"page"});
+  },{passive:true});
+  if (typeof IntersectionObserver === "function") {
+    const seen = new Set();
+    const observer = new IntersectionObserver(entries => entries.forEach(entry => {
+      if (!entry.isIntersecting || seen.has(entry.target.id)) return;
+      seen.add(entry.target.id);
+      track("main_section_view",{section:entry.target.id});
+      observer.unobserve(entry.target);
+    }),{threshold:0.1});
+    document.querySelectorAll("main section[id]").forEach(section => observer.observe(section));
+  }
+  return Object.freeze({track,placement});
+})();
+
 document.documentElement.classList.add("has-js");
 
 const themeToggle = document.querySelector("[data-theme-toggle]");
@@ -422,8 +535,7 @@ function trackMetricGoal(goal, params = {}) {
     ? { experiment: "hero-headline-v1", variant: heroVariant }
     : {};
   try {
-    if (window.VerhMainAnalytics) window.VerhMainAnalytics.track(goal, { ...params, ...experimentParams });
-    else if (typeof window.ym === "function") window.ym(110859289, "reachGoal", goal, { ...params, ...experimentParams });
+    mainAnalytics.track(goal, { ...params, ...experimentParams });
   } catch { /* A delivered lead must never become a retry because analytics failed. */ }
 }
 
@@ -636,7 +748,7 @@ function openQuiz(trigger) {
   hideCallbackPrompt(true);
   lastQuizTrigger = trigger || document.activeElement;
   trackMetricGoal("quiz_open", {
-    placement: window.VerhMainAnalytics?.placement(trigger) || (trigger?.dataset?.tariffOpen ? "tariff" : "general"),
+    placement: mainAnalytics.placement(trigger) || (trigger?.dataset?.tariffOpen ? "tariff" : "general"),
     tariff: trigger?.dataset?.tariffOpen || state.level,
   });
   prepareQuizMedia();
@@ -668,6 +780,10 @@ function updateStickyCta() {
   const isBeforeFooter = footerTop > window.innerHeight + 180;
   const shouldShow = stickyBreakpoint.matches && window.scrollY > showAfter && isBeforeFooter;
   document.body.classList.toggle("show-sticky-cta", shouldShow);
+}
+
+function isQuizStep(step) {
+  return quizModal.classList.contains("is-open") && state.step === step;
 }
 
 function setStep(nextStep) {
@@ -877,7 +993,8 @@ quizOpenButtons.forEach((button) => {
   button.addEventListener("pointerenter", prepareQuizMedia, { once: true });
   button.addEventListener("focus", prepareQuizMedia, { once: true });
   button.addEventListener("touchstart", prepareQuizMedia, { once: true, passive: true });
-  button.addEventListener("click", () => {
+  button.addEventListener("click", event => {
+    if (event.isTrusted === false) return;
     resetLeadResult();
     state.maxStep = 0;
     setStep(0);
@@ -886,7 +1003,8 @@ quizOpenButtons.forEach((button) => {
 });
 
 document.querySelectorAll("[data-tariff-open]").forEach((button) => {
-  button.addEventListener("click", () => {
+  button.addEventListener("click", event => {
+    if (event.isTrusted === false) return;
     state.level = button.dataset.tariffOpen;
     trackMetricGoal("tariff_selected", { tariff: state.level });
     resetLeadResult();
@@ -898,10 +1016,13 @@ document.querySelectorAll("[data-tariff-open]").forEach((button) => {
 });
 
 quizCloseButtons.forEach((button) => {
-  button.addEventListener("click", closeQuiz);
+  button.addEventListener("click", event => {
+    if (event.isTrusted !== false) closeQuiz();
+  });
 });
 
 document.addEventListener("keydown", (event) => {
+  if (event.isTrusted === false) return;
   if (event.key === "Escape" && quizModal.classList.contains("is-open")) {
     closeQuiz();
   }
@@ -921,8 +1042,9 @@ window.addEventListener("scroll", updateStickyCta, { passive: true });
 window.addEventListener("resize", updateStickyCta);
 
 document.querySelectorAll("[data-apartment]").forEach((button) => {
-  button.addEventListener("click", () => {
-    if (!quizModal.classList.contains("is-open") || state.step !== 0) return;
+  button.addEventListener("click", event => {
+    if (event.isTrusted === false || !isQuizStep(0)) return;
+    if (!["Новостройка", "Вторичка"].includes(button.dataset.apartment)) return;
     state.apartment = button.dataset.apartment;
     trackMetricGoal("quiz_apartment_selected", { apartment: state.apartment });
     resetLeadResult();
@@ -932,8 +1054,9 @@ document.querySelectorAll("[data-apartment]").forEach((button) => {
 });
 
 document.querySelectorAll("[data-area]").forEach((button) => {
-  button.addEventListener("click", () => {
-    if (!quizModal.classList.contains("is-open") || state.step !== 1) return;
+  button.addEventListener("click", event => {
+    if (event.isTrusted === false || !isQuizStep(1)) return;
+    if (validateAreaDraft(button.dataset.area) === null) return;
     setArea(button.dataset.area, button.dataset.areaLabel);
     trackMetricGoal("quiz_area_selected", { area: state.area, area_label: state.areaLabel });
     setStep(2);
@@ -942,7 +1065,7 @@ document.querySelectorAll("[data-area]").forEach((button) => {
 
 document.querySelector("#area-form").addEventListener("submit", (event) => {
   event.preventDefault();
-  if (!quizModal.classList.contains("is-open") || state.step !== 1) return;
+  if (event.isTrusted === false || !isQuizStep(1)) return;
   const area = validateAreaDraft(areaInput.value);
   if (area === null) {
     areaInput.setCustomValidity("Введи площадь от 20 до 300 м².");
@@ -967,8 +1090,9 @@ areaInput.addEventListener("input", () => {
 });
 
 document.querySelectorAll("[data-level]").forEach((button) => {
-  button.addEventListener("click", () => {
-    if (!quizModal.classList.contains("is-open") || state.step !== 2) return;
+  button.addEventListener("click", event => {
+    if (event.isTrusted === false || !isQuizStep(2)) return;
+    if (!Object.prototype.hasOwnProperty.call(tariffs, button.dataset.level)) return;
     state.level = button.dataset.level;
     trackMetricGoal("quiz_tariff_selected", { tariff: state.level });
     resetLeadResult();
@@ -978,8 +1102,10 @@ document.querySelectorAll("[data-level]").forEach((button) => {
 });
 
 progressButtons.forEach((button) => {
-  button.addEventListener("click", () => {
-    setStep(Number(button.dataset.stepNav));
+  button.addEventListener("click", event => {
+    const step = Number(button.dataset.stepNav);
+    if (event.isTrusted === false || !quizModal.classList.contains("is-open") || !Number.isInteger(step) || step < 0 || step > state.maxStep) return;
+    setStep(step);
   });
 });
 
@@ -1048,6 +1174,7 @@ callbackForm?.addEventListener("submit", async (event) => {
 
 leadForm.addEventListener("submit", async (event) => {
   event.preventDefault();
+  if (event.isTrusted === false || !isQuizStep(3) || state.maxStep < 3) return;
   if (leadForm.dataset.sending === "true") return;
   phoneInput.setCustomValidity("");
   const digits = phoneInput.value.replace(/\D/g, "");
@@ -1065,7 +1192,6 @@ leadForm.addEventListener("submit", async (event) => {
     area: state.area,
     tariff: state.level,
   };
-  if (!window.VerhMainAnalytics) trackMetricGoal("quiz_submit_attempt", leadMetricParams);
   state.leadSubmitted = false;
   leadForm.hidden = true;
   leadOffer.hidden = true;
@@ -1146,3 +1272,4 @@ function markLoadFormReady() {
 }
 if (document.readyState === "loading") document.addEventListener("DOMContentLoaded",markLoadFormReady,{once:true});
 else markLoadFormReady();
+})();
