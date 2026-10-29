@@ -196,13 +196,9 @@ async function sendLead(payload) {
   }
   if (!leadEndpoint) throw new Error("Lead endpoint is not configured");
 
-  const response = await fetch(leadEndpoint, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(payload),
-  });
-  if (!response.ok) throw new Error(`Lead endpoint responded with ${response.status}`);
-  return response.json().catch(() => ({ status: "accepted" }));
+  const delivery = await window.VerhLead.send(leadEndpoint, payload);
+  if (delivery?.status !== "sent") throw new Error("Lead delivery was not confirmed");
+  return delivery;
 }
 
 function renderEstimate() {
