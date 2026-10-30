@@ -4,8 +4,15 @@
   const local = Boolean(window.VERH_PREVIEW) || location.protocol === "file:" || ["localhost", "127.0.0.1"].includes(location.hostname);
   const names = new Set(["cta_click", "quiz_start", "step_apartment", "step_project", "submit_attempt", "validation_error", "delivery_error", "callback_delivered", "captcha_error", "phone_reveal", "phone_intent", "max_click", "pdf_open", "album_open", "interaction", "section_view"]);
   const keys = new Set(["action", "location", "control", "field", "mode", "step", "sheet", "section", "package"]);
+  let started = false;
   function track(name, params = {}) {
     if (local || !names.has(name)) return;
+    // A validated first step also starts the quiz when its fields were prefilled.
+    if (name === "step_apartment" && !started) track("quiz_start");
+    if (name === "quiz_start") {
+      if (started) return;
+      started = true;
+    }
     // Never forward form values, link URLs, labels or arbitrary strings to Metrika.
     const safe = {};
     for (const [key, value] of Object.entries(params)) {
@@ -34,10 +41,8 @@
   document.querySelectorAll("details").forEach((el,index) => el.addEventListener("toggle", () => { if (el.open) interaction(el, "details_open", `details_${index + 1}`); }));
   document.querySelectorAll("[data-estimate-area]").forEach(el => el.addEventListener("change", () => interaction(el, "calculator_change", "area")));
   const form = document.querySelector("[data-service-form]");
-  let started = false;
   form?.addEventListener("input", event => {
     if (started || event.target.name === "website") return;
-    started = true;
     track("quiz_start");
   });
   form?.addEventListener("change", event => {
