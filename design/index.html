@@ -78,7 +78,7 @@
     <link rel="stylesheet" href="city.css?v=20261017" />
     <link rel="stylesheet" href="studio.css?v=20261017" />
     <link rel="stylesheet" href="decora.css?v=20261019-mobile" />
-    <link rel="stylesheet" href="dark.css?v=20261026-phone" />
+    <link rel="stylesheet" href="dark.css?v=20261030-estimate" />
     <script>
       if (!window.VERH_PREVIEW && !["localhost", "127.0.0.1"].includes(location.hostname)) {
       (function(m,e,t,r,i,k,a){
@@ -143,6 +143,7 @@
           <div><span class="section-label">Прозрачная стоимость</span><h2>У каждой квартиры <br />есть свой план</h2></div>
           <div class="estimate-input"><label for="estimate-area">Площадь квартиры, м²</label><input id="estimate-area" type="number" inputmode="decimal" min="30" max="10000" step="0.1" value="40" data-estimate-area aria-describedby="estimate-note" /></div>
           <div class="estimate-result"><span>Рабочий проект · 500 ₽/м²</span><output for="estimate-area" data-estimate-total aria-live="polite">20 000 ₽</output><small id="estimate-note">От 30 м². Состав и цену закрепляем в договоре.</small></div>
+          <button class="button button--gold estimate-continue" type="button" data-estimate-continue data-scroll-lead data-package="Рабочий проект — 500 ₽/м², от 30 м², договор до 31 октября 2026">Продолжить с этим расчётом</button>
         </div>
       </section>
 
@@ -349,6 +350,10 @@
               <span data-quiz-counter aria-live="polite">1 из 3 · Квартира</span>
               <progress max="3" value="1" aria-label="Заполнение заявки"></progress>
             </div>
+            <div class="form-estimate" data-form-estimate aria-live="polite" aria-atomic="true">
+              <span data-form-estimate-label>Рабочий проект · 500 ₽/м²</span>
+              <strong data-form-estimate-total>Укажите площадь квартиры</strong>
+            </div>
             <fieldset data-quiz-step="0">
               <legend tabindex="-1">О вашей квартире</legend>
             <label data-brief-field>Город квартиры
@@ -424,6 +429,6 @@
     <script src="./analytics.js?v=20261030-quiz-start" defer></script>
     <script src="./quiz.js?v=20261027-load" defer></script>
     <script src="./project-album.js?v=20261026-analytics" defer></script>
-    <script src="decora.js?v=20261025-quiz" defer></script>
+    <script src="decora.js?v=20261030-estimate" defer></script>
   </body>
 </html>

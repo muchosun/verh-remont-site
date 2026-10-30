@@ -44,6 +44,15 @@ body, .selected-projects, .specialty-page .section-light { background: var(--can
 .estimate-input label, .estimate-result > span, .estimate-result small { color: #c3cec6; }
 .estimate-input input { color: var(--text); border-color: #a3b5a7; }
 .estimate-result output { color: var(--text); }
+.estimate-layout { row-gap: 16px; }
+.estimate-continue { grid-column: 3; width: 100%; max-width: 320px; min-height: 52px; white-space: normal; }
+.estimate-continue:disabled { opacity: .55; cursor: not-allowed; }
+.form-estimate { display: grid; gap: 4px; min-height: 88px; margin: 4px 0 8px; padding: 12px 0 12px 16px; border-left: 2px solid var(--accent); overflow-wrap: anywhere; }
+.form-estimate > span { color: var(--secondary); font-size: 14px; line-height: 1.5; }
+.form-estimate > strong { font-size: 18px; line-height: 1.4; font-weight: 600; }
+@media (max-width: 760px) {
+  .estimate-continue { grid-column: 1 / -1; max-width: none; }
+}
 .project-caption, .lead-section, .faq-list details { border-color: var(--line); }
 .project-caption a, .story-steps a, .album-footer a, .lead-contact { color: #f0d8a7; }
 .design-story { background: var(--surface); color: var(--text); }
