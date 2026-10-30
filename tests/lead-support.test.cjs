@@ -11,7 +11,8 @@ function load({ href = 'https://verhremont.ru/', linkPath = '/uslugi/dizayn-proe
     document: { querySelectorAll: () => [link],createElement:()=>({remove(){}}),body:{append(){}},head:{append:script=>{if(scriptError)setImmediate(()=>script.onerror());}} },
     sessionStorage: { getItem: () => { if (blocked) throw Error('blocked'); return stored; }, setItem: (_key, value) => { if (blocked) throw Error('blocked'); stored = value; } },
   };
-  vm.runInNewContext(code, context);
+  // Keep the strict-mode rollback contract covered; temporary mode has its own suite.
+  vm.runInNewContext(code.replace('const intakeMode = "unverified-all-v1";', 'const intakeMode = "";'), context);
   return { api: window.VerhLead, link, stored: () => stored };
 }
 

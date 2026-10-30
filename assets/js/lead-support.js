@@ -1,5 +1,19 @@
 (() => {
   "use strict";
+  const intakeMode = "unverified-all-v1";
+  const reported = new Set();
+  function reportUnverified(result) {
+    if (result.duplicate || reported.has(result.leadId)) return;
+    reported.add(result.leadId);
+    const key = `verh-unverified-goal-${result.leadId}`;
+    try { if (sessionStorage.getItem(key)) return; } catch {}
+    try {
+      if (typeof window.ym === "function") {
+        window.ym(110859289, "reachGoal", `unverified_${result.formType}_delivered`, {form:result.formType,verification:"unverified"});
+        try { sessionStorage.setItem(key,"1"); } catch {}
+      }
+    } catch { /* A delivered lead must not be retried because analytics failed. */ }
+  }
   const sitekey = "0x4AAAAAAFlZIdAV1EMcxek9";
   let captchaScript;
   function loadCaptcha() {
@@ -74,22 +88,27 @@
     const url = new URL(payload.source || location.href,location.href);
     const design = Boolean(payload.designBrief) || payload.formVersion === 3 || url.pathname.startsWith("/design/") || url.searchParams.get("request") === "design-project";
     const emergencyEligible = !design && url.origin === location.origin && url.pathname === '/' && (!payload.kind || payload.kind === 'quiz') && payload.emergencyTimeoutFallback === 'repair-main-timeout-v1';
-    const turnstileToken = payload.turnstileToken || await window.VerhCaptcha.getToken(design ? "design_lead" : "repair_lead");
+    const turnstileToken = intakeMode ? undefined : payload.turnstileToken || await window.VerhCaptcha.getToken(design ? "design_lead" : "repair_lead");
     const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), emergencyEligible ? 25000 : 15000);
+    const timeout = setTimeout(() => controller.abort(), intakeMode || emergencyEligible ? 25000 : 15000);
     try {
       const response = await fetch(endpoint, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({...payload,turnstileToken}),
+        body: JSON.stringify({...payload,turnstileToken,intakeMode}),
         signal: controller.signal,
       });
       if (!response.ok) throw new Error(`Lead endpoint responded with ${response.status}`);
       const result = await response.json();
+      if (intakeMode && result.status === 'accepted_unverified' && result.intakeMode === intakeMode && result.qualification === 'unverified' && result.leadId && /^(repair_(main|callback|calculator)|design_(brief|callback)|service_(priemka_kvartiry|ukladka_laminata|pokleyka_oboev|shpaklevka_sten|ukladka_plitki|razvodka_santehniki|natyazhnoy_potolok))$/.test(result.formType)) {
+        reportUnverified(result);
+        return {status:'unverified',leadId:result.leadId,formType:result.formType,duplicate:result.duplicate === true};
+      }
+      if (intakeMode) throw new Error("Unverified delivery was not confirmed");
       if (emergencyEligible && result.status === 'accepted_unverified' && result.leadId && result.qualification === 'repair_unverified') return {status:'unverified'};
       if (result.status !== "accepted" || !result.leadId) throw new Error("Lead delivery was not confirmed");
       return { status: "sent" };
     } finally { clearTimeout(timeout); }
   };
-  window.VerhLead = { source, send };
+  window.VerhLead = { source, send, unverifiedMode:Boolean(intakeMode) };
 })();

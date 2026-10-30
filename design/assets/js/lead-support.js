@@ -1,5 +1,19 @@
 (() => {
   "use strict";
+  const intakeMode = "unverified-all-v1";
+  const reported = new Set();
+  function reportUnverified(result) {
+    if (result.duplicate || reported.has(result.leadId)) return;
+    reported.add(result.leadId);
+    const key = `verh-unverified-goal-${result.leadId}`;
+    try { if (sessionStorage.getItem(key)) return; } catch {}
+    try {
+      if (typeof window.ym === "function") {
+        window.ym(110859289,"reachGoal",`unverified_${result.formType}_delivered`,{form:result.formType,verification:"unverified"});
+        try { sessionStorage.setItem(key,"1"); } catch {}
+      }
+    } catch { /* Analytics cannot change the delivery result. */ }
+  }
   const key = "verh-campaign";
   const isCampaignKey = (name) => /^utm_[a-z_]+$/.test(name) || ["yclid", "gclid", "fbclid"].includes(name);
   const current = new URL(location.href);
@@ -46,14 +60,19 @@
       const response = await fetch(endpoint, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...payload, attribution }),
+        body: JSON.stringify({ ...payload, turnstileToken:intakeMode ? undefined : payload.turnstileToken, attribution, intakeMode }),
         signal: controller.signal,
       });
       if (!response.ok) throw new Error(`Lead endpoint responded with ${response.status}`);
       const result = await response.json();
+      if (intakeMode && result.status === 'accepted_unverified' && result.intakeMode === intakeMode && result.qualification === 'unverified' && result.leadId && ['design_brief','design_callback'].includes(result.formType)) {
+        reportUnverified(result);
+        return {status:'unverified',qualification:'unverified',leadId:result.leadId,formType:result.formType,duplicate:result.duplicate === true};
+      }
+      if (intakeMode) throw new Error("Unverified delivery was not confirmed");
       if (result.status !== "accepted" || !result.leadId) throw new Error("Lead delivery was not confirmed");
       return { status: "sent", qualification: result.qualification || "" };
     } finally { clearTimeout(timeout); }
   };
-  window.VerhLead = { source, send };
+  window.VerhLead = { source, send, unverifiedMode:Boolean(intakeMode) };
 })();

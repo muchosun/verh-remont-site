@@ -197,7 +197,7 @@ async function sendLead(payload) {
   if (!leadEndpoint) throw new Error("Lead endpoint is not configured");
 
   const delivery = await window.VerhLead.send(leadEndpoint, payload);
-  if (delivery?.status !== "sent") throw new Error("Lead delivery was not confirmed");
+  if (!["sent", "unverified"].includes(delivery?.status)) throw new Error("Lead delivery was not confirmed");
   return delivery;
 }
 
@@ -317,8 +317,8 @@ leadForm.addEventListener("submit", async (event) => {
   });
 
   try {
-    await sendLead(leadPayload());
-    trackGoal("calculator_lead_success", {
+    const delivery = await sendLead(leadPayload());
+    if (delivery.status !== "unverified") trackGoal("calculator_lead_success", {
       apartment: state.apartment,
       area: state.area,
       tariff: state.level,

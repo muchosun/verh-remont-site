@@ -1064,7 +1064,7 @@ callbackForm?.addEventListener("submit", async (event) => {
   trackMetricGoal("callback_submit_attempt");
 
   try {
-    await sendLeadToMax({
+    const delivery = await sendLeadToMax({
       kind: "callback",
       phone: callbackPhone.value.trim(),
       source: window.VerhLead.source().href,
@@ -1075,8 +1075,10 @@ callbackForm?.addEventListener("submit", async (event) => {
     callbackStatus.classList.add("is-success");
     callbackSuppressed = true;
     rememberCallbackDismissal();
-    trackMetricGoal("callback_requested");
-    trackMetricGoal("callback_lead_success");
+    if (delivery.status !== "unverified") {
+      trackMetricGoal("callback_requested");
+      trackMetricGoal("callback_lead_success");
+    }
   } catch {
     trackMetricGoal("callback_lead_failure");
     callbackStatus.textContent = "Не получилось отправить номер. Попробуй ещё раз или позвони нам с сайта.";
