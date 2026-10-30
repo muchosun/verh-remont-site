@@ -828,6 +828,7 @@ function createLeadPayload() {
     secondarySurcharge: getSecondarySurcharge(),
     preliminaryEstimate: getEstimate(),
     phone: state.leadPhone,
+    emergencyTimeoutFallback: 'repair-main-timeout-v1',
     source: window.VerhLead.source().href,
     submittedAt: new Date().toISOString(),
   };
@@ -1133,6 +1134,8 @@ leadForm.addEventListener("submit", async (event) => {
       : "";
     const deliveryNote = delivery.status === "sent"
       ? "<span>Заявка отправлена в рабочую группу. Игорь свяжется с тобой, чтобы согласовать замер.</span>"
+      : delivery.status === "unverified"
+      ? "<span>Заявка передана в рабочую группу для проверки. Игорь свяжется с тобой по указанному номеру.</span>"
       : "<span class=\"delivery-note\">Тестовая версия: доставка заявок в MAX подключается отдельно. Расчёт работает, но номер пока не отправляется в рабочую группу.</span>";
     successMessage.innerHTML = `
       <strong>Предварительный расчёт: ${getEstimateText()}.</strong>
@@ -1142,7 +1145,7 @@ leadForm.addEventListener("submit", async (event) => {
       ${deliveryNote}
       ${getPaymentPlanHtml()}
     `;
-    trackMetricGoal(delivery.status === "sent" ? "quiz_lead_success" : "quiz_calculation_viewed", leadMetricParams);
+    if (delivery.status !== "unverified") trackMetricGoal(delivery.status === "sent" ? "quiz_lead_success" : "quiz_calculation_viewed", leadMetricParams);
     render();
   } catch (error) {
     trackMetricGoal("quiz_lead_failure", leadMetricParams);

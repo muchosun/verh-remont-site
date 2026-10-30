@@ -99,3 +99,20 @@ test('aborts a stalled request after the configured timeout', async () => {
   await assert.rejects(api.send('/lead', {}), /aborted/);
   assert.equal(duration, 15000);
 });
+
+test('main quiz emergency acknowledgment remains unverified, never sent',async()=>{
+  let duration;
+  const {api}=load({timeout:(callback,ms)=>{duration=ms;return setTimeout(callback,1000);},fetch:async()=>({ok:true,json:async()=>({status:'accepted_unverified',qualification:'repair_unverified',leadId:'test'})})});
+  const result=await api.send('/lead',{source:'https://verhremont.ru/?utm_source=qa',emergencyTimeoutFallback:'repair-main-timeout-v1'});
+  assert.equal(result.status,'unverified');assert.equal(duration,25000);
+});
+test('unverified acknowledgments cannot pass through other forms or malformed confirmations',async()=>{
+  const response=body=>async()=>({ok:true,json:async()=>body});
+  const body={status:'accepted_unverified',qualification:'repair_unverified',leadId:'test'};
+  for(const payload of [{},{source:'https://verhremont.ru/raschet-remonta/',emergencyTimeoutFallback:'repair-main-timeout-v1'},{kind:'callback',source:'https://verhremont.ru/',emergencyTimeoutFallback:'repair-main-timeout-v1'},{source:'https://verhremont.ru/design/',emergencyTimeoutFallback:'repair-main-timeout-v1'},{source:'https://foreign.invalid/',emergencyTimeoutFallback:'repair-main-timeout-v1'}]){
+    await assert.rejects(load({fetch:response(body)}).api.send('/lead',payload),/not confirmed/);
+  }
+  for(const invalid of [{...body,leadId:undefined},{...body,qualification:undefined},{...body,qualification:'design_brief_v3'}]){
+    await assert.rejects(load({fetch:response(invalid)}).api.send('/lead',{source:'https://verhremont.ru/',emergencyTimeoutFallback:'repair-main-timeout-v1'}),/not confirmed/);
+  }
+});
