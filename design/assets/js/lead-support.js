@@ -55,6 +55,11 @@
     const clientId = await getClientId();
     const yclid = source().searchParams.get("yclid") || "";
     const attribution = { clientId, yclid: /^\d{1,128}$/.test(yclid) ? yclid : "" };
+    if (window.VerhSmartCaptcha?.monitoring) {
+      const delivery=await window.VerhSmartCaptcha.submit(endpoint,{...payload,attribution});
+      reportUnverified(delivery);
+      return delivery;
+    }
     const smartCaptchaToken = smartMode ? await window.VerhSmartCaptcha.getToken() : undefined;
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), timeoutMs);
@@ -80,5 +85,5 @@
       return { status: "sent", qualification: result.qualification || "" };
     } finally { clearTimeout(timeout); }
   };
-  window.VerhLead = { source, send, unverifiedMode:!smartMode && Boolean(intakeMode) };
+  window.VerhLead = { source, send, unverifiedMode:window.VerhSmartCaptcha?.monitoring === true || !smartMode && Boolean(intakeMode) };
 })();

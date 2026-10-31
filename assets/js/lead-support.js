@@ -86,6 +86,11 @@
   });
   const send = async (endpoint, payload) => {
     if (!endpoint) throw new Error("Lead endpoint is not configured");
+    if (window.VerhSmartCaptcha?.monitoring) {
+      const delivery=await window.VerhSmartCaptcha.submit(endpoint,payload);
+      reportUnverified(delivery);
+      return delivery;
+    }
     const url = new URL(payload.source || location.href,location.href);
     const design = Boolean(payload.designBrief) || payload.formVersion === 3 || url.pathname.startsWith("/design/") || url.searchParams.get("request") === "design-project";
     const emergencyEligible = !design && url.origin === location.origin && url.pathname === '/' && (!payload.kind || payload.kind === 'quiz') && payload.emergencyTimeoutFallback === 'repair-main-timeout-v1';
@@ -116,5 +121,5 @@
       return { status: "sent" };
     } finally { clearTimeout(timeout); }
   };
-  window.VerhLead = { source, send, unverifiedMode:!smartMode && Boolean(intakeMode) };
+  window.VerhLead = { source, send, unverifiedMode:window.VerhSmartCaptcha?.monitoring === true || !smartMode && Boolean(intakeMode) };
 })();
