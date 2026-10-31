@@ -4,6 +4,9 @@
   const mode = "smartcaptcha-v1";
   const monitorMode = "smartcaptcha-monitor-v1";
   const formTypes = /^(repair_(main|callback|calculator)|design_(brief|callback)|service_(priemka_kvartiry|ukladka_laminata|pokleyka_oboev|shpaklevka_sten|ukladka_plitki|razvodka_santehniki|natyazhnoy_potolok))$/;
+  const goalPolicy = "verified-goals-v1";
+  const verifiedReported = new Set();
+  const allowedGoals = Object.freeze({repair_main:["quiz_lead_success"],repair_callback:["callback_requested","callback_lead_success"],repair_calculator:["calculator_lead_success"],design_brief:["design_project_brief_delivered","service_lead_success"],design_callback:["design_callback_delivered","service_lead_success"]});
   let loading;
   function load() {
     if (window.smartCaptcha) return Promise.resolve();
@@ -47,8 +50,21 @@
   }
   function reportStatus(form,state) {
     try {
-      if(typeof window.ym==="function") window.ym(110859289,"params",{captcha_monitor:{form,status:state,paid_goal:false}});
+      if(typeof window.ym==="function") window.ym(110859289,"params",{captcha_monitor:{form,status:state,goal_policy:goalPolicy}});
     } catch { /* Monitoring must not change the delivery result. */ }
+  }
+  function reportVerified(result,updated) {
+    if(result.duplicate || updated.duplicate || verifiedReported.has(result.leadId) || updated.goalPolicy!==goalPolicy || updated.verification!=="smartcaptcha" || updated.captchaStatus!=="passed" || updated.leadId!==result.leadId) return;
+    const expected=allowedGoals[result.formType] || (result.formType.startsWith("service_")?["service_lead_success"]:[]);
+    if(!Array.isArray(updated.successGoals) || updated.successGoals.length!==expected.length || updated.successGoals.some((goal,i)=>goal!==expected[i])) return;
+    const key=`verh-verified-goal-${result.leadId}`;
+    try {if(sessionStorage.getItem(key))return;} catch {}
+    if(typeof window.ym!=="function") return;
+    verifiedReported.add(result.leadId);
+    try {sessionStorage.setItem(key,"1");} catch {}
+    for(const goal of expected) {
+      try {window.ym(110859289,"reachGoal",goal,{form:result.formType,verification:"smartcaptcha"});} catch { /* Do not repeat ambiguous goal sends. */ }
+    }
   }
   async function post(endpoint,body,keepalive=false) {
     const controller=new AbortController();
@@ -65,8 +81,9 @@
     catch(error) {outcome=["cancelled","timeout","unavailable","failed"].includes(error?.code)?error.code:"failed";}
     try {
       const updated=await post(endpoint,{intakeMode:monitorMode,phase:"result",receipt:result.receipt,smartCaptchaToken:token,captchaOutcome:outcome},true);
-      if(updated.status!=="monitor_updated"||updated.paidGoal!==false||updated.formType!==result.formType||!["passed","cancelled","timeout","unavailable","failed"].includes(updated.captchaStatus)) throw Error("Status update not confirmed");
+      if(updated.status!=="monitor_updated"||updated.goalPolicy!==goalPolicy||updated.formType!==result.formType||!["passed","cancelled","timeout","unavailable","failed"].includes(updated.captchaStatus)) throw Error("Status update not confirmed");
       reportStatus(result.formType,updated.captchaStatus);
+      reportVerified(result,updated);
     } catch {reportStatus(result.formType,"status_update_failed");}
   }
   async function submit(endpoint,payload) {
