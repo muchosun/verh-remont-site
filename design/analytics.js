@@ -4,7 +4,7 @@
   const local = Boolean(window.VERH_PREVIEW) || location.protocol === "file:" || ["localhost", "127.0.0.1"].includes(location.hostname);
   const names = new Set(["cta_click", "quiz_start", "step_apartment", "step_project", "submit_attempt", "validation_error", "delivery_error", "callback_delivered", "captcha_error", "phone_reveal", "phone_intent", "max_click", "pdf_open", "album_open", "interaction", "section_view"]);
   const keys = new Set(["action", "location", "control", "field", "mode", "step", "sheet", "section", "package"]);
-  let started = false;
+  let started = false, consultationStarted = false;
   function track(name, params = {}) {
     if (local || !names.has(name)) return;
     // A validated first step also starts the quiz when its fields were prefilled.
@@ -25,7 +25,7 @@
   const interaction = (element, action, control) => track("interaction", {action, control, location:place(element)});
   document.querySelectorAll("[data-scroll-lead]").forEach((el, index) => el.addEventListener("click", () => {
     const pack = el.dataset.package || "";
-    track("cta_click", {location:place(el),control:`cta_${index + 1}`,package:pack.startsWith("Полный") ? "full" : pack.includes("подарок") ? "repair_gift" : pack ? "working" : "none"});
+    track("cta_click", {location:place(el),control:`cta_${index + 1}`,mode:el.dataset.leadMode === "callback" ? "callback" : "brief",package:pack.startsWith("Полный") ? "full" : pack.includes("подарок") ? "repair_gift" : pack ? "working" : "none"});
   }));
   document.querySelectorAll("a[href]").forEach(el => el.addEventListener("click", () => {
     const href = el.getAttribute("href");
@@ -42,7 +42,13 @@
   document.querySelectorAll("[data-estimate-area]").forEach(el => el.addEventListener("change", () => interaction(el, "calculator_change", "area")));
   const form = document.querySelector("[data-service-form]");
   form?.addEventListener("input", event => {
-    if (started || event.target.name === "website") return;
+    if (event.target.name === "website") return;
+    if (form.elements?.leadMode?.value === "callback") {
+      if (!consultationStarted) track("interaction", {action:"consultation_start",mode:"callback"});
+      consultationStarted = true;
+      return;
+    }
+    if (started) return;
     track("quiz_start");
   });
   form?.addEventListener("change", event => {

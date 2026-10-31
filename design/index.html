@@ -78,7 +78,7 @@
     <link rel="stylesheet" href="city.css?v=20261017" />
     <link rel="stylesheet" href="studio.css?v=20261017" />
     <link rel="stylesheet" href="decora.css?v=20261019-mobile" />
-    <link rel="stylesheet" href="dark.css?v=20261030-estimate" />
+    <link rel="stylesheet" href="dark.css?v=20261101-consultation" />
     <script>
       if (!window.VERH_PREVIEW && !["localhost", "127.0.0.1"].includes(location.hostname)) {
       (function(m,e,t,r,i,k,a){
@@ -109,7 +109,7 @@
         <a href="#project-album">Пример проекта</a>
         <a href="#process">Работа онлайн</a>
       </nav>
-      <button class="button button--outline header-lead" type="button" data-scroll-lead>Обсудить проект <span aria-hidden="true">↗</span></button>
+      <button class="button button--outline header-lead" type="button" data-scroll-lead data-lead-mode="callback">Обсудить проект <span aria-hidden="true">↗</span></button>
     </header>
     <main id="main">
       <section class="service-hero" id="top">
@@ -340,8 +340,8 @@
         <div class="section-shell lead-section__grid">
           <header class="lead-copy">
             <span class="section-label" data-lead-deadline>Договор до 31 октября 2026</span>
-            <h2>Начнём с вашей квартиры</h2>
-            <p>Уточним задачу и размеры квартиры, согласуем состав и срок проекта. Общение и согласования — через команду ВЕРХ.</p>
+            <h2 data-lead-title>Начнём с вашей квартиры</h2>
+            <p data-lead-description>Уточним задачу и размеры квартиры, согласуем состав и срок проекта. Общение и согласования — через команду ВЕРХ.</p>
             <strong data-lead-price aria-live="polite" aria-atomic="true">Рабочий проект · 500 ₽/м² · от 30 м²</strong>
             <a class="lead-contact" href="https://max.ru/id234207648329_biz" target="_blank" rel="noopener">Обсудить в MAX <span aria-hidden="true">↗</span></a>
           </header>
@@ -422,13 +422,13 @@
       <div class="preview-footer__bottom"><span>© 2026 ВЕРХ ремонт</span><nav aria-label="Правовые документы"><a href="/design/contract.html">Как оформляем договор</a><a href="/design/privacy.html">Политика обработки данных</a><a href="/design/consent.html">Согласие на обработку данных</a><a href="https://www.rusprofile.ru/ip/324237500512814" target="_blank" rel="noreferrer noopener">Проверить ИП</a></nav></div>
     </footer>
     <div class="mobile-actions" data-mobile-actions>
-      <button class="button button--gold" type="button" data-scroll-lead>Обсудить проект</button>
+      <button class="button button--gold" type="button" data-scroll-lead data-lead-mode="callback">Обсудить проект</button>
       <a class="button button--compact" href="tel:+79182383059" data-call-link aria-label="Позвонить в ВЕРХ"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2A19.79 19.79 0 0 1 11.19 18.85a19.5 19.5 0 0 1-6-6A19.79 19.79 0 0 1 2.12 4.18 2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.12.9.33 1.78.62 2.63a2 2 0 0 1-.45 2.11L8.01 9.73a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.85.29 1.73.5 2.63.62A2 2 0 0 1 22 16.92Z" /></svg><span>Позвонить</span></a>
     </div>
     <script src="city.js?v=20261019-copy" defer></script>
     <script src="./phone-reveal.js?v=20261026-analytics" defer></script>
-    <script src="./analytics.js?v=20261030-quiz-start" defer></script>
-    <script src="./quiz.js?v=20261031-smartcaptcha" defer></script>
+    <script src="./analytics.js?v=20261101-consultation" defer></script>
+    <script src="./quiz.js?v=20261101-consultation" defer></script>
     <script src="./project-album.js?v=20261026-analytics" defer></script>
     <script src="decora.js?v=20261030-estimate" defer></script>
   </body>

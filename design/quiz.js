@@ -11,6 +11,13 @@
   const modeButton = form.querySelector("[data-quiz-mode]");
   const retry = form.querySelector("[data-captcha-retry]");
   const mode = form.elements.leadMode;
+  const lead = document.querySelector("#lead");
+  const leadTitle = document.querySelector("[data-lead-title]");
+  const leadDescription = document.querySelector("[data-lead-description]");
+  const briefTitle = leadTitle?.textContent;
+  const briefDescription = leadDescription?.textContent;
+  const contactLegend = steps[2].querySelector("legend");
+  const briefContactTitle = contactLegend.textContent;
   const titles = ["Квартира", "Проект", "Контакт"];
   let step = 0, sending = false, delivered = false, token = "", widget, loading;
   const diagnostic = (name, params = {}) => { try { window.VerhDesignAnalytics?.track(name, params); } catch {} };
@@ -74,15 +81,22 @@
   }
   function show(index, focus = true) {
     step = index;
+    const callback = mode.value === "callback";
+    if (lead) lead.dataset.leadMode = mode.value;
+    if (leadTitle) leadTitle.textContent = callback ? "Обсудим ваш проект" : briefTitle;
+    if (leadDescription) leadDescription.textContent = callback ? "Позвоним, ответим на вопросы и поможем выбрать проект. Площадь и детали можно обсудить по телефону." : briefDescription;
+    contactLegend.textContent = callback ? "Как с вами связаться" : briefContactTitle;
     steps.forEach((element,i) => { element.hidden = i !== step; });
-    form.querySelector("[data-quiz-progress]").hidden = false;
+    form.querySelector("[data-quiz-progress]").hidden = callback;
+    const estimate = form.querySelector("[data-form-estimate]");
+    if (estimate) estimate.hidden = callback;
     form.querySelector("[data-quiz-counter]").textContent = mode.value === "callback" ? "Обратный звонок" : `${step + 1} из 3 · ${titles[step]}`;
     form.querySelector("progress").value = step + 1;
-    back.hidden = step === 0;
+    back.hidden = callback || step === 0;
     next.hidden = step === 2;
     submit.hidden = step !== 2;
-    modeButton.textContent = mode.value === "callback" ? "Заполнить заявку на проект" : "Нужна только консультация";
-    submit.textContent = mode.value === "callback" ? "Заказать обратный звонок" : "Отправить заявку на проект";
+    modeButton.textContent = callback ? "Перейти к полной анкете" : "Нужна только консультация";
+    submit.textContent = callback ? "Получить консультацию" : "Отправить заявку на проект";
     const data = collect();
     form.querySelector("[data-quiz-summary]").textContent = mode.value === "callback" ? "Позвоним и поможем выбрать проект." : `${data.city} · ${data.area} м² · ${data.package.split(" — ")[0]} · ${data.projectStart}`;
     if (focus) {
@@ -167,11 +181,15 @@
     }
   });
   document.querySelectorAll("[data-scroll-lead]").forEach(button => button.addEventListener("click", () => {
-    if (!sending && !delivered && button.dataset.package) {
-      form.elements.package.value = button.dataset.package;
-      form.elements.package.dispatchEvent(new Event("change",{bubbles:true}));
-      mode.value = "brief";
-      show(0,false);
+    if (!sending && !delivered) {
+      mode.value = button.dataset.leadMode === "callback" ? "callback" : "brief";
+      if (button.dataset.package) {
+        form.elements.package.value = button.dataset.package;
+        form.elements.package.dispatchEvent(new Event("change",{bubbles:true}));
+      }
+      message("");
+      show(mode.value === "callback" ? 2 : 0,false);
+      if (mode.value === "callback") diagnostic("interaction", {action:"consultation_open",mode:"callback"});
     }
     goal("service_lead_start",{request:"design-project"});
     form.scrollIntoView({behavior:"smooth",block:"start"});
