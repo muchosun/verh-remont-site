@@ -1,6 +1,7 @@
 (() => {
   "use strict";
-  const intakeMode = "unverified-all-v1";
+  const intakeMode = window.VerhSmartCaptcha?.mode || "unverified-all-v1";
+  const smartMode = intakeMode === "smartcaptcha-v1";
   const reported = new Set();
   function reportUnverified(result) {
     if (result.duplicate || reported.has(result.leadId)) return;
@@ -88,6 +89,7 @@
     const url = new URL(payload.source || location.href,location.href);
     const design = Boolean(payload.designBrief) || payload.formVersion === 3 || url.pathname.startsWith("/design/") || url.searchParams.get("request") === "design-project";
     const emergencyEligible = !design && url.origin === location.origin && url.pathname === '/' && (!payload.kind || payload.kind === 'quiz') && payload.emergencyTimeoutFallback === 'repair-main-timeout-v1';
+    const smartCaptchaToken = smartMode ? await window.VerhSmartCaptcha.getToken() : undefined;
     const turnstileToken = intakeMode ? undefined : payload.turnstileToken || await window.VerhCaptcha.getToken(design ? "design_lead" : "repair_lead");
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), intakeMode || emergencyEligible ? 25000 : 15000);
@@ -95,11 +97,15 @@
       const response = await fetch(endpoint, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({...payload,turnstileToken,intakeMode}),
+        body: JSON.stringify({...payload,turnstileToken,smartCaptchaToken,intakeMode}),
         signal: controller.signal,
       });
       if (!response.ok) throw new Error(`Lead endpoint responded with ${response.status}`);
       const result = await response.json();
+      if (smartMode) {
+        if (result.status !== "accepted" || result.verification !== "smartcaptcha" || result.intakeMode !== intakeMode || !result.leadId || typeof result.duplicate !== "boolean") throw new Error("Verified delivery was not confirmed");
+        return {status:"sent",qualification:result.qualification || "",leadId:result.leadId,duplicate:result.duplicate};
+      }
       if (intakeMode && result.status === 'accepted_unverified' && result.intakeMode === intakeMode && result.qualification === 'unverified' && result.leadId && /^(repair_(main|callback|calculator)|design_(brief|callback)|service_(priemka_kvartiry|ukladka_laminata|pokleyka_oboev|shpaklevka_sten|ukladka_plitki|razvodka_santehniki|natyazhnoy_potolok))$/.test(result.formType)) {
         reportUnverified(result);
         return {status:'unverified',leadId:result.leadId,formType:result.formType,duplicate:result.duplicate === true};
@@ -110,5 +116,5 @@
       return { status: "sent" };
     } finally { clearTimeout(timeout); }
   };
-  window.VerhLead = { source, send, unverifiedMode:Boolean(intakeMode) };
+  window.VerhLead = { source, send, unverifiedMode:!smartMode && Boolean(intakeMode) };
 })();

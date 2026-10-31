@@ -1,6 +1,7 @@
 (() => {
   "use strict";
-  const intakeMode = "unverified-all-v1";
+  const intakeMode = window.VerhSmartCaptcha?.mode || "unverified-all-v1";
+  const smartMode = intakeMode === "smartcaptcha-v1";
   const reported = new Set();
   function reportUnverified(result) {
     if (result.duplicate || reported.has(result.leadId)) return;
@@ -54,17 +55,22 @@
     const clientId = await getClientId();
     const yclid = source().searchParams.get("yclid") || "";
     const attribution = { clientId, yclid: /^\d{1,128}$/.test(yclid) ? yclid : "" };
+    const smartCaptchaToken = smartMode ? await window.VerhSmartCaptcha.getToken() : undefined;
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), timeoutMs);
     try {
       const response = await fetch(endpoint, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...payload, turnstileToken:intakeMode ? undefined : payload.turnstileToken, attribution, intakeMode }),
+        body: JSON.stringify({ ...payload, turnstileToken:intakeMode ? undefined : payload.turnstileToken, smartCaptchaToken, attribution, intakeMode }),
         signal: controller.signal,
       });
       if (!response.ok) throw new Error(`Lead endpoint responded with ${response.status}`);
       const result = await response.json();
+      if (smartMode) {
+        if (result.status !== "accepted" || result.verification !== "smartcaptcha" || result.intakeMode !== intakeMode || !result.leadId || typeof result.duplicate !== "boolean") throw new Error("Verified delivery was not confirmed");
+        return {status:"sent",qualification:result.qualification || "",leadId:result.leadId,duplicate:result.duplicate};
+      }
       if (intakeMode && result.status === 'accepted_unverified' && result.intakeMode === intakeMode && result.qualification === 'unverified' && result.leadId && ['design_brief','design_callback'].includes(result.formType)) {
         reportUnverified(result);
         return {status:'unverified',qualification:'unverified',leadId:result.leadId,formType:result.formType,duplicate:result.duplicate === true};
@@ -74,5 +80,5 @@
       return { status: "sent", qualification: result.qualification || "" };
     } finally { clearTimeout(timeout); }
   };
-  window.VerhLead = { source, send, unverifiedMode:Boolean(intakeMode) };
+  window.VerhLead = { source, send, unverifiedMode:!smartMode && Boolean(intakeMode) };
 })();

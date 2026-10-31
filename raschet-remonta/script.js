@@ -318,7 +318,7 @@ leadForm.addEventListener("submit", async (event) => {
 
   try {
     const delivery = await sendLead(leadPayload());
-    if (delivery.status !== "unverified") trackGoal("calculator_lead_success", {
+    if (delivery.status !== "unverified" && !delivery.duplicate) trackGoal("calculator_lead_success", {
       apartment: state.apartment,
       area: state.area,
       tariff: state.level,

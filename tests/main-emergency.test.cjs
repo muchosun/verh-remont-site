@@ -30,6 +30,10 @@ test('verified main quiz still emits its paid delivery goal once',async()=>{
   const f=fixture({status:'sent'});await f.run();
   assert.deepEqual(f.goals,['quiz_lead_success']);assert.match(f.successMessage.innerHTML,/Заявка отправлена/);
 });
+test('verified duplicate is acknowledged without another paid goal',async()=>{
+  const f=fixture({status:'sent',duplicate:true});await f.run();
+  assert.equal(f.state.leadSubmitted,true);assert.deepEqual(f.goals,[]);
+});
 test('failed MAX delivery still displays failure, never successful receipt',async()=>{
   const f=fixture(null,new Error('MAX failed'));await f.run();
   assert.equal(f.state.leadSubmitted,false);assert.equal(f.leadForm.hidden,false);assert.equal(f.leadTitle.textContent,'Отправка не подтверждена');assert.deepEqual(f.goals,['quiz_lead_failure']);

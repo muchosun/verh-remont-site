@@ -1075,7 +1075,7 @@ callbackForm?.addEventListener("submit", async (event) => {
     callbackStatus.classList.add("is-success");
     callbackSuppressed = true;
     rememberCallbackDismissal();
-    if (delivery.status !== "unverified") {
+    if (delivery.status !== "unverified" && !delivery.duplicate) {
       trackMetricGoal("callback_requested");
       trackMetricGoal("callback_lead_success");
     }
@@ -1147,7 +1147,7 @@ leadForm.addEventListener("submit", async (event) => {
       ${deliveryNote}
       ${getPaymentPlanHtml()}
     `;
-    if (delivery.status !== "unverified") trackMetricGoal(delivery.status === "sent" ? "quiz_lead_success" : "quiz_calculation_viewed", leadMetricParams);
+    if (delivery.status !== "unverified" && !delivery.duplicate) trackMetricGoal(delivery.status === "sent" ? "quiz_lead_success" : "quiz_calculation_viewed", leadMetricParams);
     render();
   } catch (error) {
     trackMetricGoal("quiz_lead_failure", leadMetricParams);

@@ -24,7 +24,8 @@
   const collect = () => Object.fromEntries(["customerName", "phone", "callbackTime", "city", "area", "package", "projectStart", "projectTask"].map(name => [name,form.elements[name]?.value || ""]).concat([["mode",mode.value],["consent",form.elements.consent.checked]]));
   const message = (text, state = "") => { status.textContent = text; status.dataset.state = state; };
   const unverifiedMode = window.VerhLead?.unverifiedMode === true;
-  const ready = () => { submit.disabled = sending || delivered || (!local && !token && !unverifiedMode); };
+  const smartMode = window.VerhSmartCaptcha?.mode === "smartcaptcha-v1";
+  const ready = () => { submit.disabled = sending || delivered || (!local && !token && !unverifiedMode && !smartMode); };
   function captchaFailure() {
     try { window.VerhLoad?.mark("captcha_error"); } catch {}
     diagnostic("captcha_error", {mode:mode.value});
@@ -50,7 +51,7 @@
     return loading;
   }
   async function ensureCaptcha(reset = false) {
-    if (local || unverifiedMode) { retry.hidden = true; ready(); return; }
+    if (local || unverifiedMode || smartMode) { retry.hidden = true; ready(); return; }
     try { window.VerhLoad?.mark("captcha_started"); } catch {}
     try {
       await loadCaptcha();
@@ -127,7 +128,7 @@
     const result = window.VerhQuizValidation.validate(collect());
     if (!result.ok) return showInvalid(result);
     if (form.elements.website.value.trim()) return;
-    if (!local && !token && !unverifiedMode) { message("Дождитесь защитной проверки.","error"); ensureCaptcha(); return; }
+    if (!local && !token && !unverifiedMode && !smartMode) { message("Дождитесь защитной проверки.","error"); ensureCaptcha(); return; }
     sending = true;
     ready();
     back.disabled = modeButton.disabled = true;
@@ -142,7 +143,7 @@
         const delivery = await window.VerhLead.send(window.VERH_LEAD_ENDPOINT, {kind:"callback",phone:result.values.phone,website:"",source:source.toString(),formVersion:3,designBrief:result.values,turnstileToken:token}, {timeoutMs:35000});
         const unverified = unverifiedMode && delivery?.status === "unverified" && delivery.formType === (result.values.mode === "brief" ? "design_brief" : "design_callback");
         if (!unverified && (delivery?.status !== "sent" || delivery.qualification !== (result.values.mode === "brief" ? "design_brief_v3" : "callback_v3"))) throw new Error("Delivery qualification mismatch");
-        if (!unverified) {
+        if (!unverified && !delivery.duplicate) {
           if (result.values.mode === "brief") goal("design_project_brief_delivered");
           else diagnostic("callback_delivered");
           goal("service_lead_success",{request:"design-project",mode:result.values.mode});

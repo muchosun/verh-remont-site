@@ -12,7 +12,7 @@ function load({ href = 'https://verhremont.ru/', linkPath = '/uslugi/dizayn-proe
     sessionStorage: { getItem: () => { if (blocked) throw Error('blocked'); return stored; }, setItem: (_key, value) => { if (blocked) throw Error('blocked'); stored = value; } },
   };
   // Keep the strict-mode rollback contract covered; temporary mode has its own suite.
-  vm.runInNewContext(code.replace('const intakeMode = "unverified-all-v1";', 'const intakeMode = "";'), context);
+  vm.runInNewContext(code.replace('const intakeMode = window.VerhSmartCaptcha?.mode || "unverified-all-v1";', 'const intakeMode = "";'), context);
   return { api: window.VerhLead, link, stored: () => stored };
 }
 

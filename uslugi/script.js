@@ -83,6 +83,7 @@
 
       try {
         let unverified = false;
+        let duplicate = false;
         if (!isLocal) {
           if (!leadEndpoint) throw new Error("Lead endpoint is not configured");
           const source = window.VerhLead.source();
@@ -99,14 +100,15 @@
           });
           if (!["sent", "unverified"].includes(delivery?.status)) throw new Error("Lead delivery was not confirmed");
           unverified = delivery.status === "unverified";
-          if (!unverified && requestType === "design-project" && serviceSlug === "dizayn-proekt") {
+          duplicate = delivery.duplicate === true;
+          if (!unverified && !duplicate && requestType === "design-project" && serviceSlug === "dizayn-proekt") {
             reachGoal("design_project_lead_delivered", { request: requestType, offer: selectedPackage || undefined });
           }
         } else {
           await new Promise((resolve) => window.setTimeout(resolve, 650));
         }
 
-        if (!unverified) reachGoal("service_lead_success", { request: requestType, offer: selectedPackage || undefined, local_preview: isLocal });
+        if (!unverified && !duplicate) reachGoal("service_lead_success", { request: requestType, offer: selectedPackage || undefined, local_preview: isLocal });
         status.dataset.state = "success";
         status.textContent = isLocal
           ? "Форма заполнена корректно."
