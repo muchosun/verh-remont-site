@@ -18,7 +18,7 @@ function fixture({preview=false,hostname='verhremont.ru',protocol='https:',desig
   const collect=(id,method,name,params)=>goals.push({id,method,name,params});
   const window={VERH_PREVIEW:preview,ym:delayed?undefined:collect,setTimeout:fn=>{timers.push(fn);return timers.length;}};
   class IntersectionObserver {constructor(fn){this.fn=fn;this.removed=[];observer=this;}observe(){}unobserve(el){this.removed.push(el);}}
-  const context={window,document,URL,location:{hostname,protocol,origin:'https://verhremont.ru',href:'https://verhremont.ru/'},IntersectionObserver,isQuizStep:()=>true,state:{maxStep:3}};
+  const context={window,document,URL,location:{hostname,protocol,origin:'https://verhremont.ru',href:'https://verhremont.ru/'},IntersectionObserver,isQuizStep:()=>true,state:{maxStep:4}};
   vm.runInNewContext(code,context);
   return {window,analytics:context.analytics,goals,events,links,filter,gallery,sections,observer,context,timers,collect};
 }
@@ -30,7 +30,7 @@ test('preview and file/localhost never emit diagnostics or paid goals',()=>{
 });
 test('allowlist strips phone, text, URL, area and arbitrary values',()=>{
   const f=fixture();f.analytics.track('quiz_submit_attempt',{phone:'+79012345678',task:'private',area:58,source:'https://private.invalid',tariff:'comfort',apartment:'Вторичка',placement:'hero',field:'private'});
-  assert.deepEqual(JSON.parse(JSON.stringify(f.goals.at(-1).params)),{landing:'repair_main',tariff:'comfort',apartment_type:'resale',placement:'hero'});
+  assert.deepEqual(JSON.parse(JSON.stringify(f.goals.at(-1).params)),{landing:'repair_main',flow:'phone_first_v1',tariff:'comfort',apartment_type:'resale',placement:'hero'});
   f.analytics.track('arbitrary');assert.equal(f.goals.length,2);
 });
 test('telephone clicks do not synthesize paid delivery or duplicate existing phone goals',()=>{
@@ -43,7 +43,7 @@ test('service, anchor and legal links have bounded identifiers',()=>{
 });
 test('native invalid field is captured before submit, without its value',()=>{
   const f=fixture();f.events.invalid({target:{name:'personal_data_consent',value:'private',closest:()=>({id:'lead-form'})}});
-  assert.equal(f.goals.at(-1).name,'main_validation_error');assert.equal(f.goals.at(-1).params.field,'consent');assert.equal(f.goals.at(-1).params.step,4);assert.equal(JSON.stringify(f.goals).includes('private'),false);
+  assert.equal(f.goals.at(-1).name,'main_validation_error');assert.equal(f.goals.at(-1).params.field,'consent');assert.equal(f.goals.at(-1).params.step,5);assert.equal(JSON.stringify(f.goals).includes('private'),false);
 });
 test('current and legacy design links retain service analytics without paid goals',()=>{
   for(const designLink of ['/design/?city=krasnodar','/design','/uslugi/dizayn-proekt/']){
@@ -112,14 +112,14 @@ test('submit click, native invalid events and submit count one attempt per actio
   assert.equal(f.goals.some(x=>x.name==='quiz_lead_success'),false);
 });
 test('hidden and out of order quiz choices cannot emit phantom selection goals',()=>{
-  for(const [selector,step,eventName] of [['[data-apartment]',0,'quiz_apartment_selected'],['[data-area]',1,'quiz_area_selected'],['[data-level]',2,'quiz_tariff_selected']]){
+  for(const [selector,step,eventName] of [['[data-apartment]',1,'quiz_apartment_selected'],['[data-area]',2,'quiz_area_selected'],['[data-level]',3,'quiz_tariff_selected']]){
     const start=script.indexOf(`document.querySelectorAll("${selector}")`,script.indexOf('window.addEventListener("resize"'));
     const block=script.slice(start,script.indexOf('\n});',start)+4);
     let click,open=false;
     const goals=[],state={step},button={dataset:{apartment:'Новостройка',area:'58',level:'comfort'},addEventListener:(name,fn)=>{click=fn;}};
     vm.runInNewContext(block,{document:{querySelectorAll:()=>[button]},state,isQuizStep:n=>open&&state.step===n,tariffs:{comfort:{}},validateAreaDraft:()=>58,trackMetricGoal:name=>goals.push(name),resetLeadResult(){},render(){},setStep(n){state.step=n;},setArea(){}});
     click({isTrusted:true});assert.equal(goals.length,0);
-    open=true;state.step=(step+1)%3;click({isTrusted:true});assert.equal(goals.length,0);
+    open=true;state.step=(step+1)%4;click({isTrusted:true});assert.equal(goals.length,0);
     state.step=step;click({isTrusted:false});assert.equal(goals.length,0);
     click({isTrusted:true});assert.deepEqual(goals,[eventName]);
   }
@@ -154,7 +154,7 @@ test('direct quiz submit before the contact step cannot call delivery',async()=>
   vm.runInNewContext(block,{leadForm:{addEventListener:(_,fn)=>submit=fn},state,isQuizStep:()=>active,sendLeadToMax:()=>{calls++;}});
   await submit({isTrusted:true,preventDefault(){}});
   active=true;await submit({isTrusted:true,preventDefault(){}});
-  state.maxStep=3;await submit({isTrusted:false,preventDefault(){}});
+  state.maxStep=4;state.phoneConfirmed=true;await submit({isTrusted:false,preventDefault(){}});
   assert.equal(calls,0);
 });
 test('quiz source is isolated and has no inline event handlers or public helper script',()=>{

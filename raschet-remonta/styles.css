@@ -675,6 +675,14 @@ h2 {
   line-height: 1.5;
 }
 
+#quiz-phone-form {
+  max-width: 560px;
+}
+
+#quiz-contact-summary {
+  overflow-wrap: anywhere;
+}
+
 .choice-grid {
   display: grid;
   gap: 14px;

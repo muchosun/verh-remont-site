@@ -10,10 +10,10 @@ function fixture(delivery,error) {
   let submit;
   const goals=[];
   const element=()=>({hidden:false,textContent:'',innerHTML:'',classList:{add(){},remove(){}}});
-  const state={maxStep:3,apartment:'Новостройка',area:58,level:'standard'};
+  const state={maxStep:4,phoneConfirmed:true,apartment:'Новостройка',area:58,level:'standard'};
   const successMessage=element(),leadTitle=element(),leadDescription=element(),button=element();
   const leadForm={dataset:{},hidden:false,addEventListener:(_,fn)=>submit=fn,reportValidity:()=>true,querySelector:()=>button};
-  const context={state,leadForm,successMessage,leadTitle,leadDescription,leadPanel:element(),leadLoading:element(),leadOffer:element(),phoneInput:{value:'+79012345678',setCustomValidity(){},reportValidity(){}},timerId:null,
+  const context={state,leadForm,quizPhoneForm:{checkValidity:()=>true},successMessage,leadTitle,leadDescription,leadPanel:element(),leadLoading:element(),leadOffer:element(),phoneInput:{value:'+79012345678',setCustomValidity(){},reportValidity(){}},timerId:null,
     isQuizStep:()=>true,render(){},createLeadPayload:()=>({}),sendLeadToMax:async()=>{if(error)throw error;return delivery;},waitFor:async()=>{},trackMetricGoal:name=>goals.push(name),
     getSecondarySurcharge:()=>0,getEstimateText:()=>'estimate',getEstimateBreakdownText:()=>'breakdown',formatArea:()=>58,getTariff:()=>({title:'Стандарт'}),getPaymentPlanHtml:()=>'',quizModal:{classList:{contains:()=>false}},window:{clearInterval(){}},
   };

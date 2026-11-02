@@ -39,7 +39,7 @@ const TARIFFS = {
   },
 };
 
-const STEP_NAMES = ["Знакомство", "Работы", "Квартира", "Площадь", "Результат", "Телефон"];
+const STEP_NAMES = ["Знакомство", "Телефон", "Работы", "Квартира", "Площадь", "Результат", "Отправка"];
 const SECONDARY_SURCHARGE = 100000;
 const leadEndpoint = String(window.VERH_LEAD_ENDPOINT || "").trim();
 const isLocalPreview = ["localhost", "127.0.0.1", ""].includes(window.location.hostname);
@@ -52,6 +52,9 @@ const state = {
   areaLabel: "",
   level: "comfort",
   phone: "",
+  phoneConfirmed: false,
+  phoneReturnStep: 2,
+  sending: false,
 };
 
 const steps = [...document.querySelectorAll("[data-step]")];
@@ -68,6 +71,8 @@ const areaInput = document.querySelector("#area-input");
 const areaError = document.querySelector("#area-error");
 const leadForm = document.querySelector("#lead-form");
 const phoneInput = document.querySelector("#phone-input");
+const quizPhoneForm = document.querySelector("#quiz-phone-form");
+const quizContactSummary = document.querySelector("#quiz-contact-summary");
 const formStatus = document.querySelector("#form-status");
 const selectionSummary = document.querySelector("#selection-summary");
 const closingOfferImage = document.querySelector("#closing-offer-image");
@@ -78,6 +83,7 @@ const paymentGrid = document.querySelector("#payment-grid");
 const estimateNote = document.querySelector("#estimate-note");
 
 function trackGoal(name, params = {}) {
+  if (isLocalPreview) return;
   if (typeof window.ym !== "function") return;
   window.ym(110859289, "reachGoal", name, params);
 }
@@ -103,6 +109,7 @@ function estimate() {
 }
 
 function setStep(nextStep, { track = true } = {}) {
+  if (nextStep > 1 && !state.phoneConfirmed) nextStep = 1;
   const maxStep = steps.length - 1;
   state.step = Math.max(0, Math.min(maxStep, nextStep));
 
@@ -113,22 +120,22 @@ function setStep(nextStep, { track = true } = {}) {
   });
 
   const isWelcome = state.step === 0;
-  const isIntro = state.step <= 1;
-  const isResult = state.step === 6;
+  const isIntro = state.step === 0 || state.step === 2;
+  const isResult = state.step === 7;
   flow.classList.toggle("is-welcome", isWelcome);
   stepsContainer.classList.toggle("is-welcome", isWelcome);
   document.querySelector(".progress").hidden = isIntro || isResult;
   backButton.hidden = isWelcome || isResult;
   if (!isIntro && !isResult) {
-    const progressStep = state.step - 1;
-    progressLabel.textContent = `${progressStep} / 4`;
-    progressBar.style.width = `${progressStep * 25}%`;
+    const progressStep = state.step === 1 ? 1 : state.step - 1;
+    progressLabel.textContent = `${progressStep} / 5`;
+    progressBar.style.width = `${progressStep * 20}%`;
   }
 
-  if (state.step === 5) {
+  if (state.step === 6) {
     renderSummary();
-    window.setTimeout(() => phoneInput.focus({ preventScroll: true }), 180);
   }
+  if (state.step === 1) phoneInput.focus({preventScroll:true});
 
   if (track && !isIntro && !isResult) {
     trackGoal("calculator_step_view", { step: state.step, step_name: STEP_NAMES[state.step] });
@@ -152,6 +159,7 @@ function renderSummary() {
     <span>${areaText(state.area)}</span>
     <span>${tariff.title}</span>
   `;
+  quizContactSummary.textContent = `Телефон для связи: ${state.phone}`;
   closingOfferImage.src = tariff.image;
   closingOfferImage.alt = tariff.alt;
 }
@@ -226,22 +234,24 @@ function renderEstimate() {
 }
 
 document.querySelectorAll("[data-apartment]").forEach((button) => {
-  button.addEventListener("click", () => {
+  button.addEventListener("click", event => {
+    if (event.isTrusted === false || state.step !== 3 || !state.phoneConfirmed) return;
     state.apartment = button.dataset.apartment;
     markSelection("[data-apartment]", state.apartment, "apartment");
     trackGoal("calculator_apartment_selected", { apartment: state.apartment });
-    window.setTimeout(() => setStep(3), 130);
+    setStep(4);
   });
 });
 
 document.querySelectorAll("[data-area]").forEach((button) => {
-  button.addEventListener("click", () => {
+  button.addEventListener("click", event => {
+    if (event.isTrusted === false || state.step !== 4 || !state.phoneConfirmed) return;
     state.area = Number(button.dataset.area);
     state.areaLabel = button.dataset.areaLabel;
     areaInput.value = state.area;
     markSelection("[data-area]", state.area, "area");
     trackGoal("calculator_area_selected", { area: state.area, area_label: state.areaLabel });
-    window.setTimeout(() => setStep(4), 130);
+    setStep(5);
   });
 });
 
@@ -251,6 +261,7 @@ areaInput.addEventListener("input", () => {
 
 areaForm.addEventListener("submit", (event) => {
   event.preventDefault();
+  if (event.isTrusted === false || state.step !== 4 || !state.phoneConfirmed) return;
   const value = Number(String(areaInput.value).replace(",", "."));
   if (!Number.isFinite(value) || value < 20 || value > 300) {
     areaError.textContent = "Укажи площадь от 20 до 300 м².";
@@ -261,15 +272,17 @@ areaForm.addEventListener("submit", (event) => {
   state.areaLabel = "Своя площадь";
   markSelection("[data-area]", state.area, "area");
   trackGoal("calculator_area_selected", { area: state.area, area_label: state.areaLabel });
-  setStep(4);
+  setStep(5);
 });
 
 document.querySelectorAll("[data-level]").forEach((button) => {
-  button.addEventListener("click", () => {
+  button.addEventListener("click", event => {
+    if (event.isTrusted === false || state.step !== 5 || !state.phoneConfirmed) return;
+    if (!Object.prototype.hasOwnProperty.call(TARIFFS, button.dataset.level)) return;
     state.level = button.dataset.level;
     markSelection("[data-level]", state.level, "level");
     trackGoal("calculator_result_selected", { tariff: state.level });
-    window.setTimeout(() => setStep(5), 150);
+    setStep(6);
   });
 });
 
@@ -280,12 +293,38 @@ welcomeStartButton.addEventListener("click", () => {
 
 startCalculatorButton.addEventListener("click", () => {
   trackGoal("calculator_intro_start");
-  setStep(2);
+  setStep(3);
 });
 
-backButton.addEventListener("click", () => setStep(state.step - 1));
+backButton.addEventListener("click", () => { if (!state.sending) setStep(state.step - 1); });
+
+quizPhoneForm.addEventListener("submit", event => {
+  event.preventDefault();
+  if (event.isTrusted === false || state.step !== 1) return;
+  phoneInput.setCustomValidity("");
+  const normalizedPhone = normalizePhone(phoneInput.value);
+  if (!normalizedPhone) {
+    phoneInput.setCustomValidity("Укажи номер из 10 цифр после +7.");
+    phoneInput.reportValidity();
+    return;
+  }
+  if (!quizPhoneForm.reportValidity()) return;
+  state.phone = formatPhoneForDisplay(normalizedPhone);
+  state.phoneConfirmed = true;
+  trackGoal("calculator_step_view", {step:1,step_name:"Телефон",action:"phone_continue"});
+  setStep(state.phoneReturnStep, {track:false});
+  state.phoneReturnStep = 2;
+});
+
+document.querySelector("#quiz-edit-phone").addEventListener("click", () => {
+  if (!state.sending && state.step === 6) {
+    state.phoneReturnStep = 6;
+    setStep(1);
+  }
+});
 
 phoneInput.addEventListener("input", () => {
+  state.phoneConfirmed = false;
   formStatus.textContent = "";
   phoneInput.setCustomValidity("");
 });
@@ -296,17 +335,21 @@ phoneInput.addEventListener("blur", () => {
 
 leadForm.addEventListener("submit", async (event) => {
   event.preventDefault();
+  if (event.isTrusted === false || state.step !== 6 || state.sending || !state.phoneConfirmed || !state.apartment || !state.area) return;
   formStatus.textContent = "";
   const normalizedPhone = normalizePhone(phoneInput.value);
-  if (!normalizedPhone) {
-    phoneInput.setCustomValidity("Укажи номер из 10 цифр после +7.");
-    phoneInput.reportValidity();
+  if (!normalizedPhone || !quizPhoneForm.checkValidity()) {
+    state.phoneConfirmed = false;
+    setStep(1);
+    quizPhoneForm.reportValidity();
     return;
   }
   phoneInput.setCustomValidity("");
   if (!leadForm.reportValidity()) return;
 
   state.phone = formatPhoneForDisplay(normalizedPhone);
+  state.sending = true;
+  backButton.disabled = true;
   const submitButton = leadForm.querySelector("button[type='submit']");
   submitButton.disabled = true;
   submitButton.querySelector("span:first-child").textContent = "Отправляем…";
@@ -324,7 +367,7 @@ leadForm.addEventListener("submit", async (event) => {
       tariff: state.level,
     });
     renderEstimate();
-    setStep(6, { track: false });
+    setStep(7, { track: false });
   } catch (error) {
     trackGoal("calculator_lead_failure", {
       apartment: state.apartment,
@@ -334,6 +377,9 @@ leadForm.addEventListener("submit", async (event) => {
     formStatus.textContent = "Не получилось отправить номер. Проверь интернет и попробуй еще раз.";
     submitButton.disabled = false;
     submitButton.querySelector("span:first-child").textContent = "Получить расчет и подарки";
+  } finally {
+    state.sending = false;
+    backButton.disabled = false;
   }
 });
 

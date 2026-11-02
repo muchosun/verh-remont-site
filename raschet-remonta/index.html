@@ -23,7 +23,7 @@
     <link rel="manifest" href="/site.webmanifest" />
     <link rel="preload" as="font" href="../assets/fonts/onest-cyrillic.woff2" type="font/woff2" crossorigin />
     <link rel="stylesheet" href="../assets/vendor/photoswipe/photoswipe.css?v=5.4.4" />
-    <link rel="stylesheet" href="styles.css?v=20260903-3-mobile-photo" />
+    <link rel="stylesheet" href="styles.css?v=20261102-phone-first" />
     <script type="application/ld+json">
       {
         "@context": "https://schema.org",
@@ -105,7 +105,7 @@
                 <div class="welcome-actions">
                   <button class="welcome-action welcome-action--primary" id="welcome-start" type="button">
                     <strong>Узнать стоимость ремонта</strong>
-                    <span>4 вопроса · около минуты</span>
+                    <span>Телефон и 3 вопроса о квартире</span>
                   </button>
                   <a class="welcome-action" href="tel:+79182383059" data-welcome-call>
                     <strong>Позвонить Игорю</strong>
@@ -134,11 +134,27 @@
             </div>
           </section>
 
-          <section class="step step--intro" data-step="1" aria-labelledby="flow-title" hidden>
+          <section class="step" data-step="1" aria-labelledby="phone-title" hidden>
+            <div class="step__head step__head--phone">
+              <h2 id="phone-title">Начнём с телефона</h2>
+              <p>Затем ответь на три вопроса о квартире и получи предварительную стоимость ремонта.</p>
+            </div>
+            <form class="lead-form" id="quiz-phone-form">
+              <label for="phone-input">Телефон</label>
+              <input id="phone-input" name="phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="+7 (___) ___-__-__" required />
+              <label class="consent">
+                <input type="checkbox" name="personal_data_consent" checked required />
+                <span>Даю <a href="../consent.html" target="_blank" rel="noopener">согласие на обработку данных</a>. <a href="../privacy.html" target="_blank" rel="noopener">Политика</a>.</span>
+              </label>
+              <button class="submit-button" type="submit"><span>Продолжить расчёт</span><span class="submit-button__arrow" aria-hidden="true">→</span></button>
+            </form>
+          </section>
+
+          <section class="step step--intro" data-step="2" aria-labelledby="flow-title" hidden>
             <div class="intro-copy">
               <p class="intro-copy__kicker">Ремонт квартиры под ключ</p>
               <h1 id="flow-title">Узнай стоимость ремонта своей квартиры</h1>
-              <p>Посмотри наши работы и ответь на четыре вопроса. Сразу покажем предварительный бюджет.</p>
+              <p>Посмотри наши работы и ответь на три вопроса о квартире. После отправки заявки покажем предварительный бюджет.</p>
             </div>
 
             <div class="intro-showcase" data-intro-gallery>
@@ -160,7 +176,7 @@
             <p class="intro-trust">Работы и материалы включены · договор · гарантия 3 года</p>
           </section>
 
-          <section class="step" data-step="2" aria-labelledby="apartment-title" hidden>
+          <section class="step" data-step="3" aria-labelledby="apartment-title" hidden>
             <div class="step__head">
               <h2 id="apartment-title">Какая у тебя квартира?</h2>
             </div>
@@ -186,7 +202,7 @@
             </div>
           </section>
 
-          <section class="step" data-step="3" aria-labelledby="area-title" hidden>
+          <section class="step" data-step="4" aria-labelledby="area-title" hidden>
             <div class="step__head">
               <h2 id="area-title">Какая площадь?</h2>
             </div>
@@ -207,7 +223,7 @@
             </form>
           </section>
 
-          <section class="step" data-step="4" aria-labelledby="result-title" hidden>
+          <section class="step" data-step="5" aria-labelledby="result-title" hidden>
             <div class="step__head">
               <h2 id="result-title">Выбери результат</h2>
             </div>
@@ -232,10 +248,10 @@
             </div>
           </section>
 
-          <section class="step" data-step="5" aria-labelledby="phone-title" hidden>
+          <section class="step" data-step="6" aria-labelledby="send-title" hidden>
             <div class="step__head step__head--phone">
-              <h2 id="phone-title">Оставь телефон</h2>
-              <p>Покажем расчет и добавим подарки к заявке.</p>
+              <h2 id="send-title">Всё готово для расчёта</h2>
+              <p>Отправь заявку и получи предварительную стоимость ремонта.</p>
             </div>
 
             <div class="closing-offer">
@@ -264,12 +280,8 @@
             <div class="selection-summary" id="selection-summary"></div>
 
             <form class="lead-form" id="lead-form">
-              <label for="phone-input">Телефон</label>
-              <input id="phone-input" name="phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="+7 (___) ___-__-__" required />
-              <label class="consent">
-                <input type="checkbox" name="personal_data_consent" checked required />
-                <span>Даю <a href="../consent.html" target="_blank" rel="noopener">согласие на обработку данных</a>. <a href="../privacy.html" target="_blank" rel="noopener">Политика</a>.</span>
-              </label>
+              <p id="quiz-contact-summary"></p>
+              <button class="back-button" id="quiz-edit-phone" type="button">Изменить телефон</button>
               <input class="honeypot" type="text" name="website" tabindex="-1" autocomplete="off" aria-hidden="true" />
               <button class="submit-button" type="submit">
                 <span>Получить расчет и подарки</span>
@@ -284,7 +296,7 @@
             </div>
           </section>
 
-          <section class="step result-screen" data-step="6" aria-labelledby="estimate-title" hidden>
+          <section class="step result-screen" data-step="7" aria-labelledby="estimate-title" hidden>
             <div class="result-screen__mark" aria-hidden="true">✓</div>
             <div class="step__head">
               <h2 id="estimate-title">Предварительный бюджет</h2>
@@ -310,7 +322,7 @@
     <script src="../assets/js/project-gallery-data.js?v=20260901-1"></script>
     <script src="/assets/js/smartcaptcha.js?v=20261031-smartcaptcha-qualified"></script>
     <script src="../assets/js/lead-support.js?v=20261031-smartcaptcha-monitor"></script>
-    <script src="script.js?v=20261031-smartcaptcha"></script>
+    <script src="script.js?v=20261102-phone-first"></script>
     <script type="module" src="gallery.js?v=20260901-2"></script>
   </body>
 </html>

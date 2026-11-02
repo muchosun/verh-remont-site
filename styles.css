@@ -1439,6 +1439,30 @@ body.show-sticky-cta:not(.modal-open) .mobile-sticky-cta {
   width: 100%;
 }
 
+#quiz-phone-form {
+  width: 100%;
+  max-width: 480px;
+  justify-self: center;
+}
+
+#quiz-contact-summary {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+#quiz-edit-phone {
+  width: auto;
+  justify-self: start;
+  min-height: 44px;
+  padding: 8px 0;
+  border: 0;
+  background: none;
+  box-shadow: none;
+  color: var(--ink);
+  font-size: 14px;
+  text-decoration: underline;
+}
+
 .lead-terms {
   margin: -4px 0 0;
   color: var(--muted);
@@ -5380,38 +5404,38 @@ body.show-sticky-cta:not(.modal-open) .mobile-sticky-cta__call svg {
 }
 
 /* v26.7: keep apartment-type photos readable in their original portrait ratio */
-.slide[data-step="0"] .photo-choice {
+.slide[data-step="1"] .photo-choice {
   display: grid;
   grid-template-columns: 46% minmax(0, 1fr);
   min-height: 260px;
 }
 
-.slide[data-step="0"] .photo-choice img {
+.slide[data-step="1"] .photo-choice img {
   width: 100%;
   height: 100%;
   object-fit: cover;
   object-position: center;
 }
 
-.slide[data-step="0"] .photo-choice > span:not(.photo-watermark) {
+.slide[data-step="1"] .photo-choice > span:not(.photo-watermark) {
   min-width: 0;
   align-content: center;
 }
 
 @media (max-width: 720px) {
-  .slide[data-step="0"] .photo-choice {
+  .slide[data-step="1"] .photo-choice {
     grid-template-columns: 1fr;
     min-height: 0;
   }
 
-  .slide[data-step="0"] .photo-choice img {
+  .slide[data-step="1"] .photo-choice img {
     width: 100%;
     height: auto;
     aspect-ratio: 640 / 1138;
     object-fit: cover;
   }
 
-  .slide[data-step="0"] .photo-choice > span:not(.photo-watermark) {
+  .slide[data-step="1"] .photo-choice > span:not(.photo-watermark) {
     min-height: 88px;
     align-content: start;
   }
