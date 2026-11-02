@@ -16,11 +16,13 @@ function handler(source, marker) {
 
 function phoneFixture(kind, {phone = '+79012345678', consent = true, active = true} = {}) {
   let submit;
-  const steps = [], goals = [];
+  const steps = [], goals = [], captures = [];
   const state = {step:kind === 'main' ? 0 : 1, leadPhone:'', phone:'', phoneConfirmed:false, phoneReturnStep:kind === 'main' ? 1 : 2};
   const phoneInput = {value:phone, invalid:'', setCustomValidity(value){this.invalid = value;}, reportValidity(){}};
   const quizPhoneForm = {addEventListener:(_, fn) => submit = fn, reportValidity:() => consent};
   const context = {
+    window:{VerhRepairDraft:{capture:(_, payload)=>captures.push(payload)},VerhLead:{source:()=>({href:'https://verhremont.ru/'})}},
+    leadEndpoint:'https://endpoint.invalid',leadForm:{elements:{website:{value:''}}},
     state, phoneInput, quizPhoneForm, isQuizStep:step => active && state.step === step,
     normalizePhone:value => /^\+7\d{10}$/.test(value) ? value : '', formatPhoneForDisplay:value => value,
     resetLeadResult(){state.leadSubmitted = false;},
@@ -28,20 +30,22 @@ function phoneFixture(kind, {phone = '+79012345678', consent = true, active = tr
     setStep:step => steps.push(step),
   };
   vm.runInNewContext(handler(kind === 'main' ? main : calculator, 'quizPhoneForm.addEventListener("submit", event => {'), context);
-  return {state, steps, goals, phoneInput, run:trusted => submit({isTrusted:trusted ?? true, preventDefault(){}})};
+  return {state, steps, goals, captures, phoneInput, run:trusted => submit({isTrusted:trusted ?? true, preventDefault(){}})};
 }
 
 for (const kind of ['main', 'calculator']) {
-  test(`${kind}: first phone advances without delivery or paid conversion`, () => {
+  test(`${kind}: first phone saves an incomplete draft without full delivery or paid conversion`, () => {
     const f = phoneFixture(kind); f.run();
     assert.equal(f.state.phoneConfirmed, true);
     assert.equal(f.state[kind === 'main' ? 'leadPhone' : 'phone'], '+79012345678');
     assert.deepEqual(f.steps, [kind === 'main' ? 1 : 2]);
     assert.equal(f.goals.length, 1);
     assert.equal(f.goals[0].params.action, 'phone_continue');
+    assert.equal(f.captures.length, 1);
+    assert.equal(f.captures[0].consent, true);
     assert.doesNotMatch(JSON.stringify(f.goals), /79012345678|success|delivered|submit_attempt/);
     const block = handler(kind === 'main' ? main : calculator, 'quizPhoneForm.addEventListener("submit", event => {');
-    assert.doesNotMatch(block, /sendLead|fetch\(|VerhLead|localStorage|sessionStorage/);
+    assert.doesNotMatch(block, /sendLead|fetch\(|VerhLead\.send|localStorage|sessionStorage/);
   });
 
   test(`${kind}: invalid phone, missing consent and synthetic submit cannot advance`, () => {
@@ -50,6 +54,7 @@ for (const kind of ['main', 'calculator']) {
       assert.equal(f.state.phoneConfirmed, false);
       assert.deepEqual(f.steps, []);
       assert.deepEqual(f.goals, []);
+      assert.deepEqual(f.captures, []);
     }
     const f = phoneFixture(kind); f.run(false);
     assert.equal(f.state.phoneConfirmed, false);

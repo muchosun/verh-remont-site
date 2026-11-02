@@ -1068,6 +1068,7 @@ quizPhoneForm.addEventListener("submit", event => {
   state.leadPhone = phoneInput.value.trim();
   state.phoneConfirmed = true;
   resetLeadResult();
+  void window.VerhRepairDraft?.capture(leadEndpoint, {phone:state.leadPhone,source:window.VerhLead.source().href,consent:true});
   trackMetricGoal("main_interaction", {action:"phone_continue",placement:"quiz",step:1});
   setStep(state.phoneReturnStep);
   state.phoneReturnStep = 1;
@@ -1179,8 +1180,9 @@ leadForm.addEventListener("submit", async (event) => {
   render();
 
   try {
+    const draftReceipt = await window.VerhRepairDraft?.receipt();
     const [delivery] = await Promise.all([
-      sendLeadToMax(createLeadPayload()),
+      sendLeadToMax({...createLeadPayload(),draftReceipt}),
       waitFor(1200),
     ]);
 

@@ -311,6 +311,7 @@ quizPhoneForm.addEventListener("submit", event => {
   if (!quizPhoneForm.reportValidity()) return;
   state.phone = formatPhoneForDisplay(normalizedPhone);
   state.phoneConfirmed = true;
+  void window.VerhRepairDraft?.capture(leadEndpoint, {phone:state.phone,source:window.VerhLead.source().href,consent:true,website:leadForm.elements.website.value});
   trackGoal("calculator_step_view", {step:1,step_name:"Телефон",action:"phone_continue"});
   setStep(state.phoneReturnStep, {track:false});
   state.phoneReturnStep = 2;
@@ -360,7 +361,8 @@ leadForm.addEventListener("submit", async (event) => {
   });
 
   try {
-    const delivery = await sendLead(leadPayload());
+    const draftReceipt = await window.VerhRepairDraft?.receipt();
+    const delivery = await sendLead({...leadPayload(),draftReceipt});
     if (delivery.status !== "unverified" && !delivery.duplicate) trackGoal("calculator_lead_success", {
       apartment: state.apartment,
       area: state.area,
