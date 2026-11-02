@@ -20,8 +20,10 @@
         if (saved.status !== "draft_saved" || saved.qualification !== "incomplete" || saved.paidGoal !== false
           || !["repair_main", "repair_calculator"].includes(saved.formType) || typeof saved.receipt !== "string"
           || !saved.receipt || !Array.isArray(saved.successGoals) || saved.successGoals.length) throw Error("Draft not confirmed");
+        window.VerhRepairPhoneAnalytics?.saved();
         return saved;
       } catch {
+        window.VerhRepairPhoneAnalytics?.failed();
         pending.delete(key);
         return null;
       } finally { clearTimeout(timer); }

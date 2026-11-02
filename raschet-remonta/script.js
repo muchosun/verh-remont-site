@@ -111,6 +111,7 @@ function estimate() {
 function setStep(nextStep, { track = true } = {}) {
   if (nextStep > 1 && !state.phoneConfirmed) nextStep = 1;
   const maxStep = steps.length - 1;
+  if (state.step === 1 && nextStep !== 1) window.VerhRepairPhoneAnalytics?.close();
   state.step = Math.max(0, Math.min(maxStep, nextStep));
 
   steps.forEach((step, index) => {
@@ -135,7 +136,10 @@ function setStep(nextStep, { track = true } = {}) {
   if (state.step === 6) {
     renderSummary();
   }
-  if (state.step === 1) phoneInput.focus({preventScroll:true});
+  if (state.step === 1) {
+    window.VerhRepairPhoneAnalytics?.view();
+    phoneInput.focus({preventScroll:true});
+  }
 
   if (track && !isIntro && !isResult) {
     trackGoal("calculator_step_view", { step: state.step, step_name: STEP_NAMES[state.step] });
@@ -311,6 +315,7 @@ quizPhoneForm.addEventListener("submit", event => {
   if (!quizPhoneForm.reportValidity()) return;
   state.phone = formatPhoneForDisplay(normalizedPhone);
   state.phoneConfirmed = true;
+  window.VerhRepairPhoneAnalytics?.continued();
   void window.VerhRepairDraft?.capture(leadEndpoint, {phone:state.phone,source:window.VerhLead.source().href,consent:true,website:leadForm.elements.website.value});
   trackGoal("calculator_step_view", {step:1,step_name:"Телефон",action:"phone_continue"});
   setStep(state.phoneReturnStep, {track:false});

@@ -672,6 +672,7 @@ function openQuiz(trigger) {
   if (state.step === 0) trackMetricGoal("main_interaction", {action:"phone_view",placement:"quiz",step:1});
   prepareQuizMedia();
   quizModal.classList.add("is-open");
+  if (state.step === 0) window.VerhRepairPhoneAnalytics?.view();
   quizModal.setAttribute("aria-hidden", "false");
   document.body.classList.add("modal-open");
   updateStickyCta();
@@ -683,6 +684,7 @@ function openQuiz(trigger) {
 }
 
 function closeQuiz() {
+  window.VerhRepairPhoneAnalytics?.close();
   if (quizModal.classList.contains("is-open")) trackMetricGoal("main_quiz_close", {step:state.step+1,outcome:state.leadSubmitted ? "delivered" : "not_delivered"});
   quizModal.classList.remove("is-open");
   quizModal.setAttribute("aria-hidden", "true");
@@ -710,6 +712,7 @@ function setStep(nextStep) {
   if (nextStep > 0 && !state.phoneConfirmed) nextStep = 0;
   const previousStep = state.step;
   const step = Math.max(0, Math.min(slides.length - 1, nextStep));
+  if (previousStep === 0 && step !== 0) window.VerhRepairPhoneAnalytics?.close();
   state.step = step;
   state.maxStep = Math.max(state.maxStep, step);
   if (step !== previousStep && quizModal.classList.contains("is-open")) {
@@ -732,6 +735,7 @@ function setStep(nextStep) {
 
   stepCount.textContent = `${step + 1} / ${slides.length}`;
   stepLabel.textContent = stepLabels[step];
+  if (step === 0 && quizModal.classList.contains("is-open")) window.VerhRepairPhoneAnalytics?.view();
   const heading = slides[step].querySelector("h2");
   const description = slides[step].querySelector(".slide-head p");
   const dialog = quizModal.querySelector('[role="dialog"]');
@@ -1068,6 +1072,7 @@ quizPhoneForm.addEventListener("submit", event => {
   state.leadPhone = phoneInput.value.trim();
   state.phoneConfirmed = true;
   resetLeadResult();
+  window.VerhRepairPhoneAnalytics?.continued();
   void window.VerhRepairDraft?.capture(leadEndpoint, {phone:state.leadPhone,source:window.VerhLead.source().href,consent:true});
   trackMetricGoal("main_interaction", {action:"phone_continue",placement:"quiz",step:1});
   setStep(state.phoneReturnStep);
