@@ -8,3 +8,4 @@ dialog{border:0;padding:0;margin:0;inset:0;width:100%;max-width:none;height:100d
 @media(prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
 #result-title{font-size:30px;line-height:1.35;font-weight:700;letter-spacing:0;max-width:770px;margin:0 0 32px;outline:0}
 @media(max-width:600px){#result-title{font-size:25px}}
+.contact-prompt{font-size:14px;line-height:1.55}

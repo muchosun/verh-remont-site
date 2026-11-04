@@ -41,3 +41,11 @@ Final result: passed for local functional and responsive adaptation. Public deli
 2026-11-04: the combined free-text dimensions field was replaced by two required fields: area in square metres and ceiling height in centimetres. Clients enter numbers only; decimal area accepts a dot or comma. Units stay in labels. Ceiling height was not removed and the server schema is unchanged.
 
 Verified locally at 1280 x 720 and 390 x 844: values 72 and 275 advance correctly, survive Back, and remain fully visible without horizontal overflow. Empty area and empty ceiling have separate validation messages and focus. Frontend suite: 173 passed; existing backend reference suite: 14 passed. Earlier combined-field notes above describe the initial version only.
+
+## Authorized Source Copy And Branches
+
+2026-11-04: exact source questions, answer labels, free-consultation explanation, phone motivation, consent label and Next CTA restored. The owner explicitly confirmed the three estimates, savings up to RUB250000 and gifts, and the partial-repair rejection policy. The original brand/assets and website hero remain VERH; this change concerns the quiz.
+
+The source contains 11 screens including regional and partial-repair terminal states. Reference source data is retained in tests/fixtures/reference-quiz-copy-20261104.json. One/several-room partial repair routes through a full-repair offer. Declining ends without phone collection/submission; accepting sends scope=full. Preclean/full/other follow the source's direct route. Native Back now follows actual navigation history rather than array order. Region/partial rejection has a return command instead of the source's irrelevant required text field.
+
+Local checks: source-copy comparisons, full route, partial rejection, explicit upgrade, Back through both routes, numeric inputs, region rejection and complete preview without sending. Desktop1280x720 and mobile390x844 screenshots verified. Long phone text, phone field and Next button fit without overlap or horizontal overflow. 176 frontend tests and 167 backend tests passed. Shared CAPTCHA/delivery modules are unchanged. New backend version d4e0ia0ag18bcfi414if ACTIVE changes only reference-validation.js to reject partial-only scope on this route.

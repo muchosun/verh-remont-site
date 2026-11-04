@@ -5,20 +5,21 @@
   const error=document.querySelector('#form-error'),result=document.querySelector('#quiz-result'),next=document.querySelector('.next'),back=document.querySelector('.back');
   const progress=document.querySelector('#progress-bar'),progressLabel=document.querySelector('#progress-label');
   const steps=[
-    {id:'city',title:'Вы планируете ремонт квартиры или дома в Краснодаре?',options:[['krasnodar','Да, в Краснодаре'],['other','Нет, у меня другой регион']]},
-    {id:'property',title:'Где нужно сделать ремонт?',options:[['new','Новостройка'],['resale','Вторичное жильё'],['house','Частный дом'],['other','Другое']]},
+    {id:'city',title:'Вы планируете ремонт квартиры (дома) в г.Краснодар?',options:[['krasnodar','Да, в г.Краснодар'],['other','Нет, у меня другой регион']]},
+    {id:'property',title:'Где нужно сделать ремонт?',options:[['new','Новостройка'],['resale','Вторичное жилье'],['house','Частный дом'],['other','Другое']]},
     {id:'rooms',title:'Сколько комнат в квартире?',options:[['1','1 комната'],['2','2 комнаты'],['3','3 комнаты'],['4','4 и более']]},
-    {id:'dimensions',title:'Площадь помещения и высота потолков'},
+    {id:'dimensions',title:'Площадь помещения (м2) и высота потолков'},
     {id:'repair',title:'Какой ремонт планируете делать?',cards:true,options:[
       ['first','Первый ремонт в новостройке','../v14/assets/web/quiz-newbuild.webp'],
       ['cosmetic','Косметический ремонт','../assets/tariffs/finish-cosmetic.webp'],
       ['capital','Капитальный ремонт','../v14/assets/web/quiz-secondary.webp'],
       ['designer','Дизайнерский ремонт','../assets/projects/lux/lux_03_msg180.webp']]},
-    {id:'scope',title:'Какой объём работ потребуется выполнить?',options:[['preclean','Предчистовая отделка'],['full','Отделка всего помещения под ключ: от черновой до чистовой'],['one','Частичный ремонт одной комнаты'],['several','Частичный ремонт нескольких комнат'],['other','Другое']]},
-    {id:'channels',title:'Куда вам отправить расчёт стоимости ремонта?',options:[['max','MAX'],['telegram','Telegram'],['phone','Консультация по телефону']]},
-    {id:'contact',title:'Введите имя и номер телефона, на который отправить расчёт'},
+    {id:'scope',title:'Какой объем работ потребуется выполнить?',options:[['preclean','Предчистовая отделка'],['full','Отделка всего помещения "под ключ" от черновой отделки до чистовой'],['one','Частичный ремонт одной комнаты'],['several','Частичный ремонт нескольких комнат'],['other','Другое']]},
+    {id:'partialDecision',title:'Мы работаем только с ремонтом под ключ и с удовольствием поможем вам сделать полный ремонт',options:[['partial','Мне нужен именно частичный ремонт'],['full','Мне нужен ремонт под ключ']]},
+    {id:'channels',title:'Куда Вам отправить расчет стоимости ремонта Вашей квартиры?',options:[['max','MAX'],['telegram','Telegram'],['phone','БЕСПЛАТНАЯ консультация по телефону - хочу узнать подробнее об акциях, которые сейчас проходят']]},
+    {id:'contact',title:'Введите имя и номер телефона, на который Вам отправить расчет',phonePrompt:'За этим номером мы закрепим расчет сметы в трех вариантах с выгодой до 250 000 рублей и подарки'},
   ];
-  const state={step:0,answers:{city:'krasnodar',property:'new',rooms:'',area:'',ceiling:'',repair:'',scope:'full',channels:['phone']},sending:false,submitted:false,phone:'',name:'',consent:false,phoneStarted:false,phoneValid:false};
+  const state={step:0,history:[],answers:{city:'krasnodar',property:'new',rooms:'',area:'',ceiling:'',repair:'',scope:'full',partialDecision:'',channels:['phone']},sending:false,submitted:false,phone:'',name:'',consent:false,phoneStarted:false,phoneValid:false};
   let trigger,autoTimer,phoneView=false;
   const esc=value=>String(value).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   function track(event,params={}){
@@ -35,6 +36,13 @@
     return{area:Math.round(area*10)/10,ceiling};
   }
   function phoneDigits(value){let d=String(value).replace(/\D/g,'');if(d.length===10)d='7'+d;if(d.length===11&&d.startsWith('8'))d='7'+d.slice(1);return /^7\d{10}$/.test(d)?d:'';}
+  function nextStepIndex(index,answers){
+    const id=steps[index].id;
+    if(id==='scope')return ['one','several'].includes(answers.scope)?6:7;
+    if(id==='partialDecision')return answers.partialDecision==='partial'?'reject_partial':7;
+    return index+1;
+  }
+  function qualifiedScope(answers){return ['one','several'].includes(answers.scope)&&answers.partialDecision==='full'?'full':answers.scope;}
   function fail(message,field){error.textContent=message;error.hidden=false;if(field)field.focus();track('main_validation_error',{step:state.step+1,field:field?.type==='tel'?'phone':field?.type==='checkbox'?'consent':'form'});}
   function clearAuto(){clearTimeout(autoTimer);autoTimer=undefined;}
   function remember(){
@@ -45,15 +53,15 @@
   function render(){
     clearAuto();error.hidden=true;
     dialog.setAttribute('aria-labelledby','question-title');
-    const step=steps[state.step],percentage=[0,18,27,36,45,54,81,90][state.step];
+    const step=steps[state.step],percentage=[0,18,27,36,45,54,63,81,90][state.step];
     progress.style.width=percentage+'%';progressLabel.textContent=percentage+'%';
-    back.disabled=state.step===0||state.sending;next.disabled=state.sending;
-    next.querySelector('span').textContent=step.id==='contact'?'Получить расчёт':'Далее';
+    back.disabled=state.history.length===0||state.sending;next.disabled=state.sending;
+    next.querySelector('span').textContent='Далее';
     panel.innerHTML=`<h2 id="question-title" tabindex="-1">${esc(step.title)}</h2>`;
     if(step.id==='dimensions')panel.insertAdjacentHTML('beforeend',`<div class="contact-fields"><label class="text-field">Площадь, м²<input name="area" inputmode="decimal" autocomplete="off" maxlength="12" placeholder="Например, 65" value="${esc(state.answers.area)}" required aria-describedby="area-note" /><span class="field-note" id="area-note">От 20 до 1 000 м².</span></label><label class="text-field">Высота потолков, см<input name="ceiling" inputmode="numeric" autocomplete="off" maxlength="3" placeholder="Например, 270" value="${esc(state.answers.ceiling)}" required aria-describedby="ceiling-note" /><span class="field-note" id="ceiling-note">От 200 до 500 см.</span></label></div>`);
     else if(step.id==='contact'){
-      panel.insertAdjacentHTML('beforeend',`<div class="contact-fields"><label class="text-field">Имя<input name="name" autocomplete="given-name" maxlength="60" value="${esc(state.name)}" /></label><label class="text-field">Телефон для расчёта<input name="phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="+7 (___) ___-__-__" maxlength="24" value="${esc(state.phone)}" required /></label><label class="answer consent"><input type="checkbox" name="personal_data_consent" ${state.consent?'checked':''} required /><span>Я даю <a href="../consent.html" target="_blank" rel="noopener">согласие на обработку персональных данных</a> и ознакомлен с <a href="../privacy.html" target="_blank" rel="noopener">политикой</a>.</span></label></div><label class="hp" aria-hidden="true">Сайт<input name="website" tabindex="-1" autocomplete="off" /></label>`);
-      if(!phoneView){phoneView=true;track('main_quiz_contact',{step:8});track('repair_phone_view',{form:'repair_reference',step:8});}
+      panel.insertAdjacentHTML('beforeend',`<div class="contact-fields"><label class="text-field">Имя<input name="name" autocomplete="given-name" maxlength="60" value="${esc(state.name)}" /></label><label class="text-field"><span class="contact-prompt">${esc(step.phonePrompt)} <span aria-hidden="true">*</span></span><input name="phone" type="tel" inputmode="tel" autocomplete="tel" aria-label="Телефон для расчёта" placeholder="+7 (___) ___-__-__" maxlength="24" value="${esc(state.phone)}" required /></label><label class="answer consent"><input type="checkbox" name="personal_data_consent" ${state.consent?'checked':''} required /><span>Я согласен(-на) на <a href="../consent.html" target="_blank" rel="noopener">обработку персональных данных</a></span></label></div><label class="hp" aria-hidden="true">Сайт<input name="website" tabindex="-1" autocomplete="off" /></label>`);
+      if(!phoneView){phoneView=true;track('main_quiz_contact',{step:state.step+1});track('repair_phone_view',{form:'repair_reference',step:state.step+1});}
     }else{
       const multiple=step.id==='channels';
       const content=step.options.map(([value,label,image])=>{
@@ -64,11 +72,12 @@
     track('main_interaction',{action:'step_view',control:step.id,step:state.step+1});
     panel.querySelector('h2').focus({preventScroll:true});dialog.scrollTop=0;
   }
-  function rejected(){
-    progress.style.width='9%';progressLabel.textContent='9%';
-    track('main_interaction',{action:'region_rejected',step:1});form.hidden=true;result.hidden=false;result.classList.add('terminal');
+  function rejected(partial=false){
+    const percentage=partial?72:9;
+    progress.style.width=percentage+'%';progressLabel.textContent=percentage+'%';
+    track('main_interaction',{action:partial?'partial_scope_rejected':'region_rejected',step:state.step+1});form.hidden=true;result.hidden=false;result.classList.add('terminal');
     dialog.setAttribute('aria-labelledby','result-title');
-    result.innerHTML='<h2 id="result-title" tabindex="-1">Работаем в Краснодаре</h2><p>Принимаем заявки на ремонт объектов в Краснодаре. Заявка не отправлена.</p><button type="button" class="primary" data-return-city>Вернуться к выбору города</button>';
+    result.innerHTML=partial?'<h2 id="result-title" tabindex="-1">К сожалению, не сможем Вам помочь с частичным ремонтом.</h2><p>Прохождение квиза далее не требуется</p><button type="button" class="primary" data-return-scope>Вернуться к объёму работ</button>':'<h2 id="result-title" tabindex="-1">Извините, но мы не сможем вам помочь. Наша компания занимается ремонтом под ключ только в г.Краснодар</h2><p>Заполнение анкеты далее не требуется</p><button type="button" class="primary" data-return-city>Вернуться к выбору города</button>';
     result.querySelector('h2').focus();
   }
   async function advance(){
@@ -80,7 +89,9 @@
     if(step.id==='contact'){await submit();return;}
     const goal={property:'quiz_apartment_selected',dimensions:'quiz_area_selected',repair:'quiz_tariff_selected'}[step.id];
     if(goal)track(goal,{step:state.step+1});
-    track('main_interaction',{action:'step_answer',control:step.id,step:state.step+1});state.step++;render();
+    const target=nextStepIndex(state.step,state.answers);
+    if(target==='reject_partial'){rejected(true);return;}
+    track('main_interaction',{action:'step_answer',control:step.id,step:state.step+1});state.history.push(state.step);state.step=target;render();
   }
   async function submit(){
     const digits=phoneDigits(state.phone);
@@ -89,9 +100,9 @@
     const size=parseDimensions(state.answers.area,state.answers.ceiling);
     if(!size){fail('Проверьте площадь и высоту потолков.');return;}
     state.sending=true;next.disabled=true;back.disabled=true;next.querySelector('span').textContent='Отправляем…';
-    track('quiz_submit_attempt',{step:8});
+    track('quiz_submit_attempt',{step:state.step+1});
     try{
-      const payload={kind:'repair_reference',phone:'+'+digits,consent:true,name:state.name.trim(),website:form.elements.website?.value||'',referenceBrief:{city:state.answers.city,property:state.answers.property,rooms:state.answers.rooms,...size,repair:state.answers.repair,scope:state.answers.scope,channels:state.answers.channels},source:window.VerhLead?.source().href||location.href,submittedAt:new Date().toISOString()};
+      const payload={kind:'repair_reference',phone:'+'+digits,consent:true,name:state.name.trim(),website:form.elements.website?.value||'',referenceBrief:{city:state.answers.city,property:state.answers.property,rooms:state.answers.rooms,...size,repair:state.answers.repair,scope:qualifiedScope(state.answers),channels:state.answers.channels},source:window.VerhLead?.source().href||location.href,submittedAt:new Date().toISOString()};
       const delivery=preview?{status:'preview',duplicate:false}:await window.VerhLead.send(window.VERH_LEAD_ENDPOINT,payload);
       if(!['unverified','sent','preview'].includes(delivery.status))throw Error('No receipt');
       state.submitted=true;form.hidden=true;result.hidden=false;result.classList.add('terminal');progress.style.width='100%';progressLabel.textContent='100%';
@@ -100,7 +111,7 @@
       result.querySelector('h2').focus({preventScroll:true});dialog.scrollTop=0;
     }catch{
       state.sending=false;next.disabled=false;back.disabled=false;next.querySelector('span').textContent='Повторить отправку';
-      fail('Не получили подтверждение доставки. Ответы и телефон остались в форме. Попробуйте ещё раз или позвоните по номеру +7 (918) 238-30-59.');track('quiz_lead_failure',{step:8});
+      fail('Не получили подтверждение доставки. Ответы и телефон остались в форме. Попробуйте ещё раз или позвоните по номеру +7 (918) 238-30-59.');track('quiz_lead_failure',{step:state.step+1});
     }
   }
   form.addEventListener('submit',event=>{event.preventDefault();if(event.isTrusted!==false)void advance();});
@@ -109,20 +120,21 @@
     const input=event.target,step=steps[state.step];
     if(input.name===step.id&&step.options){
       if(step.id==='channels')state.answers.channels=[...form.querySelectorAll('input[name="channels"]:checked')].map(i=>i.value);
-      else{state.answers[step.id]=input.value;const from=state.step;clearAuto();autoTimer=setTimeout(()=>{if(state.step===from&&dialog.open)void advance();},150);}
+      else{if(step.id==='scope'&&state.answers.scope!==input.value)state.answers.partialDecision='';state.answers[step.id]=input.value;const from=state.step;clearAuto();autoTimer=setTimeout(()=>{if(state.step===from&&dialog.open)void advance();},150);}
     }
   });
   form.addEventListener('input',event=>{
     if(event.isTrusted===false)return;error.hidden=true;
     if(event.target.name==='phone'){
-      if(event.target.value.replace(/\D/g,'').length>1&&!state.phoneStarted){state.phoneStarted=true;track('repair_phone_input_start',{form:'repair_reference',step:8});}
-      if(phoneDigits(event.target.value)&&!state.phoneValid){state.phoneValid=true;track('repair_phone_valid',{form:'repair_reference',step:8});}
+      if(event.target.value.replace(/\D/g,'').length>1&&!state.phoneStarted){state.phoneStarted=true;track('repair_phone_input_start',{form:'repair_reference',step:state.step+1});}
+      if(phoneDigits(event.target.value)&&!state.phoneValid){state.phoneValid=true;track('repair_phone_valid',{form:'repair_reference',step:state.step+1});}
     }
   });
-  back.addEventListener('click',event=>{if(event.isTrusted===false||state.sending||state.step===0)return;remember();state.step--;render();});
+  back.addEventListener('click',event=>{if(event.isTrusted===false||state.sending||!state.history.length)return;remember();state.step=state.history.pop();render();});
   result.addEventListener('click',event=>{
     if(event.isTrusted===false)return;
-    if(event.target.closest('[data-return-city]')){state.step=0;state.answers.city='krasnodar';form.hidden=false;result.hidden=true;render();}
+    if(event.target.closest('[data-return-city]')){state.step=0;state.history=[];state.answers.city='krasnodar';form.hidden=false;result.hidden=true;render();}
+    if(event.target.closest('[data-return-scope]')){state.step=5;state.history=state.history.filter(i=>i<5);state.answers.partialDecision='';form.hidden=false;result.hidden=true;render();}
     if(event.target.closest('[data-close-result]'))dialog.close();
   });
   document.querySelectorAll('[data-open-quiz]').forEach(button=>button.addEventListener('click',event=>{
