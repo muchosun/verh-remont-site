@@ -2,6 +2,7 @@ const test=require('node:test'),assert=require('node:assert/strict'),fs=require(
 const root=path.join(__dirname,'..'),html=fs.readFileSync(path.join(root,'remont-kvartir/index.html'),'utf8'),js=fs.readFileSync(path.join(root,'remont-kvartir/quiz.js'),'utf8');
 test('separate quiz keeps existing pages untouched and uses the existing CAPTCHA sender',()=>{
  assert.match(html,/assets\/js\/smartcaptcha\.js/);assert.match(html,/assets\/js\/lead-support\.js/);assert(html.indexOf('smartcaptcha.js')<html.indexOf('lead-support.js'));
+ assert.match(html,/metrika\/tag\.js\?id=110859289/);
  assert.match(js,/kind:'repair_reference'/);assert.match(js,/referenceBrief:/);assert.match(js,/window\.VerhLead\.send/);
  assert.doesNotMatch(js,/track\(['"]quiz_lead_success|localStorage|Math\.random/);
  assert.doesNotMatch(html,/250 000|60 дней|Газиев|79884714943|локта/i);
