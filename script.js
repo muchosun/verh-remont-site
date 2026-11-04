@@ -37,7 +37,7 @@ const mainAnalytics = (() => {
     if (name === "theme_switch") { name = "main_interaction"; params = {...params,action:"theme"}; }
     if (name === "callback_prompt_dismissed") { name = "main_interaction"; params = {...params,action:"callback_dismiss",placement:"callback"}; }
     const safe = {landing:"repair_main"};
-    if (name.startsWith("quiz_") || name.startsWith("main_quiz_") || ["phone_view", "phone_continue"].includes(params.action)) safe.flow = "phone_first_v1";
+    if (name.startsWith("quiz_") || name.startsWith("main_quiz_") || ["phone_view", "phone_continue"].includes(params.action)) safe.flow = "phone_last_v1";
     for (const [key,value] of Object.entries(params)) {
       if (enums[key]?.includes(value)) safe[key] = value;
       else if (key === "step" && Number.isInteger(value) && value >= 1 && value <= 5) safe.step = value;
@@ -50,10 +50,10 @@ const mainAnalytics = (() => {
   track("main_landing_view");
   const attempted = new WeakSet();
   function trackAttempt(form) {
-    if (form?.id !== "lead-form" || !isQuizStep(4) || state.maxStep < 4 || form.dataset?.sending === "true" || attempted.has(form)) return;
+    if (form?.id !== "lead-form" || !isQuizStep(3) || state.maxStep < 3 || form.dataset?.sending === "true" || attempted.has(form)) return;
     attempted.add(form);
     window.setTimeout(() => attempted.delete(form), 0);
-    track("quiz_submit_attempt",{placement:"quiz",step:5});
+    track("quiz_submit_attempt",{placement:"quiz",step:4});
   }
   document.addEventListener("click", event => {
     if (event.isTrusted === false) return;
@@ -70,11 +70,11 @@ const mainAnalytics = (() => {
   document.addEventListener("invalid", event => {
     if (event.isTrusted === false) return;
     const form = event.target.closest("form");
-    if (!["quiz-phone-form", "lead-form", "callback-form", "area-form"].includes(form?.id)) return;
-    if (form.id === "quiz-phone-form" && !isQuizStep(0) || form.id === "lead-form" && !isQuizStep(4) || form.id === "area-form" && !isQuizStep(2)) return;
+    if (!["lead-form", "callback-form", "area-form"].includes(form?.id)) return;
+    if (form.id === "lead-form" && !isQuizStep(3) || form.id === "area-form" && !isQuizStep(1)) return;
     trackAttempt(form);
     const field = event.target.name === "personal_data_consent" ? "consent" : ["phone", "area"].includes(event.target.name) ? event.target.name : "form";
-    track("main_validation_error", {field,placement:form.id === "callback-form" ? "callback" : "quiz",step:form.id === "area-form" ? 3 : form.id === "lead-form" ? 5 : 1});
+    track("main_validation_error", {field,placement:form.id === "callback-form" ? "callback" : "quiz",step:form.id === "area-form" ? 2 : form.id === "lead-form" ? 4 : 1});
   },true);
   document.querySelectorAll("a[href]").forEach(link => link.addEventListener("click", event => {
     if (event.isTrusted === false) return;
@@ -244,11 +244,10 @@ const callbackPromptDelay = ["127.0.0.1", "localhost"].includes(window.location.
   : 24000;
 
 const stepLabels = [
-  "Телефон",
   "Квартира",
   "Площадь",
   "Отделка",
-  "Расчёт",
+  "Телефон",
 ];
 
 const state = {
@@ -262,8 +261,6 @@ const state = {
   timerLeft: 120,
   leadSubmitted: false,
   leadPhone: "",
-  phoneConfirmed: false,
-  phoneReturnStep: 1,
   leadLoadingId: null,
 };
 
@@ -280,8 +277,6 @@ const summaryEstimateLabel = document.querySelector("#summary-estimate-label");
 const summaryEstimate = document.querySelector("#summary-estimate");
 const areaInput = document.querySelector("#area-input");
 const phoneInput = document.querySelector("#phone-input");
-const quizPhoneForm = document.querySelector("#quiz-phone-form");
-const quizContactSummary = document.querySelector("#quiz-contact-summary");
 const leadPanel = document.querySelector(".lead-panel");
 const leadTitle = document.querySelector("#lead-title");
 const leadDescription = document.querySelector("#lead-description");
@@ -633,8 +628,8 @@ function resetLeadResult() {
   leadPanel.classList.remove("is-success");
   leadPanel.classList.remove("is-error");
   leadForm.querySelector('[type="submit"]').textContent = "Получить предварительный расчёт";
-  leadTitle.textContent = "Всё готово для расчёта";
-  leadDescription.textContent = "Отправь заявку и получи ориентир стоимости. Точную смету закрепим после замера.";
+  leadTitle.textContent = "Оставь телефон";
+  leadDescription.textContent = "После отправки покажем ориентир стоимости. Точную смету закрепим после замера.";
   leadForm.hidden = false;
   leadOffer.hidden = false;
   leadLoading.hidden = true;
@@ -669,10 +664,9 @@ function openQuiz(trigger) {
     placement: mainAnalytics.placement(trigger) || (trigger?.dataset?.tariffOpen ? "tariff" : "general"),
     tariff: trigger?.dataset?.tariffOpen || state.level,
   });
-  if (state.step === 0) trackMetricGoal("main_interaction", {action:"phone_view",placement:"quiz",step:1});
   prepareQuizMedia();
   quizModal.classList.add("is-open");
-  if (state.step === 0) window.VerhRepairPhoneAnalytics?.view();
+  if (state.step === 3) window.VerhRepairPhoneAnalytics?.view();
   quizModal.setAttribute("aria-hidden", "false");
   document.body.classList.add("modal-open");
   updateStickyCta();
@@ -709,15 +703,13 @@ function isQuizStep(step) {
 
 function setStep(nextStep) {
   if (leadForm.dataset.sending === "true") return;
-  if (nextStep > 0 && !state.phoneConfirmed) nextStep = 0;
   const previousStep = state.step;
   const step = Math.max(0, Math.min(slides.length - 1, nextStep));
-  if (previousStep === 0 && step !== 0) window.VerhRepairPhoneAnalytics?.close();
+  if (previousStep === 3 && step !== 3) window.VerhRepairPhoneAnalytics?.close();
   state.step = step;
   state.maxStep = Math.max(state.maxStep, step);
   if (step !== previousStep && quizModal.classList.contains("is-open")) {
-    if (step === 0) trackMetricGoal("main_interaction", {action:"phone_view",placement:"quiz",step:1});
-    if (step === 4) trackMetricGoal("main_quiz_contact", {step:5});
+    if (step === 3) trackMetricGoal("main_quiz_contact", {step:4});
     if (step < previousStep) trackMetricGoal("main_interaction", {action:"step_back",step:step+1,placement:"quiz"});
   }
 
@@ -735,7 +727,7 @@ function setStep(nextStep) {
 
   stepCount.textContent = `${step + 1} / ${slides.length}`;
   stepLabel.textContent = stepLabels[step];
-  if (step === 0 && quizModal.classList.contains("is-open")) window.VerhRepairPhoneAnalytics?.view();
+  if (step === 3 && quizModal.classList.contains("is-open")) window.VerhRepairPhoneAnalytics?.view();
   const heading = slides[step].querySelector("h2");
   const description = slides[step].querySelector(".slide-head p");
   const dialog = quizModal.querySelector('[role="dialog"]');
@@ -748,14 +740,13 @@ function setStep(nextStep) {
     dialog.setAttribute("aria-describedby", description.id);
   } else dialog.removeAttribute("aria-describedby");
 
-  if (step === 4) {
+  if (step === 3) {
     startTimer();
-    quizContactSummary.textContent = `Телефон для связи: ${state.leadPhone}`;
   }
   if (step !== previousStep && quizModal.classList.contains("is-open")) {
     const active = slides[step];
     active.scrollTop = 0;
-    const focusTarget = step === 0 ? phoneInput : active.querySelector("h2, input:not([type='checkbox']), button:not([disabled])");
+    const focusTarget = step === 3 ? phoneInput : active.querySelector("h2, input:not([type='checkbox']), button:not([disabled])");
     if (focusTarget) { focusTarget.tabIndex = focusTarget.matches("h2") ? -1 : focusTarget.tabIndex; focusTarget.focus({preventScroll:true}); }
   }
 }
@@ -938,9 +929,7 @@ quizOpenButtons.forEach((button) => {
     if (event.isTrusted === false) return;
     if (leadForm.dataset.sending === "true") { openQuiz(button); return; }
     resetLeadResult();
-    state.phoneConfirmed = false;
     state.leadPhone = "";
-    state.phoneReturnStep = 1;
     state.maxStep = 0;
     setStep(0);
     openQuiz(button);
@@ -954,9 +943,7 @@ document.querySelectorAll("[data-tariff-open]").forEach((button) => {
     state.level = button.dataset.tariffOpen;
     trackMetricGoal("tariff_selected", { tariff: state.level });
     resetLeadResult();
-    state.phoneConfirmed = false;
     state.leadPhone = "";
-    state.phoneReturnStep = 1;
     render();
     state.maxStep = 0;
     setStep(0);
@@ -992,29 +979,29 @@ window.addEventListener("resize", updateStickyCta);
 
 document.querySelectorAll("[data-apartment]").forEach((button) => {
   button.addEventListener("click", event => {
-    if (event.isTrusted === false || !isQuizStep(1)) return;
+    if (event.isTrusted === false || !isQuizStep(0)) return;
     if (!["Новостройка", "Вторичка"].includes(button.dataset.apartment)) return;
     state.apartment = button.dataset.apartment;
     trackMetricGoal("quiz_apartment_selected", { apartment: state.apartment });
     resetLeadResult();
     render();
-    setStep(2);
+    setStep(1);
   });
 });
 
 document.querySelectorAll("[data-area]").forEach((button) => {
   button.addEventListener("click", event => {
-    if (event.isTrusted === false || !isQuizStep(2)) return;
+    if (event.isTrusted === false || !isQuizStep(1)) return;
     if (validateAreaDraft(button.dataset.area) === null) return;
     setArea(button.dataset.area, button.dataset.areaLabel);
     trackMetricGoal("quiz_area_selected", { area: state.area, area_label: state.areaLabel });
-    setStep(3);
+    setStep(2);
   });
 });
 
 document.querySelector("#area-form").addEventListener("submit", (event) => {
   event.preventDefault();
-  if (event.isTrusted === false || !isQuizStep(2)) return;
+  if (event.isTrusted === false || !isQuizStep(1)) return;
   const area = validateAreaDraft(areaInput.value);
   if (area === null) {
     areaInput.setCustomValidity("Введи площадь от 20 до 300 м².");
@@ -1024,7 +1011,7 @@ document.querySelector("#area-form").addEventListener("submit", (event) => {
   areaInput.setCustomValidity("");
   setArea(area);
   trackMetricGoal("quiz_area_selected", { area: state.area, area_label: state.areaLabel });
-  setStep(3);
+  setStep(2);
 });
 
 areaInput.addEventListener("focus", () => {
@@ -1040,13 +1027,13 @@ areaInput.addEventListener("input", () => {
 
 document.querySelectorAll("[data-level]").forEach((button) => {
   button.addEventListener("click", event => {
-    if (event.isTrusted === false || !isQuizStep(3)) return;
+    if (event.isTrusted === false || !isQuizStep(2)) return;
     if (!Object.prototype.hasOwnProperty.call(tariffs, button.dataset.level)) return;
     state.level = button.dataset.level;
     trackMetricGoal("quiz_tariff_selected", { tariff: state.level });
     resetLeadResult();
     render();
-    setStep(4);
+    setStep(3);
   });
 });
 
@@ -1058,40 +1045,11 @@ progressButtons.forEach((button) => {
   });
 });
 
-quizPhoneForm.addEventListener("submit", event => {
-  event.preventDefault();
-  if (event.isTrusted === false || !isQuizStep(0)) return;
-  phoneInput.setCustomValidity("");
-  const digits = phoneInput.value.replace(/\D/g, "");
-  if (!/^7\d{10}$/.test(digits)) {
-    phoneInput.setCustomValidity("Укажи номер из 10 цифр после +7.");
-    phoneInput.reportValidity();
-    return;
-  }
-  if (!quizPhoneForm.reportValidity()) return;
-  state.leadPhone = phoneInput.value.trim();
-  state.phoneConfirmed = true;
-  resetLeadResult();
-  window.VerhRepairPhoneAnalytics?.continued();
-  void window.VerhRepairDraft?.capture(leadEndpoint, {phone:state.leadPhone,source:window.VerhLead.source().href,consent:true});
-  trackMetricGoal("main_interaction", {action:"phone_continue",placement:"quiz",step:1});
-  setStep(state.phoneReturnStep);
-  state.phoneReturnStep = 1;
-});
-
-document.querySelector("#quiz-edit-phone").addEventListener("click", event => {
-  if (event.isTrusted !== false && isQuizStep(4)) {
-    state.phoneReturnStep = 4;
-    setStep(0);
-  }
-});
-
 phoneInput.addEventListener("focus", () => {
   if (!phoneInput.value) phoneInput.value = "+7 ";
 });
 
 phoneInput.addEventListener("input", () => {
-  state.phoneConfirmed = false;
   phoneInput.value = formatPhone(phoneInput.value);
   phoneInput.setCustomValidity("");
 });
@@ -1154,17 +1112,17 @@ callbackForm?.addEventListener("submit", async (event) => {
 
 leadForm.addEventListener("submit", async (event) => {
   event.preventDefault();
-  if (event.isTrusted === false || !isQuizStep(4) || state.maxStep < 4 || !state.phoneConfirmed) return;
+  if (event.isTrusted === false || !isQuizStep(3) || state.maxStep < 3) return;
   if (leadForm.dataset.sending === "true") return;
   phoneInput.setCustomValidity("");
   const digits = phoneInput.value.replace(/\D/g, "");
-  if (!/^7\d{10}$/.test(digits) || !quizPhoneForm.checkValidity()) {
-    state.phoneConfirmed = false;
-    setStep(0);
-    quizPhoneForm.reportValidity();
+  if (!/^7\d{10}$/.test(digits)) {
+    phoneInput.setCustomValidity("Укажи номер из 10 цифр после +7.");
+    phoneInput.reportValidity();
     return;
   }
   if (!leadForm.reportValidity()) return;
+  window.VerhRepairPhoneAnalytics?.submitted();
   leadForm.dataset.sending = "true";
   leadPanel.classList.remove("is-error");
   state.leadPhone = phoneInput.value.trim();
@@ -1185,9 +1143,8 @@ leadForm.addEventListener("submit", async (event) => {
   render();
 
   try {
-    const draftReceipt = await window.VerhRepairDraft?.receipt();
     const [delivery] = await Promise.all([
-      sendLeadToMax({...createLeadPayload(),draftReceipt}),
+      sendLeadToMax(createLeadPayload()),
       waitFor(1200),
     ]);
 

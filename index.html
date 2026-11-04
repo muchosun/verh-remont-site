@@ -188,7 +188,7 @@
 
         darkStylesheet.id = "site-theme-dark-stylesheet";
         darkStylesheet.rel = "stylesheet";
-        darkStylesheet.href = "styles.css?v=20261102-phone-first";
+        darkStylesheet.href = "styles.css?v=20261104-phone-last";
         darkStylesheet.media = theme === "dark" ? "all" : "not all";
         document.head.appendChild(darkStylesheet);
 
@@ -196,7 +196,7 @@
         window.VERH_HERO_VARIANT = heroVariant;
       })();
     </script>
-    <noscript><link rel="stylesheet" href="styles.css?v=20261102-phone-first" /></noscript>
+    <noscript><link rel="stylesheet" href="styles.css?v=20261104-phone-last" /></noscript>
     <link rel="stylesheet" href="theme-switch.css?v=20260728-brand-zone" />
     <link rel="stylesheet" href="marketing-legal.css?v=20260819-igor-trust-banner" />
     <link rel="stylesheet" href="service-links.css?v=20260803" />
@@ -794,39 +794,22 @@
         <div class="quiz-card" aria-live="polite">
           <div class="quiz-card__top">
             <div class="step-counter">
-              <span id="step-count">1 / 5</span>
-              <strong id="step-label">Телефон</strong>
+              <span id="step-count">1 / 4</span>
+              <strong id="step-label">Квартира</strong>
             </div>
             <div class="progress-dots" aria-label="Прогресс квиза">
               <button class="is-active" type="button" data-step-nav="0" aria-label="Шаг 1">1</button>
               <button type="button" data-step-nav="1" aria-label="Шаг 2" disabled>2</button>
               <button type="button" data-step-nav="2" aria-label="Шаг 3" disabled>3</button>
               <button type="button" data-step-nav="3" aria-label="Шаг 4" disabled>4</button>
-              <button type="button" data-step-nav="4" aria-label="Шаг 5" disabled>5</button>
             </div>
           </div>
 
           <div class="slides" id="slides">
             <article class="slide is-active" data-step="0">
               <div class="slide-head">
-                <h2 id="quiz-title">Начнём с телефона</h2>
-                <p id="quiz-description">Затем ответь на три вопроса о квартире и получи предварительную стоимость ремонта.</p>
-              </div>
-              <form class="lead-form" id="quiz-phone-form">
-                <label for="phone-input">Телефон</label>
-                <input id="phone-input" name="phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="+7 (___) ___-__-__" required />
-                <label class="form-consent">
-                  <input type="checkbox" name="personal_data_consent" checked required />
-                  <span>Даю <a href="consent.html" target="_blank" rel="noopener">согласие на обработку данных</a>. <a href="privacy.html" target="_blank" rel="noopener">Политика</a>.</span>
-                </label>
-                <button type="submit">Продолжить расчёт</button>
-              </form>
-            </article>
-
-            <article class="slide" data-step="1">
-              <div class="slide-head">
-                <h2>Что за квартира?</h2>
-                <p>Выбери вариант, и сразу пойдем дальше.</p>
+                <h2 id="quiz-title">Что за квартира?</h2>
+                <p id="quiz-description">Выбери вариант, и сразу пойдем дальше.</p>
               </div>
               <div class="photo-choice-grid">
                 <button class="photo-choice is-selected" type="button" data-apartment="Новостройка">
@@ -848,7 +831,7 @@
               </div>
             </article>
 
-            <article class="slide" data-step="2">
+            <article class="slide" data-step="1">
               <div class="slide-head">
                 <h2>Сколько метров?</h2>
                 <p>Выбери типовой метраж или впиши свой.</p>
@@ -888,7 +871,7 @@
               </form>
             </article>
 
-            <article class="slide" data-step="3">
+            <article class="slide" data-step="2">
               <div class="slide-head">
                 <h2>Какой результат хочешь?</h2>
                 <p>Выбери вариант, а дальше покажем, что уже входит в стоимость.</p>
@@ -917,11 +900,11 @@
               </div>
             </article>
 
-            <article class="slide" data-step="4">
+            <article class="slide" data-step="3">
               <div class="lead-panel">
                 <div class="slide-head">
-                  <h2 id="lead-title">Всё готово для расчёта</h2>
-                  <p id="lead-description">Отправь заявку и получи ориентир стоимости. Точную смету закрепим после замера.</p>
+                  <h2 id="lead-title">Оставь телефон</h2>
+                  <p id="lead-description">После отправки покажем ориентир стоимости. Точную смету закрепим после замера.</p>
                 </div>
                 <div class="lead-offer" aria-labelledby="lead-offer-title">
                   <div class="lead-offer__head">
@@ -934,9 +917,13 @@
                     <li><span>04</span>Клининг после ремонта в подарок</li>
                   </ul>
                 </div>
-                <form class="lead-form" id="lead-form">
-                  <p id="quiz-contact-summary"></p>
-                  <button type="button" id="quiz-edit-phone">Изменить телефон</button>
+                <form class="lead-form" id="lead-form" data-phone-flow="phone_last">
+                  <label for="phone-input">Телефон</label>
+                  <input id="phone-input" name="phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="+7 (___) ___-__-__" required />
+                  <label class="form-consent">
+                    <input type="checkbox" name="personal_data_consent" checked required />
+                    <span>Даю <a href="consent.html" target="_blank" rel="noopener">согласие на обработку данных</a>. <a href="privacy.html" target="_blank" rel="noopener">Политика</a>.</span>
+                  </label>
                   <button type="submit">Получить предварительный расчёт</button>
                   <p class="lead-terms">Условия подарков зависят от стоимости договора, площади и объёма работ. Точные условия фиксируем в договоре.</p>
                 </form>
@@ -961,9 +948,8 @@
       window.VERH_REVIEWS_WIDGET_ENABLED = true;
     </script>
     <script src="assets/js/project-gallery-data.js?v=20260901-1"></script>
-    <script src="assets/js/repair-phone-analytics.js?v=20261102-1"></script>
-    <script src="assets/js/repair-draft.js?v=20261102-events"></script>
-    <script src="script.js?v=20261102-phone-events"></script>
+    <script src="assets/js/repair-phone-analytics.js?v=20261104-phone-last"></script>
+    <script src="script.js?v=20261104-phone-last"></script>
     <script type="module" src="assets/js/project-gallery.js?v=20261029-1"></script>
   </body>
 </html>

@@ -1,10 +1,11 @@
 (() => {
   "use strict";
   const preview = window.VERH_PREVIEW || location.protocol === "file:" || ["localhost", "127.0.0.1"].includes(location.hostname);
-  const form = document.querySelector("#quiz-phone-form");
+  const form = document.querySelector('#quiz-phone-form, #lead-form[data-phone-flow="phone_last"]');
   const input = form?.querySelector('[name="phone"]');
   if (!form || !input) return;
   const surface = location.pathname.startsWith("/raschet-remonta") ? "repair_calculator" : "repair_main";
+  const flow = form.dataset?.phoneFlow === "phone_last" ? "repair_phone_last_v1" : "repair_phone_first_v1";
   const events = new Set(["repair_phone_view", "repair_phone_input_start", "repair_phone_valid", "repair_phone_continue", "repair_phone_error", "repair_phone_exit", "repair_draft_saved", "repair_draft_failed"]);
   let visible = false;
   let restoreView = false;
@@ -26,7 +27,7 @@
   }
   function emit(name, extra = {}) {
     if (preview || !events.has(name)) return;
-    const params = {form:surface,flow:"repair_phone_first_v1"};
+    const params = {form:surface,flow};
     if (["empty", "partial", "valid"].includes(extra.phone_state)) params.phone_state = extra.phone_state;
     if (["phone", "consent"].includes(extra.field)) params.field = extra.field;
     if (pending.length < 100) pending.push({name,params});
@@ -61,6 +62,11 @@
     once("repair_phone_exit", {phone_state:phoneState()});
     visible = false;
   }
+  function submitted() {
+    if (!visible) return;
+    once("repair_phone_valid");
+    visible = false;
+  }
   input.addEventListener("input", event => {
     if (event.isTrusted === false || !visible || input.closest("[inert]")) return;
     const state = phoneState();
@@ -76,6 +82,6 @@
     if (event.persisted && restoreView) view();
     restoreView = false;
   });
-  window.VerhRepairPhoneAnalytics = Object.freeze({view,continued,close,
+  window.VerhRepairPhoneAnalytics = Object.freeze({view,continued,submitted,close,
     saved:() => emit("repair_draft_saved"),failed:() => emit("repair_draft_failed")});
 })();

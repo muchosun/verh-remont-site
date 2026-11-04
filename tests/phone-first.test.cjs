@@ -33,7 +33,7 @@ function phoneFixture(kind, {phone = '+79012345678', consent = true, active = tr
   return {state, steps, goals, captures, phoneInput, run:trusted => submit({isTrusted:trusted ?? true, preventDefault(){}})};
 }
 
-for (const kind of ['main', 'calculator']) {
+for (const kind of ['calculator']) {
   test(`${kind}: first phone saves an incomplete draft without full delivery or paid conversion`, () => {
     const f = phoneFixture(kind); f.run();
     assert.equal(f.state.phoneConfirmed, true);
@@ -74,8 +74,8 @@ for (const kind of ['main', 'calculator']) {
   });
 }
 
-test('both repair pages place a unique phone form before all apartment questions', () => {
-  for (const name of ['index.html', 'raschet-remonta/index.html']) {
+test('the long calculator still places a unique phone form before apartment questions', () => {
+  for (const name of ['raschet-remonta/index.html']) {
     const html = fs.readFileSync(path.join(root, name), 'utf8');
     assert.equal((html.match(/id="phone-input"/g) || []).length, 1);
     assert.ok(html.indexOf('id="quiz-phone-form"') < html.indexOf('data-apartment='));

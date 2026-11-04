@@ -30,7 +30,7 @@ test('preview and file/localhost never emit diagnostics or paid goals',()=>{
 });
 test('allowlist strips phone, text, URL, area and arbitrary values',()=>{
   const f=fixture();f.analytics.track('quiz_submit_attempt',{phone:'+79012345678',task:'private',area:58,source:'https://private.invalid',tariff:'comfort',apartment:'Вторичка',placement:'hero',field:'private'});
-  assert.deepEqual(JSON.parse(JSON.stringify(f.goals.at(-1).params)),{landing:'repair_main',flow:'phone_first_v1',tariff:'comfort',apartment_type:'resale',placement:'hero'});
+  assert.deepEqual(JSON.parse(JSON.stringify(f.goals.at(-1).params)),{landing:'repair_main',flow:'phone_last_v1',tariff:'comfort',apartment_type:'resale',placement:'hero'});
   f.analytics.track('arbitrary');assert.equal(f.goals.length,2);
 });
 test('telephone clicks do not synthesize paid delivery or duplicate existing phone goals',()=>{
@@ -43,7 +43,7 @@ test('service, anchor and legal links have bounded identifiers',()=>{
 });
 test('native invalid field is captured before submit, without its value',()=>{
   const f=fixture();f.events.invalid({target:{name:'personal_data_consent',value:'private',closest:()=>({id:'lead-form'})}});
-  assert.equal(f.goals.at(-1).name,'main_validation_error');assert.equal(f.goals.at(-1).params.field,'consent');assert.equal(f.goals.at(-1).params.step,5);assert.equal(JSON.stringify(f.goals).includes('private'),false);
+  assert.equal(f.goals.at(-1).name,'main_validation_error');assert.equal(f.goals.at(-1).params.field,'consent');assert.equal(f.goals.at(-1).params.step,4);assert.equal(JSON.stringify(f.goals).includes('private'),false);
 });
 test('current and legacy design links retain service analytics without paid goals',()=>{
   for(const designLink of ['/design/?city=krasnodar','/design','/uslugi/dizayn-proekt/']){
@@ -112,7 +112,7 @@ test('submit click, native invalid events and submit count one attempt per actio
   assert.equal(f.goals.some(x=>x.name==='quiz_lead_success'),false);
 });
 test('hidden and out of order quiz choices cannot emit phantom selection goals',()=>{
-  for(const [selector,step,eventName] of [['[data-apartment]',1,'quiz_apartment_selected'],['[data-area]',2,'quiz_area_selected'],['[data-level]',3,'quiz_tariff_selected']]){
+  for(const [selector,step,eventName] of [['[data-apartment]',0,'quiz_apartment_selected'],['[data-area]',1,'quiz_area_selected'],['[data-level]',2,'quiz_tariff_selected']]){
     const start=script.indexOf(`document.querySelectorAll("${selector}")`,script.indexOf('window.addEventListener("resize"'));
     const block=script.slice(start,script.indexOf('\n});',start)+4);
     let click,open=false;

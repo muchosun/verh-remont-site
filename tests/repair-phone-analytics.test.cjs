@@ -1,9 +1,9 @@
 const test=require('node:test'),assert=require('node:assert/strict'),fs=require('node:fs'),path=require('node:path'),vm=require('node:vm');
 const source=fs.readFileSync(path.join(__dirname,'../assets/js/repair-phone-analytics.js'),'utf8');
-function fixture({preview=false,pathname='/',late=false}={}) {
+function fixture({preview=false,pathname='/',late=false,phoneLast=false}={}) {
   const goals=[],inputEvents={},formEvents={},windowEvents={},timers=[];
   const input={value:'+7 ',closest:()=>null,addEventListener:(name,fn)=>inputEvents[name]=fn};
-  const form={querySelector:()=>input,addEventListener:(name,fn)=>formEvents[name]=fn};
+  const form={dataset:{phoneFlow:phoneLast?'phone_last':undefined},querySelector:()=>input,addEventListener:(name,fn)=>formEvents[name]=fn};
   const collect=(id,method,name,params)=>goals.push({id,method,name,params});
   const window={VERH_PREVIEW:preview,ym:late?undefined:collect,addEventListener:(name,fn)=>windowEvents[name]=fn};
   vm.runInNewContext(source,{window,document:{querySelector:()=>form},location:{protocol:'https:',hostname:'verhremont.ru',pathname},setTimeout:fn=>{timers.push(fn);return timers.length;}});
@@ -54,4 +54,9 @@ test('returning through browser back-forward cache resumes phone-stage tracking'
   const f=fixture();f.api.view();f.windowEvents.pagehide();f.windowEvents.pageshow({persisted:true});
   f.input.value='+7901';f.inputEvents.input({isTrusted:true});
   assert.deepEqual(f.goals.map(g=>g.name),['repair_phone_view','repair_phone_exit','repair_phone_view','repair_phone_input_start']);
+});
+test('phone-last completion does not claim continuation to questions or an early draft',()=>{
+  const f=fixture({phoneLast:true});f.api.view();f.input.value='+79012345678';f.inputEvents.input({isTrusted:true});f.api.submitted();f.api.close();
+  assert.deepEqual(f.goals.map(g=>g.name),['repair_phone_view','repair_phone_input_start','repair_phone_valid']);
+  assert.equal(f.goals.every(g=>g.params.flow==='repair_phone_last_v1'),true);
 });
