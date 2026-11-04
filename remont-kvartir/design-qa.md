@@ -35,3 +35,9 @@ Intentional differences: own brand/assets and font, safe claims, readable mobile
 5. Error paths retain fields and never claim delivery without a receipt.
 
 Final result: passed for local functional and responsive adaptation. Public delivery, MAX and analytics verification are separate release checks, not inferred from this document.
+
+## Numeric Dimensions Follow-up
+
+2026-11-04: the combined free-text dimensions field was replaced by two required fields: area in square metres and ceiling height in centimetres. Clients enter numbers only; decimal area accepts a dot or comma. Units stay in labels. Ceiling height was not removed and the server schema is unchanged.
+
+Verified locally at 1280 x 720 and 390 x 844: values 72 and 275 advance correctly, survive Back, and remain fully visible without horizontal overflow. Empty area and empty ceiling have separate validation messages and focus. Frontend suite: 173 passed; existing backend reference suite: 14 passed. Earlier combined-field notes above describe the initial version only.
