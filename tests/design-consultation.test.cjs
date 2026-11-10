@@ -43,7 +43,7 @@ test('header and sticky consultation CTAs keep the original full questionnaire C
   const consultation=buttons.filter(m=>/data-lead-mode="callback"/.test(m[0]));
   assert.equal(consultation.length,2);
   assert(consultation.every(m=>m[3].includes('Обсудить проект')));
-  assert(buttons.some(m=>m[3].includes('Зафиксировать цену')&&!m[0].includes('data-lead-mode')));
+  assert(buttons.some(m=>m[3].includes('Рассчитать стоимость проекта')&&!m[0].includes('data-lead-mode')));
   assert(buttons.some(m=>m[0].includes('data-estimate-continue')&&!m[0].includes('data-lead-mode')));
 });
 test('consultation opens only phone/contact fields, without area, quote, progress or a misleading Back button',()=>{

@@ -188,7 +188,7 @@
 
           <section class="step" data-step="4" aria-labelledby="area-title" hidden>
             <div class="step__head">
-              <h2 id="area-title">Какая площадь?</h2>
+              <h2 id="area-title">Какая примерно площадь?</h2>
             </div>
             <div class="area-grid">
               <button type="button" data-area="28" data-area-label="Студия"><strong>Студия</strong><span>28 м²</span></button>
@@ -197,13 +197,14 @@
               <button type="button" data-area="78" data-area-label="3-комн."><strong>3-комн.</strong><span>78 м²</span></button>
             </div>
             <form class="area-form" id="area-form">
-              <label for="area-input">Своя площадь</label>
+              <label for="area-input">Своя площадь, примерно</label>
               <div class="area-form__control">
                 <input id="area-input" name="area" type="number" inputmode="decimal" min="20" max="300" step="0.1" placeholder="Например, 47" required />
                 <span>м²</span>
                 <button type="submit">Дальше</button>
               </div>
               <p class="field-error" id="area-error" role="alert"></p>
+              <p>Можно выбрать близкую площадь. Точный размер уточним на замере.</p>
             </form>
           </section>
 

@@ -27,5 +27,5 @@ test('phone parser normalizes national and international formats and rejects par
 test('analytics cannot transmit phones, names, answers, text or URL through arbitrary parameters',()=>{
  const start=js.indexOf('function track('),code=js.slice(start,js.indexOf('function parseDimensions(',start)),events=[];
  const c={preview:false,window:{ym:(...args)=>events.push(args)}};vm.runInNewContext(code,c);c.track('main_interaction',{phone:'private',name:'private',source:'private',step:2,action:'step_view',control:'property'});
- assert.doesNotMatch(JSON.stringify(events),/private/);assert.equal(events[0][3].flow,'reference_quiz_v1');
+ assert.doesNotMatch(JSON.stringify(events),/private/);assert.equal(events[0][3].flow,'reference_quiz_v2');
 });

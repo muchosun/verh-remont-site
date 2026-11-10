@@ -138,7 +138,7 @@
       const projectTask = form.elements.projectTask?.value.trim() || "";
       if (isBrief) {
         const invalid = !selectedPackage || selectedPackage === "Не определился" ? "package"
-          : !["В течение месяца", "Через 1–3 месяца", "Позже трёх месяцев"].includes(projectStart) ? "projectStart"
+          : !["В течение месяца", "Через 1–3 месяца", "Позже трёх месяцев", "Пока не решил"].includes(projectStart) ? "projectStart"
           : !hardened && (projectTask.length < 20 || projectTask.length > 120) ? "projectTask" : "";
         if (invalid) {
           status.dataset.state = "error";

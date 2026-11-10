@@ -91,7 +91,7 @@
       }
       window.VERH_LEAD_ENDPOINT = "https://functions.yandexcloud.net/d4e8j84veok7kjc043kk";
     </script>
-    <script src="./brief-validation-v3.js?v=20261110-current-offer" defer></script>
+    <script src="./brief-validation-v3.js?v=20261111-simple-quizzes" defer></script>
     <script src="./turnstile-config.js?v=20261025-quiz" defer></script>
     <script src="/assets/js/smartcaptcha.js?v=20261031-smartcaptcha-qualified" defer></script>
     <script src="/design/assets/js/lead-support.js?v=20261031-smartcaptcha-monitor" defer></script>
@@ -120,16 +120,16 @@
         <div class="service-hero__content">
           <p class="studio-kicker">ВЕРХ / СТУДИЯ ДИЗАЙНА</p>
           <h1>Дизайн-проект <br />квартиры</h1>
-          <p>Ваш интерьер начинается с продуманного плана. Планировка, инженерные планы и рабочие чертежи — дистанционно по всей России.</p>
+          <p>Подготовим планировку и рабочие чертежи для ремонта вашей квартиры. Работаем дистанционно по всей России.</p>
           <div class="service-price" aria-label="Стоимость дизайн-проекта">
             <span>Проект с инженерными планами</span>
             <strong>500 ₽/м² — фиксированная цена</strong>
             <small>3D-визуализация — в отдельном пакете</small>
             <small>для квартир от 30 м² · рабочие чертежи и инженерные планы</small>
           </div>
-          <p class="hero-offer">Оставьте заявку сегодня — зафиксируем стоимость рабочего проекта для вашей квартиры. Ремонт заказывать необязательно.</p>
+          <p class="hero-offer">Рассчитайте стоимость проекта по площади квартиры. Ремонт заказывать необязательно.</p>
           <div class="service-hero__actions">
-            <button class="button button--gold" type="button" data-scroll-lead data-package="Рабочий проект — 500 ₽/м², от 30 м²">Зафиксировать цену <span aria-hidden="true">↗</span></button>
+            <button class="button button--gold" type="button" data-scroll-lead data-package="Рабочий проект — 500 ₽/м², от 30 м²">Рассчитать стоимость проекта <span aria-hidden="true">↗</span></button>
             <a class="button button--ghost" href="tel:+79182383059" data-call-link aria-label="Позвонить в ВЕРХ">
               <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2A19.79 19.79 0 0 1 11.19 18.85a19.5 19.5 0 0 1-6-6A19.79 19.79 0 0 1 2.12 4.18 2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.12.9.33 1.78.62 2.63a2 2 0 0 1-.45 2.11L8.01 9.73a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.85.29 1.73.5 2.63.62A2 2 0 0 1 22 16.92Z" /></svg>
               <span>Позвонить</span>
@@ -139,9 +139,9 @@
         </div>
       </section>
 
-      <section class="estimate-band" aria-label="Расчёт стоимости рабочего проекта">
+      <section class="estimate-band" id="estimate" aria-label="Расчёт стоимости рабочего проекта">
         <div class="section-shell estimate-layout">
-          <div><span class="section-label">Прозрачная стоимость</span><h2>У каждой квартиры <br />есть свой план</h2></div>
+          <div><span class="section-label">500 ₽ за м²</span><h2>Стоимость рабочего проекта</h2></div>
           <div class="estimate-input"><label for="estimate-area">Площадь квартиры, м²</label><input id="estimate-area" type="number" inputmode="decimal" min="30" max="10000" step="0.1" value="40" data-estimate-area aria-describedby="estimate-note" /></div>
           <div class="estimate-result"><span>Рабочий проект · 500 ₽/м²</span><output for="estimate-area" data-estimate-total aria-live="polite">20 000 ₽</output><small id="estimate-note">От 30 м². Состав и цену закрепляем в договоре.</small></div>
           <button class="button button--gold estimate-continue" type="button" data-estimate-continue data-scroll-lead data-package="Рабочий проект — 500 ₽/м², от 30 м²">Продолжить с этим расчётом</button>
@@ -150,10 +150,10 @@
 
       <section class="selected-projects" id="projects">
         <div class="section-shell">
-          <header class="editorial-heading"><div><span class="section-label">Результат, который можно увидеть</span><h2>Пространства для жизни</h2></div><p>Реальные объекты ВЕРХ и рабочая документация. Не только красивые картинки — решения для ремонта.</p></header>
+          <header class="editorial-heading"><div><span class="section-label">Выполненные объекты</span><h2>Ремонты ВЕРХ</h2></div><p>Фотографии выполненных ремонтов. Пример рабочего проекта с чертежами — ниже.</p></header>
           <div class="selected-grid">
-            <figure><img src="/design/assets/projects/lux/lux_04_msg181.webp" alt="Реализованный интерьер кухни-гостиной ВЕРХ" width="1280" height="1705" loading="lazy" /><figcaption><h3>Гостиная. Тишина в деталях</h3><span>Реализованный объект ВЕРХ</span></figcaption></figure>
-            <figure><img src="/design/assets/projects/kitchen.webp" alt="Кухня с барной стойкой на завершённом объекте ВЕРХ" width="1280" height="1538" loading="lazy" /><figcaption><h3>Кухня. Всё на своём месте</h3><span>Реализованный объект ВЕРХ</span></figcaption></figure>
+            <figure><img src="/design/assets/projects/lux/lux_04_msg181.webp" alt="Реализованный интерьер кухни-гостиной ВЕРХ" width="1280" height="1705" loading="lazy" /><figcaption><h3>Кухня-гостиная</h3><span>Выполненный ремонт ВЕРХ</span></figcaption></figure>
+            <figure><img src="/design/assets/projects/kitchen.webp" alt="Кухня с барной стойкой на завершённом объекте ВЕРХ" width="1280" height="1538" loading="lazy" /><figcaption><h3>Кухня с барной стойкой</h3><span>Выполненный ремонт ВЕРХ</span></figcaption></figure>
           </div>
           <div class="project-caption"><p>Фотографии показывают выполненные ремонты. Пример PDF ниже относится к отдельной квартире 55 м². Ремонт и 3D-визуализация не входят в стоимость 500 ₽/м².</p><a href="#project-album">Открыть рабочий альбом <span aria-hidden="true">↗</span></a></div>
         </div>
@@ -360,8 +360,8 @@
             <label data-brief-field>Город квартиры
               <input name="city" type="text" autocomplete="address-level2" maxlength="80" placeholder="Укажите город квартиры" aria-describedby="lead-form-status" required data-city-input />
             </label>
-            <label data-brief-field>Площадь квартиры, м²
-              <input name="area" type="number" inputmode="decimal" min="30" max="10000" step="0.1" placeholder="Площадь по плану квартиры" aria-describedby="lead-form-status" required data-form-area />
+            <label data-brief-field>Площадь квартиры, м² (примерно)
+              <input name="area" type="number" inputmode="decimal" min="30" max="10000" step="0.1" placeholder="Например, 40" aria-describedby="lead-form-status" required data-form-area />
             </label>
             </fieldset>
             <fieldset data-quiz-step="1">
@@ -375,7 +375,7 @@
               </select>
             </label>
             <label data-brief-field>Когда нужен проект
-              <select name="projectStart" required aria-describedby="lead-form-status"><option value="">Выберите срок начала</option><option value="В течение месяца">В течение месяца</option><option value="Через 1–3 месяца">Через 1–3 месяца</option><option value="Позже трёх месяцев">Позже трёх месяцев</option></select>
+              <select name="projectStart" required aria-describedby="lead-form-status"><option value="">Выберите срок начала</option><option value="В течение месяца">В течение месяца</option><option value="Через 1–3 месяца">Через 1–3 месяца</option><option value="Позже трёх месяцев">Позже трёх месяцев</option><option value="Пока не решил">Пока не решил</option></select>
             </label>
             <label data-brief-field>Что нужно спроектировать (необязательно)
               <textarea name="projectTask" rows="3" maxlength="600" placeholder="Например: нужна планировка и чертежи для ремонта двухкомнатной квартиры." aria-describedby="lead-form-status"></textarea>

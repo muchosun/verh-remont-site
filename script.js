@@ -238,10 +238,6 @@ const tariffs = {
 
 const SECONDARY_PRELIMINARY_SURCHARGE = 100000;
 const leadEndpoint = typeof window.VERH_LEAD_ENDPOINT === "string" ? window.VERH_LEAD_ENDPOINT.trim() : "";
-const callbackPromptDelay = ["127.0.0.1", "localhost"].includes(window.location.hostname)
-  && new URLSearchParams(window.location.search).has("callback-test")
-  ? 800
-  : 24000;
 
 const stepLabels = [
   "Квартира",
@@ -301,7 +297,6 @@ const callbackCloseButton = document.querySelector("[data-callback-close]");
 let lastQuizTrigger = null;
 let timerId = null;
 let quizMediaPreloaded = false;
-let callbackTimerId = null;
 let callbackSuppressed = false;
 
 function initTariffGalleries() {
@@ -905,24 +900,17 @@ function hideCallbackPrompt(remember = false) {
 }
 
 function showCallbackPrompt() {
-  if (!callbackPrompt || callbackSuppressed || hasDismissedCallback()) return;
+  if (!callbackPrompt) return;
   callbackPrompt.classList.add("is-visible");
   callbackPrompt.setAttribute("aria-hidden", "false");
   trackMetricGoal("callback_prompt_shown");
+  callbackPhone?.focus();
 }
 
-function scheduleCallbackPrompt(delay = 24000) {
-  if (!callbackPrompt || callbackSuppressed || hasDismissedCallback()) return;
-  if (callbackTimerId) window.clearTimeout(callbackTimerId);
-  callbackTimerId = window.setTimeout(() => {
-    callbackTimerId = null;
-    if (document.visibilityState !== "visible" || quizModal.classList.contains("is-open")) {
-      scheduleCallbackPrompt(15000);
-      return;
-    }
-    showCallbackPrompt();
-  }, delay);
-}
+document.querySelectorAll("[data-callback-open]").forEach(button => button.addEventListener("click", event => {
+  if (event.isTrusted === false) return;
+  showCallbackPrompt();
+}));
 
 quizOpenButtons.forEach((button) => {
   button.addEventListener("pointerenter", prepareQuizMedia, { once: true });
@@ -1207,7 +1195,6 @@ initYandexReviews();
 setStep(0);
 updateStickyCta();
 preloadQuizMediaWhenIdle();
-scheduleCallbackPrompt(callbackPromptDelay);
 function markLoadFormReady() {
   if (typeof window.VerhLead?.send === "function") {
     try { window.VerhLoad?.mark("form_ready"); } catch {}
