@@ -34,6 +34,7 @@
     return{area:Math.round(area*10)/10,ceiling};
   }
   function phoneDigits(value){let d=String(value).replace(/\D/g,'');if(d.length===10)d='7'+d;if(d.length===11&&d.startsWith('8'))d='7'+d.slice(1);return /^7\d{10}$/.test(d)?d:'';}
+  function hasPhoneInput(value){const digits=String(value).replace(/\D/g,'');return Boolean(digits&&digits!=='7'&&digits!=='8');}
   function nextStepIndex(index,answers){
     const id=steps[index].id;
     if(id==='scope')return steps.findIndex(s=>s.id===(['one','several'].includes(answers.scope)?'partialDecision':'contact'));
@@ -128,7 +129,7 @@
   form.addEventListener('input',event=>{
     if(event.isTrusted===false)return;error.hidden=true;
     if(event.target.name==='phone'){
-      if(event.target.value.replace(/\D/g,'').length>1&&!state.phoneStarted){state.phoneStarted=true;track('repair_phone_input_start',{form:'repair_reference',step:state.step+1});}
+      if(hasPhoneInput(event.target.value)&&!state.phoneStarted){state.phoneStarted=true;track('repair_phone_input_start',{form:'repair_reference',step:state.step+1});}
       if(phoneDigits(event.target.value)&&!state.phoneValid){state.phoneValid=true;track('repair_phone_valid',{form:'repair_reference',step:state.step+1});}
     }
   });
