@@ -628,8 +628,8 @@ function resetLeadResult() {
   leadPanel.classList.remove("is-success");
   leadPanel.classList.remove("is-error");
   leadForm.querySelector('[type="submit"]').textContent = "Получить предварительный расчёт";
-  leadTitle.textContent = "Оставь телефон";
-  leadDescription.textContent = "После отправки покажем ориентир стоимости. Точную смету закрепим после замера.";
+  leadTitle.textContent = "Получить расчёт ремонта";
+  leadDescription.textContent = "После отправки покажем предварительную стоимость. Игорь уточнит задачу и ответит на вопросы.";
   leadForm.hidden = false;
   leadOffer.hidden = false;
   leadLoading.hidden = true;
@@ -752,6 +752,8 @@ function setStep(nextStep) {
 }
 
 function renderSummary() {
+  const contactSelection = document.querySelector("#contact-selection");
+  if (contactSelection) contactSelection.textContent = `${state.apartment} · ${formatArea(state.area)} · ${getTariff().title}`;
   if (!summaryLine || !summaryEstimateLabel || !summaryEstimate) return;
   const tariff = getTariff();
   summaryLine.textContent = `${state.apartment} · ${formatArea(state.area)} · ${tariff.title}`;
@@ -845,6 +847,7 @@ function createLeadPayload() {
     secondarySurcharge: getSecondarySurcharge(),
     preliminaryEstimate: getEstimate(),
     phone: state.leadPhone,
+    consent: leadForm.elements.personal_data_consent.checked,
     emergencyTimeoutFallback: 'repair-main-timeout-v1',
     source: window.VerhLead.source().href,
     submittedAt: new Date().toISOString(),

@@ -39,7 +39,8 @@ const TARIFFS = {
   },
 };
 
-const STEP_NAMES = ["Знакомство", "Телефон", "Работы", "Квартира", "Площадь", "Результат", "Отправка"];
+const STEP_NAMES = ["Знакомство", "", "Работы", "Квартира", "Площадь", "Тариф", "Телефон", "Расчёт"];
+const QUIZ_STEPS = [3, 4, 5, 6];
 const SECONDARY_SURCHARGE = 100000;
 const leadEndpoint = String(window.VERH_LEAD_ENDPOINT || "").trim();
 const isLocalPreview = ["localhost", "127.0.0.1", ""].includes(window.location.hostname);
@@ -52,8 +53,6 @@ const state = {
   areaLabel: "",
   level: "comfort",
   phone: "",
-  phoneConfirmed: false,
-  phoneReturnStep: 2,
   sending: false,
 };
 
@@ -71,8 +70,6 @@ const areaInput = document.querySelector("#area-input");
 const areaError = document.querySelector("#area-error");
 const leadForm = document.querySelector("#lead-form");
 const phoneInput = document.querySelector("#phone-input");
-const quizPhoneForm = document.querySelector("#quiz-phone-form");
-const quizContactSummary = document.querySelector("#quiz-contact-summary");
 const formStatus = document.querySelector("#form-status");
 const selectionSummary = document.querySelector("#selection-summary");
 const closingOfferImage = document.querySelector("#closing-offer-image");
@@ -86,6 +83,12 @@ function trackGoal(name, params = {}) {
   if (isLocalPreview) return;
   if (typeof window.ym !== "function") return;
   window.ym(110859289, "reachGoal", name, params);
+  const shared = {
+    calculator_welcome_start:"quiz_open", calculator_apartment_selected:"quiz_apartment_selected",
+    calculator_area_selected:"quiz_area_selected", calculator_result_selected:"quiz_tariff_selected",
+    calculator_submit_attempt:"quiz_submit_attempt", calculator_lead_failure:"quiz_lead_failure",
+  }[name] || (name === "calculator_step_view" && params.step === 6 ? "main_quiz_contact" : "");
+  if (shared) window.ym(110859289,"reachGoal",shared,{form:"repair_calculator",flow:"calculator_phone_last_v1"});
 }
 
 function money(value) {
@@ -109,13 +112,12 @@ function estimate() {
 }
 
 function setStep(nextStep, { track = true } = {}) {
-  if (nextStep > 1 && !state.phoneConfirmed) nextStep = 1;
-  const maxStep = steps.length - 1;
-  if (state.step === 1 && nextStep !== 1) window.VerhRepairPhoneAnalytics?.close();
+  const maxStep = 7;
+  if (state.step === 6 && nextStep !== 6) window.VerhRepairPhoneAnalytics?.close();
   state.step = Math.max(0, Math.min(maxStep, nextStep));
 
-  steps.forEach((step, index) => {
-    const active = index === state.step;
+  steps.forEach((step) => {
+    const active = Number(step.dataset.step) === state.step;
     step.hidden = !active;
     step.classList.toggle("is-active", active);
   });
@@ -128,15 +130,15 @@ function setStep(nextStep, { track = true } = {}) {
   document.querySelector(".progress").hidden = isIntro || isResult;
   backButton.hidden = isWelcome || isResult;
   if (!isIntro && !isResult) {
-    const progressStep = state.step === 1 ? 1 : state.step - 1;
-    progressLabel.textContent = `${progressStep} / 5`;
-    progressBar.style.width = `${progressStep * 20}%`;
+    const progressStep = QUIZ_STEPS.indexOf(state.step) + 1;
+    progressLabel.textContent = `${progressStep} / 4`;
+    progressBar.style.width = `${progressStep * 25}%`;
   }
 
   if (state.step === 6) {
     renderSummary();
   }
-  if (state.step === 1) {
+  if (state.step === 6) {
     window.VerhRepairPhoneAnalytics?.view();
     phoneInput.focus({preventScroll:true});
   }
@@ -163,7 +165,6 @@ function renderSummary() {
     <span>${areaText(state.area)}</span>
     <span>${tariff.title}</span>
   `;
-  quizContactSummary.textContent = `Телефон для связи: ${state.phone}`;
   closingOfferImage.src = tariff.image;
   closingOfferImage.alt = tariff.alt;
 }
@@ -195,6 +196,7 @@ function leadPayload() {
     secondarySurcharge: secondarySurcharge(),
     preliminaryEstimate: estimate(),
     phone: state.phone,
+    consent: leadForm.elements.personal_data_consent.checked,
     source: window.location.href,
     submittedAt: new Date().toISOString(),
     website: leadForm.elements.website.value,
@@ -239,7 +241,7 @@ function renderEstimate() {
 
 document.querySelectorAll("[data-apartment]").forEach((button) => {
   button.addEventListener("click", event => {
-    if (event.isTrusted === false || state.step !== 3 || !state.phoneConfirmed) return;
+    if (event.isTrusted === false || state.step !== 3) return;
     state.apartment = button.dataset.apartment;
     markSelection("[data-apartment]", state.apartment, "apartment");
     trackGoal("calculator_apartment_selected", { apartment: state.apartment });
@@ -249,7 +251,7 @@ document.querySelectorAll("[data-apartment]").forEach((button) => {
 
 document.querySelectorAll("[data-area]").forEach((button) => {
   button.addEventListener("click", event => {
-    if (event.isTrusted === false || state.step !== 4 || !state.phoneConfirmed) return;
+    if (event.isTrusted === false || state.step !== 4) return;
     state.area = Number(button.dataset.area);
     state.areaLabel = button.dataset.areaLabel;
     areaInput.value = state.area;
@@ -265,10 +267,11 @@ areaInput.addEventListener("input", () => {
 
 areaForm.addEventListener("submit", (event) => {
   event.preventDefault();
-  if (event.isTrusted === false || state.step !== 4 || !state.phoneConfirmed) return;
+  if (event.isTrusted === false || state.step !== 4) return;
   const value = Number(String(areaInput.value).replace(",", "."));
   if (!Number.isFinite(value) || value < 20 || value > 300) {
     areaError.textContent = "Укажи площадь от 20 до 300 м².";
+    trackGoal("main_validation_error",{form:"repair_calculator",field:"area",flow:"calculator_phone_last_v1"});
     areaInput.focus();
     return;
   }
@@ -281,7 +284,7 @@ areaForm.addEventListener("submit", (event) => {
 
 document.querySelectorAll("[data-level]").forEach((button) => {
   button.addEventListener("click", event => {
-    if (event.isTrusted === false || state.step !== 5 || !state.phoneConfirmed) return;
+    if (event.isTrusted === false || state.step !== 5) return;
     if (!Object.prototype.hasOwnProperty.call(TARIFFS, button.dataset.level)) return;
     state.level = button.dataset.level;
     markSelection("[data-level]", state.level, "level");
@@ -292,7 +295,7 @@ document.querySelectorAll("[data-level]").forEach((button) => {
 
 welcomeStartButton.addEventListener("click", () => {
   trackGoal("calculator_welcome_start");
-  setStep(1, { track: false });
+  setStep(3);
 });
 
 startCalculatorButton.addEventListener("click", () => {
@@ -300,37 +303,11 @@ startCalculatorButton.addEventListener("click", () => {
   setStep(3);
 });
 
-backButton.addEventListener("click", () => { if (!state.sending) setStep(state.step - 1); });
-
-quizPhoneForm.addEventListener("submit", event => {
-  event.preventDefault();
-  if (event.isTrusted === false || state.step !== 1) return;
-  phoneInput.setCustomValidity("");
-  const normalizedPhone = normalizePhone(phoneInput.value);
-  if (!normalizedPhone) {
-    phoneInput.setCustomValidity("Укажи номер из 10 цифр после +7.");
-    phoneInput.reportValidity();
-    return;
-  }
-  if (!quizPhoneForm.reportValidity()) return;
-  state.phone = formatPhoneForDisplay(normalizedPhone);
-  state.phoneConfirmed = true;
-  window.VerhRepairPhoneAnalytics?.continued();
-  void window.VerhRepairDraft?.capture(leadEndpoint, {phone:state.phone,source:window.VerhLead.source().href,consent:true,website:leadForm.elements.website.value});
-  trackGoal("calculator_step_view", {step:1,step_name:"Телефон",action:"phone_continue"});
-  setStep(state.phoneReturnStep, {track:false});
-  state.phoneReturnStep = 2;
-});
-
-document.querySelector("#quiz-edit-phone").addEventListener("click", () => {
-  if (!state.sending && state.step === 6) {
-    state.phoneReturnStep = 6;
-    setStep(1);
-  }
+backButton.addEventListener("click", () => {
+  if (!state.sending) setStep(({3:0,4:3,5:4,6:5})[state.step] ?? 0);
 });
 
 phoneInput.addEventListener("input", () => {
-  state.phoneConfirmed = false;
   formStatus.textContent = "";
   phoneInput.setCustomValidity("");
 });
@@ -341,13 +318,12 @@ phoneInput.addEventListener("blur", () => {
 
 leadForm.addEventListener("submit", async (event) => {
   event.preventDefault();
-  if (event.isTrusted === false || state.step !== 6 || state.sending || !state.phoneConfirmed || !state.apartment || !state.area) return;
+  if (event.isTrusted === false || state.step !== 6 || state.sending || !state.apartment || !state.area) return;
   formStatus.textContent = "";
   const normalizedPhone = normalizePhone(phoneInput.value);
-  if (!normalizedPhone || !quizPhoneForm.checkValidity()) {
-    state.phoneConfirmed = false;
-    setStep(1);
-    quizPhoneForm.reportValidity();
+  if (!normalizedPhone) {
+    phoneInput.setCustomValidity("Укажи номер из 10 цифр после +7.");
+    phoneInput.reportValidity();
     return;
   }
   phoneInput.setCustomValidity("");
@@ -366,8 +342,8 @@ leadForm.addEventListener("submit", async (event) => {
   });
 
   try {
-    const draftReceipt = await window.VerhRepairDraft?.receipt();
-    const delivery = await sendLead({...leadPayload(),draftReceipt});
+    const delivery = await sendLead(leadPayload());
+    window.VerhRepairPhoneAnalytics?.submitted();
     if (delivery.status !== "unverified" && !delivery.duplicate) trackGoal("calculator_lead_success", {
       apartment: state.apartment,
       area: state.area,
@@ -383,7 +359,7 @@ leadForm.addEventListener("submit", async (event) => {
     });
     formStatus.textContent = "Не получилось отправить номер. Проверь интернет и попробуй еще раз.";
     submitButton.disabled = false;
-    submitButton.querySelector("span:first-child").textContent = "Получить расчет и подарки";
+    submitButton.querySelector("span:first-child").textContent = "Повторить отправку";
   } finally {
     state.sending = false;
     backButton.disabled = false;

@@ -30,9 +30,9 @@
   }
   function parseDimensions(areaValue,ceilingValue){
     const areaText=String(areaValue??'').trim(),ceilingText=String(ceilingValue??'').trim();
-    if(!/^\d+(?:[.,]\d+)?$/.test(areaText)||!/^\d+$/.test(ceilingText))return null;
-    const area=Number(areaText.replace(',','.')),ceiling=Number(ceilingText);
-    if(!Number.isFinite(area)||area<20||area>1000||!Number.isInteger(ceiling)||ceiling<200||ceiling>500)return null;
+    if(!/^\d+(?:[.,]\d+)?$/.test(areaText)||ceilingText.length>120)return null;
+    const area=Number(areaText.replace(',','.')),ceiling=ceilingText;
+    if(!Number.isFinite(area)||area<20||area>1000)return null;
     return{area:Math.round(area*10)/10,ceiling};
   }
   function phoneDigits(value){let d=String(value).replace(/\D/g,'');if(d.length===10)d='7'+d;if(d.length===11&&d.startsWith('8'))d='7'+d.slice(1);return /^7\d{10}$/.test(d)?d:'';}
@@ -56,9 +56,9 @@
     const step=steps[state.step],percentage=[0,18,27,36,45,54,63,81,90][state.step];
     progress.style.width=percentage+'%';progressLabel.textContent=percentage+'%';
     back.disabled=state.history.length===0||state.sending;next.disabled=state.sending;
-    next.querySelector('span').textContent='Далее';
+    next.querySelector('span').textContent=step.id==='contact'?'Получить расчёт':'Далее';
     panel.innerHTML=`<h2 id="question-title" tabindex="-1">${esc(step.title)}</h2>`;
-    if(step.id==='dimensions')panel.insertAdjacentHTML('beforeend',`<div class="contact-fields"><label class="text-field">Площадь, м²<input name="area" inputmode="decimal" autocomplete="off" maxlength="12" placeholder="Например, 65" value="${esc(state.answers.area)}" required aria-describedby="area-note" /><span class="field-note" id="area-note">От 20 до 1 000 м².</span></label><label class="text-field">Высота потолков, см<input name="ceiling" inputmode="numeric" autocomplete="off" maxlength="3" placeholder="Например, 270" value="${esc(state.answers.ceiling)}" required aria-describedby="ceiling-note" /><span class="field-note" id="ceiling-note">От 200 до 500 см.</span></label></div>`);
+    if(step.id==='dimensions')panel.insertAdjacentHTML('beforeend',`<div class="contact-fields"><label class="text-field">Площадь, м²<input name="area" inputmode="decimal" autocomplete="off" maxlength="12" placeholder="Например, 65" value="${esc(state.answers.area)}" required aria-describedby="area-note" /><span class="field-note" id="area-note">От 20 до 1 000 м².</span></label><label class="text-field">Высота потолков, если знаете<input name="ceiling" autocomplete="off" maxlength="120" placeholder="Например, 2,7 м или не знаю" value="${esc(state.answers.ceiling)}" aria-describedby="ceiling-note" /><span class="field-note" id="ceiling-note">Можно написать в любом удобном формате или пропустить.</span></label></div>`);
     else if(step.id==='contact'){
       panel.insertAdjacentHTML('beforeend',`<div class="contact-fields"><label class="text-field">Имя<input name="name" autocomplete="given-name" maxlength="60" value="${esc(state.name)}" /></label><label class="text-field"><span class="contact-prompt">${esc(step.phonePrompt)} <span aria-hidden="true">*</span></span><input name="phone" type="tel" inputmode="tel" autocomplete="tel" aria-label="Телефон для расчёта" placeholder="+7 (___) ___-__-__" maxlength="24" value="${esc(state.phone)}" required /></label><label class="answer consent"><input type="checkbox" name="personal_data_consent" ${state.consent?'checked':''} required /><span>Я согласен(-на) на <a href="../consent.html" target="_blank" rel="noopener">обработку персональных данных</a></span></label></div><label class="hp" aria-hidden="true">Сайт<input name="website" tabindex="-1" autocomplete="off" /></label>`);
       if(!phoneView){phoneView=true;track('main_quiz_contact',{step:state.step+1});track('repair_phone_view',{form:'repair_reference',step:state.step+1});}
@@ -85,7 +85,7 @@
     const step=steps[state.step],answer=state.answers[step.id];
     if(step.id==='city'&&answer==='other'){rejected();return;}
     if(step.options&&(!answer||Array.isArray(answer)&&!answer.length)){fail('Выберите хотя бы один вариант.');return;}
-    if(step.id==='dimensions'&&!parseDimensions(state.answers.area,state.answers.ceiling)){const area=Number(state.answers.area.trim().replace(',','.'));const areaInvalid=!/^\d+(?:[.,]\d+)?$/.test(state.answers.area.trim())||area<20||area>1000;fail(areaInvalid?'Укажите площадь числом от 20 до 1 000.':'Укажите высоту потолков числом от 200 до 500 в сантиметрах.',form.elements[areaInvalid?'area':'ceiling']);return;}
+    if(step.id==='dimensions'&&!parseDimensions(state.answers.area,state.answers.ceiling)){fail('Укажите площадь числом от 20 до 1 000.',form.elements.area);return;}
     if(step.id==='contact'){await submit();return;}
     const goal={property:'quiz_apartment_selected',dimensions:'quiz_area_selected',repair:'quiz_tariff_selected'}[step.id];
     if(goal)track(goal,{step:state.step+1});

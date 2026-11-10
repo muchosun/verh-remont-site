@@ -105,7 +105,7 @@
                 <div class="welcome-actions">
                   <button class="welcome-action welcome-action--primary" id="welcome-start" type="button">
                     <strong>Узнать стоимость ремонта</strong>
-                    <span>Телефон и 3 вопроса о квартире</span>
+                    <span>3 вопроса о квартире, затем телефон для расчёта</span>
                   </button>
                   <a class="welcome-action" href="tel:+79182383059" data-welcome-call>
                     <strong>Позвонить Игорю</strong>
@@ -132,22 +132,6 @@
                 <figcaption><strong>Игорь Пономаренко</strong><span>руководитель ВЕРХ</span></figcaption>
               </figure>
             </div>
-          </section>
-
-          <section class="step" data-step="1" aria-labelledby="phone-title" hidden>
-            <div class="step__head step__head--phone">
-              <h2 id="phone-title">Начнём с телефона</h2>
-              <p>Затем ответь на три вопроса о квартире и получи предварительную стоимость ремонта.</p>
-            </div>
-            <form class="lead-form" id="quiz-phone-form">
-              <label for="phone-input">Телефон</label>
-              <input id="phone-input" name="phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="+7 (___) ___-__-__" required />
-              <label class="consent">
-                <input type="checkbox" name="personal_data_consent" checked required />
-                <span>Даю <a href="../consent.html" target="_blank" rel="noopener">согласие на обработку данных</a>. <a href="../privacy.html" target="_blank" rel="noopener">Политика</a>.</span>
-              </label>
-              <button class="submit-button" type="submit"><span>Продолжить расчёт</span><span class="submit-button__arrow" aria-hidden="true">→</span></button>
-            </form>
           </section>
 
           <section class="step step--intro" data-step="2" aria-labelledby="flow-title" hidden>
@@ -250,8 +234,8 @@
 
           <section class="step" data-step="6" aria-labelledby="send-title" hidden>
             <div class="step__head step__head--phone">
-              <h2 id="send-title">Всё готово для расчёта</h2>
-              <p>Отправь заявку и получи предварительную стоимость ремонта.</p>
+              <h2 id="send-title">Получить расчёт ремонта</h2>
+              <p>После отправки покажем бюджет, разбивку работ и материалов и график платежей. Точную смету закрепим после замера.</p>
             </div>
 
             <div class="closing-offer">
@@ -279,12 +263,16 @@
 
             <div class="selection-summary" id="selection-summary"></div>
 
-            <form class="lead-form" id="lead-form">
-              <p id="quiz-contact-summary"></p>
-              <button class="back-button" id="quiz-edit-phone" type="button">Изменить телефон</button>
+            <form class="lead-form" id="lead-form" data-phone-flow="phone_last">
+              <label for="phone-input">Телефон для расчёта</label>
+              <input id="phone-input" name="phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="+7 (___) ___-__-__" required />
+              <label class="consent">
+                <input type="checkbox" name="personal_data_consent" required />
+                <span>Даю <a href="../consent.html" target="_blank" rel="noopener">согласие на обработку данных</a>. <a href="../privacy.html" target="_blank" rel="noopener">Политика</a>.</span>
+              </label>
               <input class="honeypot" type="text" name="website" tabindex="-1" autocomplete="off" aria-hidden="true" />
               <button class="submit-button" type="submit">
-                <span>Получить расчет и подарки</span>
+                <span>Получить расчёт</span>
                 <span class="submit-button__arrow" aria-hidden="true">→</span>
               </button>
               <p class="form-status" id="form-status" role="status" aria-live="polite"></p>
@@ -323,8 +311,7 @@
     <script src="/assets/js/smartcaptcha.js?v=20261031-smartcaptcha-qualified"></script>
     <script src="../assets/js/lead-support.js?v=20261109-manager-attribution"></script>
     <script src="../assets/js/repair-phone-analytics.js?v=20261102-1"></script>
-    <script src="../assets/js/repair-draft.js?v=20261102-events"></script>
-    <script src="script.js?v=20261102-phone-events"></script>
+    <script src="script.js?v=20261110-phone-last"></script>
     <script type="module" src="gallery.js?v=20260901-2"></script>
   </body>
 </html>

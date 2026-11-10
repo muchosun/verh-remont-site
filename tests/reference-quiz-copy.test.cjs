@@ -24,7 +24,7 @@ test('partial repair requires explicit upgrade or ends without reaching the cont
  assert.match(js,/state\.history\.push\(state\.step\)/);assert.match(js,/state\.step=state\.history\.pop\(\)/);
 });
 test('source CTA and phone motivation preserve honest receipt and CAPTCHA delegation',()=>{
- assert.match(js,/next\.querySelector\('span'\)\.textContent='Далее'/);
+ assert.match(js,/step.id==='contact'\?'Получить расчёт':'Далее'/);
  assert.match(js,/contact-prompt/);assert.match(js,/scope:qualifiedScope\(state\.answers\)/);
  assert.match(js,/window\.VerhLead\.send/);assert.doesNotMatch(js,/track\(['"]quiz_lead_success/);
  assert.match(js,/Не получили подтверждение доставки/);assert.match(js,/phoneStarted/);
