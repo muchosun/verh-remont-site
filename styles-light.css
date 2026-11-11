@@ -1360,6 +1360,12 @@ body.show-sticky-cta:not(.modal-open) .mobile-sticky-cta {
   padding: 14px 16px;
 }
 
+@media (max-width: 680px) {
+  .quiz-modal:has(.slide[data-step="3"].is-active) .quiz-sheet {
+    height: calc(100dvh - 14px);
+  }
+}
+
 .lead-offer__head {
   display: flex;
   align-items: center;

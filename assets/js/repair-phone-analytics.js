@@ -67,12 +67,16 @@
     once("repair_phone_valid");
     visible = false;
   }
-  input.addEventListener("input", event => {
+  function observeInput(event) {
     if (event.isTrusted === false || !visible || input.closest("[inert]")) return;
     const state = phoneState();
     if (state !== "empty") once("repair_phone_input_start");
     if (state === "valid") once("repair_phone_valid");
-  });
+  }
+  input.addEventListener("input", observeInput, true);
+  input.addEventListener("paste", event => {
+    if (event.isTrusted !== false) queueMicrotask(() => observeInput(event));
+  }, true);
   form.addEventListener("invalid", event => {
     if (event.isTrusted === false || !visible) return;
     emit("repair_phone_error", {field:event.target.name === "personal_data_consent" ? "consent" : "phone"});

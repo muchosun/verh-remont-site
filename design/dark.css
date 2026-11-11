@@ -113,6 +113,15 @@ body, .selected-projects, .specialty-page .section-light { background: var(--can
 .service-form__submit:disabled { opacity: .55; cursor: not-allowed; }
 .service-form .consent-row { align-items: start; gap: 10px; }
 .service-form .consent-row input { flex: 0 0 20px; width: 20px; height: 20px; margin-top: 3px; }
+.brief-area-presets { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:8px; }
+.brief-area-presets button { min-width:0; min-height:48px; padding:8px 4px; border:1px solid #7a827d; border-radius:4px; background:#222527; color:var(--text); font:inherit; font-size:16px; cursor:pointer; }
+.brief-area-presets button[aria-pressed=true] { border-color:#f0d8a7; background:#3c352a; }
+.brief-area-presets button:disabled { opacity:.4; cursor:not-allowed; }
+.brief-area-presets button:focus-visible { outline:3px solid #f0d8a7; outline-offset:2px; }
+.brief-package { min-width:0; }
+.brief-package summary { min-height:44px; padding-block:10px; cursor:pointer; }
+.brief-package label { margin-top:12px; }
+@media(max-width:360px) { .brief-area-presets { grid-template-columns:repeat(2,minmax(0,1fr)); } }
 .service-form .consent-row span { min-width: 0; overflow-wrap: anywhere; }
 .service-form .form-status[data-state=error] { color: #ffb5ab; }
 .service-form .form-status[data-state=success] { color: #a3d9b1; }

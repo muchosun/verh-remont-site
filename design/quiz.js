@@ -28,7 +28,7 @@
       // Analytics must not turn an already delivered lead into a retryable failure.
     }
   };
-  const collect = () => Object.fromEntries(["customerName", "phone", "callbackTime", "city", "area", "package", "projectStart", "projectTask"].map(name => [name,form.elements[name]?.value || ""]).concat([["mode",mode.value],["consent",form.elements.consent.checked]]));
+  const collect = () => Object.fromEntries(["customerName", "phone", "callbackTime", "city", "area", "package", "projectPurpose", "projectStart", "projectTask"].map(name => [name,form.elements[name]?.value || ""]).concat([["mode",mode.value],["consent",form.elements.consent.checked]]));
   const message = (text, state = "") => { status.textContent = text; status.dataset.state = state; };
   const unverifiedMode = window.VerhLead?.unverifiedMode === true;
   const smartMode = window.VerhSmartCaptcha?.mode === "smartcaptcha-v1";
@@ -98,7 +98,7 @@
     modeButton.textContent = callback ? "Перейти к полной анкете" : "Нужна только консультация";
     submit.textContent = callback ? "Получить консультацию" : "Отправить заявку на проект";
     const data = collect();
-    form.querySelector("[data-quiz-summary]").textContent = mode.value === "callback" ? "Позвоним и поможем выбрать проект." : `${data.city} · ${data.area} м² · ${data.package.split(" — ")[0]} · ${data.projectStart}`;
+    form.querySelector("[data-quiz-summary]").textContent = mode.value === "callback" ? "Позвоним и поможем выбрать проект." : [data.city,`${data.area} м²`,data.package.split(" — ")[0],data.projectPurpose].filter(Boolean).join(" · ");
     if (focus) {
       form.scrollIntoView({behavior:"instant",block:"start"});
       steps[step].querySelector("legend").focus({preventScroll:true});

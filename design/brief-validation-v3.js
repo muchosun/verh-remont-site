@@ -6,6 +6,7 @@
   "use strict";
   const packages = ["Рабочий проект — 500 ₽/м², от 30 м²", "Полный — 3 490 ₽/м², для квартир от 50 м²", "Рабочий проект в подарок + ремонт, любой тариф", "Рабочий проект — 500 ₽/м², от 30 м², договор до 31 октября 2026"];
   const starts = ["В течение месяца", "Через 1–3 месяца", "Позже трёх месяцев", "Пока не решил"];
+  const purposes = ["Для собственного проживания", "Для сдачи в аренду или продажи", "Коммерческая недвижимость"];
   const times = ["10:00–13:00", "13:00–16:00", "16:00–19:00", "19:00–21:00"];
   const text = value => typeof value === "string" ? value.trim() : "";
   function phone(value) {
@@ -28,7 +29,9 @@
       values.package = text(data.package);
       if (!packages.includes(values.package)) return fail("package", "Выберите пакет проекта.");
       values.projectStart = text(data.projectStart);
-      if (!starts.includes(values.projectStart)) return fail("projectStart", "Выберите срок начала проекта.");
+      if (values.projectStart && !starts.includes(values.projectStart)) return fail("projectStart", "Выберите срок начала проекта из списка.");
+      values.projectPurpose = text(data.projectPurpose);
+      if (values.projectPurpose && !purposes.includes(values.projectPurpose)) return fail("projectPurpose", "Выберите назначение объекта из списка.");
       values.projectTask = text(data.projectTask);
       if (values.projectTask.length > 600) return fail("projectTask", "Описание задачи должно быть не длиннее 600 символов.");
       if (step === 1) return {ok:true,values};

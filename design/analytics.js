@@ -50,9 +50,9 @@
     }
     if (started) return;
     track("quiz_start");
-  });
+  }, true);
   form?.addEventListener("change", event => {
-    if (["package", "projectStart", "consent"].includes(event.target.name)) interaction(form, "field_change", event.target.name === "projectStart" ? "project_start" : event.target.name);
+    if (["package", "projectPurpose", "projectStart", "consent"].includes(event.target.name)) interaction(form, "field_change", event.target.name === "projectStart" ? "project_start" : event.target.name === "projectPurpose" ? "project_purpose" : event.target.name);
   });
   if (typeof IntersectionObserver === "function") {
     const seen = new Set();

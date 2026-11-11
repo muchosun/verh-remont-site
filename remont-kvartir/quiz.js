@@ -17,7 +17,7 @@
     {id:'partialDecision',title:'Рассматриваете ремонт под ключ?',options:[['partial','Мне нужен именно частичный ремонт'],['full','Мне нужен ремонт под ключ']]},
     {id:'contact',title:'Куда отправить расчёт?',phonePrompt:'За этим номером мы закрепим расчет сметы в трех вариантах с выгодой до 250 000 рублей и подарки'},
   ];
-  const state={step:0,history:[],answers:{city:'krasnodar',property:'new',rooms:'',area:'',ceiling:'',repair:'',scope:'full',partialDecision:'',channels:['phone']},sending:false,submitted:false,phone:'',name:'',consent:false,phoneStarted:false,phoneValid:false};
+  const state={step:0,history:[],answers:{city:'krasnodar',property:'new',rooms:'',area:'',ceiling:'',repair:'',scope:'full',partialDecision:'',channels:['phone']},sending:false,submitted:false,phone:'',name:'',consent:true,phoneStarted:false,phoneValid:false};
   let trigger,autoTimer,phoneView=false;
   const esc=value=>String(value).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   function track(event,params={}){
@@ -132,7 +132,15 @@
       if(hasPhoneInput(event.target.value)&&!state.phoneStarted){state.phoneStarted=true;track('repair_phone_input_start',{form:'repair_reference',step:state.step+1});}
       if(phoneDigits(event.target.value)&&!state.phoneValid){state.phoneValid=true;track('repair_phone_valid',{form:'repair_reference',step:state.step+1});}
     }
-  });
+  },true);
+  form.addEventListener('paste',event=>{
+    if(event.isTrusted===false||event.target.name!=='phone')return;
+    const field=event.target;
+    queueMicrotask(()=>{
+      if(hasPhoneInput(field.value)&&!state.phoneStarted){state.phoneStarted=true;track('repair_phone_input_start',{form:'repair_reference',step:state.step+1});}
+      if(phoneDigits(field.value)&&!state.phoneValid){state.phoneValid=true;track('repair_phone_valid',{form:'repair_reference',step:state.step+1});}
+    });
+  },true);
   back.addEventListener('click',event=>{if(event.isTrusted===false||state.sending||!state.history.length)return;remember();state.step=state.history.pop();render();});
   result.addEventListener('click',event=>{
     if(event.isTrusted===false)return;

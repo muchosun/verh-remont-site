@@ -182,13 +182,13 @@
 
         lightStylesheet.id = "site-theme-stylesheet";
         lightStylesheet.rel = "stylesheet";
-        lightStylesheet.href = "styles-light.css?v=20260911-hero-ab";
+        lightStylesheet.href = "styles-light.css?v=20261111-form-review";
         lightStylesheet.media = theme === "light" ? "all" : "not all";
         document.head.appendChild(lightStylesheet);
 
         darkStylesheet.id = "site-theme-dark-stylesheet";
         darkStylesheet.rel = "stylesheet";
-        darkStylesheet.href = "styles.css?v=20261110-summary";
+        darkStylesheet.href = "styles.css?v=20261111-form-review";
         darkStylesheet.media = theme === "dark" ? "all" : "not all";
         document.head.appendChild(darkStylesheet);
 
@@ -196,7 +196,7 @@
         window.VERH_HERO_VARIANT = heroVariant;
       })();
     </script>
-    <noscript><link rel="stylesheet" href="styles.css?v=20261110-summary" /></noscript>
+    <noscript><link rel="stylesheet" href="styles.css?v=20261111-form-review" /></noscript>
     <link rel="stylesheet" href="theme-switch.css?v=20260728-brand-zone" />
     <link rel="stylesheet" href="marketing-legal.css?v=20260819-igor-trust-banner" />
     <link rel="stylesheet" href="service-links.css?v=20260803" />
@@ -319,6 +319,8 @@
     </script>
     <!-- /Yandex.Metrika counter -->
     <script src="/assets/js/smartcaptcha.js?v=20261031-smartcaptcha-qualified" defer></script>
+    <script src="/assets/vendor/inputmask-5.0.9.min.js" defer></script>
+    <script src="/assets/js/phone-input.js?v=20261111-form-review" defer></script>
     <script src="/assets/js/lead-support.js?v=20261109-manager-attribution" defer></script>
     <link rel="stylesheet" href="conversion.css?v=20260914" />
     <link rel="stylesheet" href="assets/vendor/photoswipe/photoswipe.css?v=5.4.4" />
@@ -904,18 +906,21 @@
             <article class="slide" data-step="3">
               <div class="lead-panel">
                 <div class="slide-head">
-                  <h2 id="lead-title">Получить расчёт ремонта</h2>
-                  <p id="lead-description">После отправки покажем предварительную стоимость. Игорь уточнит задачу и ответит на вопросы.</p>
+                  <h2 id="lead-title">Зафиксируйте стоимость вашего ремонта</h2>
+                  <p id="lead-description">Получите предварительный расчёт. После бесплатного замера закрепим точную смету и состав работ в договоре.</p>
                 </div>
                 <p class="contact-selection" id="contact-selection" aria-live="polite"></p>
                 <div class="lead-offer" aria-labelledby="lead-offer-title">
                   <div class="lead-offer__head">
-                    <strong class="lead-offer__title" id="lead-offer-title">Условия ремонта</strong>
+                    <strong class="lead-offer__title" id="lead-offer-title">Что вы получаете</strong>
                   </div>
                   <ul class="lead-benefits">
-                    <li>Предварительный бюджет с учётом ваших ответов</li>
-                    <li>Бесплатный замер для точной сметы</li>
-                    <li data-design-gift>Рабочий проект в подарок: «Комфорт» и «Люкс»</li>
+                    <li>Предварительный бюджет с учётом ваших ответов и фиксацию сметы в договоре</li>
+                    <li>Бесплатный замер и консультацию по ремонту</li>
+                    <li>Рекомендации по планировке и меблировке</li>
+                    <li>Доступ к складскому ассортименту и прямым закупкам у поставщиков</li>
+                    <li data-design-gift>Рабочий дизайн-проект в подарок — на «Комфорте» и «Люксе»</li>
+                    <li>Кондиционер в подарок — на «Комфорте» от 50 м²</li>
                   </ul>
                 </div>
                 <form class="lead-form" id="lead-form" data-phone-flow="phone_last">
@@ -925,7 +930,7 @@
                     <input type="checkbox" name="personal_data_consent" checked required />
                     <span>Даю <a href="consent.html" target="_blank" rel="noopener">согласие на обработку данных</a>. <a href="privacy.html" target="_blank" rel="noopener">Политика</a>.</span>
                   </label>
-                  <button type="submit">Получить предварительный расчёт</button>
+                  <button type="submit">Получить расчёт и условия подарков</button>
                   <p class="lead-terms">Условия подарков зависят от стоимости договора, площади и объёма работ. Точные условия фиксируем в договоре.</p>
                 </form>
                 <div class="lead-loading" id="lead-loading" hidden>
@@ -950,7 +955,7 @@
     </script>
     <script src="assets/js/project-gallery-data.js?v=20260901-1"></script>
     <script src="assets/js/repair-phone-analytics.js?v=20261104-phone-last"></script>
-    <script src="script.js?v=20261111-simple-quizzes"></script>
+    <script src="script.js?v=20261111-form-review"></script>
     <script type="module" src="assets/js/project-gallery.js?v=20261029-1"></script>
   </body>
 </html>

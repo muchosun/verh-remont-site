@@ -6,7 +6,7 @@ function fixture({preview=false,pathname='/',late=false,phoneLast=false}={}) {
   const form={dataset:{phoneFlow:phoneLast?'phone_last':undefined},querySelector:()=>input,addEventListener:(name,fn)=>formEvents[name]=fn};
   const collect=(id,method,name,params)=>goals.push({id,method,name,params});
   const window={VERH_PREVIEW:preview,ym:late?undefined:collect,addEventListener:(name,fn)=>windowEvents[name]=fn};
-  vm.runInNewContext(source,{window,document:{querySelector:()=>form},location:{protocol:'https:',hostname:'verhremont.ru',pathname},setTimeout:fn=>{timers.push(fn);return timers.length;}});
+  vm.runInNewContext(source,{window,document:{querySelector:()=>form},location:{protocol:'https:',hostname:'verhremont.ru',pathname},queueMicrotask,setTimeout:fn=>{timers.push(fn);return timers.length;}});
   return {api:window.VerhRepairPhoneAnalytics,window,collect,goals,input,timers,inputEvents,formEvents,windowEvents};
 }
 test('view and prefix do not pretend that the client started entering a phone',()=>{
@@ -59,4 +59,11 @@ test('phone-last completion does not claim continuation to questions or an early
   const f=fixture({phoneLast:true});f.api.view();f.input.value='+79012345678';f.inputEvents.input({isTrusted:true});f.api.submitted();f.api.close();
   assert.deepEqual(f.goals.map(g=>g.name),['repair_phone_view','repair_phone_input_start','repair_phone_valid']);
   assert.equal(f.goals.every(g=>g.params.flow==='repair_phone_last_v1'),true);
+});
+test('trusted paste is measured after the mask formats it, and never repeats start or valid',async()=>{
+  const f=fixture({phoneLast:true});f.api.view();f.input.value='';
+  f.inputEvents.paste({isTrusted:true});f.input.value='+7 (901) 234-56-78';await Promise.resolve();
+  f.inputEvents.input({isTrusted:true});
+  assert.deepEqual(f.goals.map(g=>g.name),['repair_phone_view','repair_phone_input_start','repair_phone_valid']);
+  assert.doesNotMatch(JSON.stringify(f.goals),/901|234-56/);
 });

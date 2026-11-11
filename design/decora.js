@@ -11,6 +11,7 @@
   const summaryTotal = document.querySelector('[data-form-estimate-total]');
   const proceed = document.querySelector('[data-estimate-continue]');
   const mode = document.querySelector('[name="leadMode"]');
+  const choices = [...document.querySelectorAll('[data-form-area-choice]')];
   const money = new Intl.NumberFormat('ru-RU', { maximumFractionDigits: 0 });
   const square = new Intl.NumberFormat('ru-RU', { maximumFractionDigits: 1 });
   if (!estimate || !area || !total || !packages) return;
@@ -26,6 +27,10 @@
       : gift ? 'Рабочий проект в подарок при договоре на ремонт в Краснодаре'
         : undecided ? 'Поможем выбрать пакет' : 'Рабочий проект · 500 ₽/м²';
     const value = Number(area.value);
+    choices.forEach(button => {
+      button.disabled = Number(button.dataset.formAreaChoice) < minimum;
+      button.setAttribute('aria-pressed', String(area.value !== '' && Number(button.dataset.formAreaChoice) === value));
+    });
     summaryTotal.textContent = undecided ? 'Уточним состав и стоимость'
       : validArea(value, minimum)
         ? `${square.format(value)} м² · ${money.format(value * (gift ? 0 : full ? 3490 : 500))} ₽`
@@ -47,6 +52,10 @@
   };
   estimate.addEventListener('input', () => sync(estimate));
   area.addEventListener('input', () => sync(area));
+  choices.forEach(button => button.addEventListener('click', () => {
+    area.value = button.dataset.formAreaChoice;
+    area.dispatchEvent(new Event('input',{bubbles:true}));
+  }));
   const updateMinimum = () => {
     const full = packages.value.startsWith('Полный');
     const gift = packages.value.startsWith('Рабочий проект в подарок');

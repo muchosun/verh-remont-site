@@ -622,9 +622,9 @@ function resetLeadResult() {
   resetTimer();
   leadPanel.classList.remove("is-success");
   leadPanel.classList.remove("is-error");
-  leadForm.querySelector('[type="submit"]').textContent = "Получить предварительный расчёт";
-  leadTitle.textContent = "Получить расчёт ремонта";
-  leadDescription.textContent = "После отправки покажем предварительную стоимость. Игорь уточнит задачу и ответит на вопросы.";
+  leadForm.querySelector('[type="submit"]').textContent = "Получить расчёт и условия подарков";
+  leadTitle.textContent = "Зафиксируйте стоимость вашего ремонта";
+  leadDescription.textContent = "Получите предварительный расчёт. После бесплатного замера закрепим точную смету и состав работ в договоре.";
   leadForm.hidden = false;
   leadOffer.hidden = false;
   leadLoading.hidden = true;
@@ -779,7 +779,7 @@ function render() {
   renderSelections();
   renderSummary();
   const designGift = document.querySelector('[data-design-gift]');
-  if (designGift) designGift.hidden = !["comfort", "lux"].includes(state.level);
+  if (designGift) designGift.hidden = false;
 }
 
 function normalizeArea(value) {
@@ -1037,11 +1037,11 @@ progressButtons.forEach((button) => {
 });
 
 phoneInput.addEventListener("focus", () => {
-  if (!phoneInput.value) phoneInput.value = "+7 ";
+  if (!phoneInput.inputmask && !phoneInput.value) phoneInput.value = "+7 ";
 });
 
 phoneInput.addEventListener("input", () => {
-  phoneInput.value = formatPhone(phoneInput.value);
+  if (!phoneInput.inputmask) phoneInput.value = formatPhone(phoneInput.value);
   phoneInput.setCustomValidity("");
 });
 
@@ -1051,11 +1051,11 @@ callbackCloseButton?.addEventListener("click", () => {
 });
 
 callbackPhone?.addEventListener("focus", () => {
-  if (!callbackPhone.value) callbackPhone.value = "+7 ";
+  if (!callbackPhone.inputmask && !callbackPhone.value) callbackPhone.value = "+7 ";
 });
 
 callbackPhone?.addEventListener("input", () => {
-  callbackPhone.value = formatPhone(callbackPhone.value);
+  if (!callbackPhone.inputmask) callbackPhone.value = formatPhone(callbackPhone.value);
   callbackPhone.setCustomValidity("");
 });
 

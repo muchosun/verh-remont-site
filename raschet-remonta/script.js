@@ -313,7 +313,7 @@ phoneInput.addEventListener("input", () => {
 });
 
 phoneInput.addEventListener("blur", () => {
-  if (normalizePhone(phoneInput.value)) phoneInput.value = formatPhoneForDisplay(phoneInput.value);
+  if (!phoneInput.inputmask && normalizePhone(phoneInput.value)) phoneInput.value = formatPhoneForDisplay(phoneInput.value);
 });
 
 leadForm.addEventListener("submit", async (event) => {

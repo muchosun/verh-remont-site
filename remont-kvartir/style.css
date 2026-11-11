@@ -9,4 +9,6 @@ dialog{border:0;padding:0;margin:0;inset:0;width:100%;max-width:none;height:100d
 #result-title{font-size:30px;line-height:1.35;font-weight:700;letter-spacing:0;max-width:770px;margin:0 0 32px;outline:0}
 @media(max-width:600px){#result-title{font-size:25px}}
 .contact-prompt{font-size:14px;line-height:1.55}
+@media(min-width:901px){.hero-image{width:44%;opacity:1}.hero:before{right:44%;background:#fff}.hero-content>*{max-width:50%}.hero-content h1{font-size:34px}.hero-content .hero-offer{font-size:25px}.hero-content .hero-support{font-size:17px}.hero-content .hero-action{width:50%}}
+.image-answer{min-width:0}.image-answer span{position:static;overflow-wrap:break-word;line-height:1.5}
 .contact-prompt{margin:0}.text-field select{font:inherit;letter-spacing:0;width:100%;min-height:50px;border:1px solid #bfc4bd;border-radius:4px;background:#fff;padding:10px 13px;color:var(--ink)}.optional-fields{display:grid;gap:16px;padding-top:16px}.contact-fields summary{cursor:pointer;text-underline-offset:3px}.area-presets{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}.area-presets button{min-height:48px;border:1px solid #bfc4bd;background:#fff;color:var(--ink);border-radius:4px}.area-presets button:hover{border-color:var(--green)}.contact-fields details>.text-field{margin-top:12px}

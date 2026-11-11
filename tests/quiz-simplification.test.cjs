@@ -14,10 +14,10 @@ test('reference standard route contains six steps, preserving conditional reject
  assert.match(js,/state\.answers\.channels=\[form\.elements\.channel\.value\]/);
  assert.match(js,/data-area-choice/);assert.doesNotMatch(js,/track\(['"](?:repair|design)_interest_manager_confirmed/);
 });
-test('uncertain design timing is valid without inventing area, package or consent',()=>{
+test('design no longer requires a start date, without inventing area, package or consent',()=>{
  const {validate}=require('../design/brief-validation-v3');
  const b={mode:'brief',city:'Краснодар',area:40,package:'Рабочий проект — 500 ₽/м², от 30 м²',projectStart:'Пока не решил',projectTask:''};
  assert.equal(validate(b,1).ok,true);
- assert.equal(validate({...b,area:''},1).field,'area');assert.equal(validate({...b,projectStart:''},1).field,'projectStart');
- assert.match(read('design/index.html'),/value="Пока не решил"/);assert.doesNotMatch(read('design/index.html'),/Тишина в деталях|У каждой квартиры|Зафиксировать цену/);
+  assert.equal(validate({...b,area:''},1).field,'area');assert.equal(validate({...b,projectStart:''},1).ok,true);
+  assert.doesNotMatch(read('design/index.html'),/name="projectStart"|Тишина в деталях|У каждой квартиры|Зафиксировать цену/);
 });

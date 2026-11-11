@@ -6,20 +6,22 @@ const vm = require('node:vm');
 const source = fs.readFileSync(path.join(__dirname, '../design/decora.js'), 'utf8');
 
 function fixture() {
-  const node = (value = '') => ({value, textContent:'', hidden:false, disabled:false, events:{},
+  const node = (value = '') => ({value, textContent:'', hidden:false, disabled:false, dataset:{},attributes:{},events:{},
     addEventListener(name, fn) { (this.events[name] ||= []).push(fn); },
     emit(name) { for (const fn of this.events[name] || []) fn(); },
-    setAttribute() {}, removeAttribute() {},
+    setAttribute(name,value) { this.attributes[name]=value; }, removeAttribute() {},
+    dispatchEvent(event) { this.emit(event.type); },
   });
   const estimate = node('40'), area = node(), packages = node(), total = node();
   const summary = node(), label = node(), price = node(), mode = node('brief');
   const proceed = node(), toggle = node(), back = node();
+  const choices = ['40','60','80','100'].map(value=>({...node(),dataset:{formAreaChoice:value}}));
   const nodes = {'[data-estimate-area]':estimate,'[data-form-area]':area,'[data-estimate-total]':total,
     'select[name="package"]':packages,'[data-form-estimate]':summary,'[data-form-estimate-label]':label,
     '[data-form-estimate-total]':price,'[data-estimate-continue]':proceed,'[name="leadMode"]':mode,
     '[data-brief-version]':{},'[data-quiz-mode]':toggle,'[data-quiz-back]':back};
-  vm.runInNewContext(source, {Intl, document:{querySelector:s=>nodes[s] || null, querySelectorAll:()=>[proceed]}});
-  return {estimate,area,packages,total,summary,label,price,mode,proceed,toggle,back};
+  vm.runInNewContext(source, {Intl,Event:class {constructor(type){this.type=type;}},document:{querySelector:s=>nodes[s] || null, querySelectorAll:s=>s==='[data-form-area-choice]'?choices:[proceed]}});
+  return {estimate,area,packages,total,summary,label,price,mode,proceed,toggle,back,choices};
 }
 
 test('initial calculator does not invent apartment area or a form total', () => {
@@ -74,4 +76,12 @@ test('continuation uses the existing quiz CTA and summary precedes form fields',
   const html=fs.readFileSync(path.join(__dirname,'../design/index.html'),'utf8');
   assert.match(html, /<button[^>]*type="button"[^>]*data-estimate-continue[^>]*data-scroll-lead/);
   assert.ok(html.indexOf('data-form-estimate') < html.indexOf('<fieldset data-quiz-step="0">'));
+});
+test('area presets require an explicit choice, update the quote and respect the full package minimum',()=>{
+  const f=fixture();assert.equal(f.area.value,'');
+  f.choices[1].emit('click');assert.equal(f.area.value,'60');assert.equal(f.estimate.value,'60');
+  assert.match(f.price.textContent,/30\s000 ₽/);assert.equal(f.choices[1].attributes['aria-pressed'],'true');
+  f.packages.value='Полный — 3 490 ₽/м²';f.packages.emit('change');
+  assert.equal(f.choices[0].disabled,true);assert.equal(f.choices[1].disabled,false);
+  f.area.value='65';f.area.emit('input');assert(f.choices.every(button=>button.attributes['aria-pressed']==='false'));
 });
