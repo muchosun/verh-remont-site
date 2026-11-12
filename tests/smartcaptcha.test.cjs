@@ -48,6 +48,6 @@ for(const file of ['assets/js/lead-support.js','design/assets/js/lead-support.js
 }
 test('all current form pages load SmartCaptcha before the sender; design does not gate on Cloudflare',()=>{
   const pages=['index.html','design/index.html','raschet-remonta/index.html',...['priemka-kvartiry','ukladka-laminata','pokleyka-oboev','shpaklevka-sten','ukladka-plitki','razvodka-santehniki','natyazhnoy-potolok'].map(s=>'uslugi/'+s+'/index.html')];
-  for(const page of pages){const s=fs.readFileSync(path.join(root,page),'utf8');assert(s.indexOf('/assets/js/smartcaptcha.js?')<s.indexOf('lead-support.js?'));assert(s.includes('20261031-smartcaptcha'));}
+  for(const page of pages){const s=fs.readFileSync(path.join(root,page),'utf8');assert(s.indexOf('/assets/js/smartcaptcha.js?')<s.indexOf('lead-support.js?'));assert(s.includes('20261113-accounting'));}
   const s=fs.readFileSync(path.join(root,'design/quiz.js'),'utf8');assert.match(s,/local \|\| unverifiedMode \|\| smartMode/);assert.match(s,/!unverified && !delivery\.duplicate/);
 });

@@ -85,20 +85,22 @@
     if (url.origin === location.origin && /^\/(?:uslugi(?:\/|$)|design(?:\/|$)|$)/.test(url.pathname)) link.href = source(url.href).href;
   });
   const getClientId = () => new Promise((resolve) => {
-    if (typeof window.ym !== "function") return resolve("");
-    const timer = setTimeout(() => resolve(""), 1200);
+    if (typeof window.ym !== "function") return resolve({clientId:"",clientIdStatus:"ym_unavailable"});
+    let done=false;
+    const finish=(clientId,clientIdStatus)=>{if(done)return;done=true;clearTimeout(timer);resolve({clientId,clientIdStatus});};
+    const timer = setTimeout(() => finish("","timeout"), 1200);
     try {
       window.ym(110859289, "getClientID", (value) => {
-        clearTimeout(timer);
-        resolve(/^\d{1,64}$/.test(String(value)) ? String(value) : "");
+        const valid=/^\d{1,64}$/.test(String(value));
+        finish(valid?String(value):"",valid?"available":"invalid");
       });
-    } catch { clearTimeout(timer); resolve(""); }
+    } catch { finish("","exception"); }
   });
   const send = async (endpoint, payload) => {
     if (!endpoint) throw new Error("Lead endpoint is not configured");
-    const clientId = await getClientId();
+    const {clientId,clientIdStatus} = await getClientId();
     const yclid = source(payload.source || location.href).searchParams.get("yclid") || "";
-    payload = {...payload, attribution:{clientId, yclid:/^\d{1,128}$/.test(yclid) ? yclid : ""}};
+    payload = {...payload, attribution:{clientId, yclid:/^\d{1,128}$/.test(yclid) ? yclid : "",clientIdStatus}};
     if (window.VerhSmartCaptcha?.monitoring) {
       const delivery=await window.VerhSmartCaptcha.submit(endpoint,payload);
       reportUnverified(delivery);

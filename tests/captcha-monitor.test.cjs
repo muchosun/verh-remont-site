@@ -29,6 +29,11 @@ for(const file of ['assets/js/lead-support.js','design/assets/js/lead-support.js
   });
   test(file+': failure to save cannot claim success or start CAPTCHA',async()=>{const f=fixture(file,{failSave:true});await assert.rejects(f.api.send('/lead',{}));assert.equal(f.widgets.length,0);assert.equal(f.analytics.length,0);});
   test(file+': duplicate does not repeat goals or CAPTCHA',async()=>{const f=fixture(file,{duplicate:true});assert.equal((await f.api.send('/lead',{})).duplicate,true);assert.equal(f.jobs.length,0);assert.equal(f.analytics.length,0);});
+  test(file+': manager-required receipt never emits legacy paid delivery goals',async()=>{
+    const f=fixture(file,{updateOverride:{paidGoal:false,paymentQualification:'manager_confirmation_required'}});
+    const r=await f.api.send('/lead',{});await f.run();
+    assert.deepEqual(f.analytics.filter(x=>x.method==='reachGoal').map(x=>x.args[0]),['unverified_'+r.formType+'_delivered']);
+  });
   for(const updateOverride of [{verification:'unverified'},{leadId:'another'},{successGoals:['quiz_lead_success','design_project_brief_delivered']},{duplicate:true},{goalPolicy:'unexpected'}])test(file+': malformed, mismatched or repeated update never triggers a success goal '+JSON.stringify(updateOverride),async()=>{
     const f=fixture(file,{updateOverride});const a=await f.api.send('/lead',{});await f.run();assert.deepEqual(f.analytics.filter(x=>x.method==='reachGoal').map(x=>x.args[0]),['unverified_'+a.formType+'_delivered']);
   });

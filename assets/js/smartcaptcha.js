@@ -54,6 +54,7 @@
     } catch { /* Monitoring must not change the delivery result. */ }
   }
   function reportVerified(result,updated) {
+    if(updated.paymentQualification==="manager_confirmation_required")return;
     if(result.duplicate || updated.duplicate || verifiedReported.has(result.leadId) || updated.goalPolicy!==goalPolicy || updated.verification!=="smartcaptcha" || updated.captchaStatus!=="passed" || updated.leadId!==result.leadId) return;
     const expected=allowedGoals[result.formType] || (result.formType.startsWith("service_")?["service_lead_success"]:[]);
     if(!Array.isArray(updated.successGoals) || updated.successGoals.length!==expected.length || updated.successGoals.some((goal,i)=>goal!==expected[i])) return;
