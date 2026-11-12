@@ -7,7 +7,7 @@
   <title>Ремонт квартир под ключ в Краснодаре — расчёт стоимости | ВЕРХ</title>
   <link rel="canonical" href="https://verhremont.ru/remont-kvartir/" />
   <link rel="preload" href="../assets/fonts/onest-cyrillic.woff2" as="font" type="font/woff2" crossorigin />
-  <link rel="stylesheet" href="style.css?v=20261111-form-review" />
+  <link rel="stylesheet" href="style.css?v=20261112-mobile-hero" />
   <script>window.VERH_LEAD_ENDPOINT="https://functions.yandexcloud.net/d4e8j84veok7kjc043kk";</script>
   <script src="../assets/js/smartcaptcha.js?v=20261031-monitor"></script>
   <script defer src="../assets/vendor/inputmask-5.0.9.min.js"></script>
@@ -31,23 +31,36 @@
     <section class="hero" aria-labelledby="hero-title">
       <img class="hero-image" src="../assets/projects/lux/lux_03_msg180.webp" alt="Гостиная на объекте ВЕРХ после ремонта" width="1280" height="1707" fetchpriority="high" />
       <div class="wrap hero-content">
-        <h1 id="hero-title"><span>Ремонт квартир под ключ</span><br />в Краснодаре</h1>
-        <p class="hero-offer">Цена, состав работ и сроки — <strong>в договоре</strong></p>
-        <p class="hero-support">Подберём материалы, рассчитаем работы и согласуем общую смету до начала ремонта.</p>
+        <h1 id="hero-title"><span>Ремонт квартир без посредников</span><br />в Краснодаре</h1>
+        <p class="hero-offer">Приёмка и дизайн-проект <strong>в подарок</strong></p>
+        <p class="hero-support">Ответьте на вопросы о квартире — подготовим предварительную смету работ и материалов.</p>
+        <div class="hero-action">
+          <button class="primary hero-button" type="button" data-open-quiz><img src="icons/calculator.svg" alt="" />Рассчитать стоимость ремонта</button>
+          <p class="duration"><img src="icons/clock-3.svg" alt="" />Телефон попросим только в конце</p>
+          <p class="gift-terms">При договоре на ремонт. Дизайн-проект — рабочие чертежи, без 3D. Состав подарков и условия согласуем заранее.</p>
+        </div>
         <ul class="benefits">
           <li><img src="icons/clipboard-check.svg" alt="" /><span>Работаем официально. <strong>Заключаем договор до старта.</strong></span></li>
           <li><img src="icons/clipboard-check.svg" alt="" /><span>Поможем с подбором материалов и <strong>их доставкой на объект.</strong></span></li>
           <li><img src="icons/clipboard-check.svg" alt="" /><span>Отвечаем за результат. <strong>Гарантия на ремонт — 3 года.</strong></span></li>
           <li><img src="icons/clipboard-check.svg" alt="" /><span>Обсудим вопросы ремонта <strong>в MAX, Telegram или по телефону.</strong></span></li>
         </ul>
-        <div class="hero-action">
-          <p>Ответьте на вопросы о квартире, чтобы получить:</p>
-          <ul><li>Предварительный расчёт под ваш объём работ</li><li>Условия бесплатного выезда на замер</li><li>Информацию о подарках к договору</li></ul>
-          <button class="primary hero-button" type="button" data-open-quiz><img src="icons/calculator.svg" alt="" />Рассчитать стоимость ремонта</button>
-          <p class="duration"><img src="icons/clock-3.svg" alt="" />Телефон попросим только в конце</p>
-        </div>
       </div>
     </section>
+    <script id="hero-intent">
+      (function () {
+        var titles = {
+          turnkey: 'Ремонт квартир под ключ',
+          newbuild: 'Ремонт в новостройке',
+          resale: 'Ремонт вторичной квартиры',
+          dogma: 'Ремонт в ЖК Догма Парк'
+        };
+        var intent = new URLSearchParams(location.search).get('intent');
+        if (Object.prototype.hasOwnProperty.call(titles, intent)) {
+          document.querySelector('#hero-title span').textContent = titles[intent];
+        }
+      }());
+    </script>
   </main>
   <footer class="site-footer wrap">
     <div><img class="footer-brand" src="../assets/brand/verh-wordmark-white-on-black.webp" alt="ВЕРХ" width="130" height="56" /><p>© 2026 ВЕРХ ремонт</p></div>
