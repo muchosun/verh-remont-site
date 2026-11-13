@@ -33,7 +33,7 @@
     if(!Number.isFinite(area)||area<20||area>1000)return null;
     return{area:Math.round(area*10)/10,ceiling};
   }
-  function phoneDigits(value){let d=String(value).replace(/\D/g,'');if(d.length===10)d='7'+d;if(d.length===11&&d.startsWith('8'))d='7'+d.slice(1);return /^7\d{10}$/.test(d)?d:'';}
+  function phoneDigits(value){const text=String(value);let d=text.replace(/\D/g,'');if(/^\s*\+/.test(text)&&!/^\s*\+7/.test(text))return '';if(/^\s*(?:\+7|8[\s(])/.test(text)&&d.length!==11)return '';if(d.length===10)d='7'+d;if(d.length===11&&d.startsWith('8'))d='7'+d.slice(1);return /^7\d{10}$/.test(d)?d:'';}
   function hasPhoneInput(value){const digits=String(value).replace(/\D/g,'');return Boolean(digits&&digits!=='7'&&digits!=='8');}
   function nextStepIndex(index,answers){
     const id=steps[index].id;

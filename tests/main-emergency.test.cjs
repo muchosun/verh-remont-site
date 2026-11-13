@@ -17,7 +17,8 @@ function fixture(delivery,error) {
     isQuizStep:()=>true,render(){},createLeadPayload:()=>({}),sendLeadToMax:async()=>{if(error)throw error;return delivery;},waitFor:async()=>{},trackMetricGoal:name=>goals.push(name),
     getSecondarySurcharge:()=>0,getEstimateText:()=>'estimate',getEstimateBreakdownText:()=>'breakdown',formatArea:()=>58,getTariff:()=>({title:'Стандарт'}),getPaymentPlanHtml:()=>'',quizModal:{classList:{contains:()=>false}},window:{clearInterval(){}},
   };
-  vm.runInNewContext(handler,context);
+  const normalize = script.slice(script.indexOf('function normalizeLeadPhone('),script.indexOf('function createLeadPayload('));
+  vm.runInNewContext(normalize + '\n' + handler,context);
   return {run:()=>submit({isTrusted:true,preventDefault(){}}),goals,state,leadTitle,leadForm,successMessage};
 }
 test('unverified main quiz delivery confirms receipt without any success goal',async()=>{

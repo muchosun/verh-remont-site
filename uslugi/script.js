@@ -32,7 +32,10 @@
   });
 
   const normalizePhone = (value) => {
-    let digits = String(value || "").replace(/\D/g, "");
+    const text = String(value || "");
+    let digits = text.replace(/\D/g, "");
+    if (/^\s*\+/.test(text) && !/^\s*\+7/.test(text)) return "";
+    if (/^\s*(?:\+7|8[\s(])/.test(text) && digits.length !== 11) return "";
     if (digits.length === 11 && (digits.startsWith("7") || digits.startsWith("8"))) {
       digits = digits.slice(1);
     }

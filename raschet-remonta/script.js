@@ -170,7 +170,10 @@ function renderSummary() {
 }
 
 function normalizePhone(rawValue) {
-  let digits = String(rawValue || "").replace(/\D/g, "");
+  const text = String(rawValue || "");
+  let digits = text.replace(/\D/g, "");
+  if (/^\s*\+/.test(text) && !/^\s*\+7/.test(text)) return "";
+  if (/^\s*(?:\+7|8[\s(])/.test(text) && digits.length !== 11) return "";
   if (digits.length === 10) digits = `7${digits}`;
   if (digits.length === 11 && digits.startsWith("8")) digits = `7${digits.slice(1)}`;
   return /^7\d{10}$/.test(digits) ? `+${digits}` : "";

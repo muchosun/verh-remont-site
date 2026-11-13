@@ -809,24 +809,15 @@ function validateAreaDraft(value) {
   return Math.round(parsed * 10) / 10;
 }
 
-function formatPhone(value) {
-  let digits = value.replace(/\D/g, "");
-  if (digits.startsWith("8")) digits = `7${digits.slice(1)}`;
-  if (digits.startsWith("77") && digits.length > 11) digits = digits.slice(1);
-  const normalized = (digits.startsWith("7") ? digits : `7${digits}`).slice(0, 11);
-  const rest = normalized.slice(1);
-  const parts = [
-    rest.slice(0, 3),
-    rest.slice(3, 6),
-    rest.slice(6, 8),
-    rest.slice(8, 10),
-  ].filter(Boolean);
-
-  if (!parts.length) return "+7 ";
-  if (parts.length === 1) return `+7 (${parts[0]}`;
-  if (parts.length === 2) return `+7 (${parts[0]}) ${parts[1]}`;
-  if (parts.length === 3) return `+7 (${parts[0]}) ${parts[1]}-${parts[2]}`;
-  return `+7 (${parts[0]}) ${parts[1]}-${parts[2]}-${parts[3]}`;
+function normalizeLeadPhone(value) {
+  if (window.VerhPhoneInput) return window.VerhPhoneInput.normalize(value);
+  const text = String(value || "");
+  let digits = text.replace(/\D/g, "");
+  if (/^\s*\+/.test(text) && !/^\s*\+7/.test(text)) return "";
+  if (/^\s*(?:\+7|8[\s(])/.test(text) && digits.length !== 11) return "";
+  if (digits.length === 10) digits = `7${digits}`;
+  if (digits.length === 11 && digits.startsWith("8")) digits = `7${digits.slice(1)}`;
+  return /^7\d{10}$/.test(digits) ? `+${digits}` : "";
 }
 
 function createLeadPayload() {
@@ -1036,12 +1027,7 @@ progressButtons.forEach((button) => {
   });
 });
 
-phoneInput.addEventListener("focus", () => {
-  if (!phoneInput.inputmask && !phoneInput.value) phoneInput.value = "+7 ";
-});
-
 phoneInput.addEventListener("input", () => {
-  if (!phoneInput.inputmask) phoneInput.value = formatPhone(phoneInput.value);
   phoneInput.setCustomValidity("");
 });
 
@@ -1050,20 +1036,15 @@ callbackCloseButton?.addEventListener("click", () => {
   trackMetricGoal("callback_prompt_dismissed");
 });
 
-callbackPhone?.addEventListener("focus", () => {
-  if (!callbackPhone.inputmask && !callbackPhone.value) callbackPhone.value = "+7 ";
-});
-
 callbackPhone?.addEventListener("input", () => {
-  if (!callbackPhone.inputmask) callbackPhone.value = formatPhone(callbackPhone.value);
   callbackPhone.setCustomValidity("");
 });
 
 callbackForm?.addEventListener("submit", async (event) => {
   event.preventDefault();
   callbackPhone.setCustomValidity("");
-  const digits = callbackPhone.value.replace(/\D/g, "");
-  if (digits.length < 11) {
+  const normalizedPhone = normalizeLeadPhone(callbackPhone.value);
+  if (!normalizedPhone) {
     callbackPhone.setCustomValidity("Укажи номер, чтобы мы могли перезвонить.");
     callbackPhone.reportValidity();
     return;
@@ -1079,7 +1060,7 @@ callbackForm?.addEventListener("submit", async (event) => {
   try {
     const delivery = await sendLeadToMax({
       kind: "callback",
-      phone: callbackPhone.value.trim(),
+      phone: normalizedPhone,
       source: window.VerhLead.source().href,
       submittedAt: new Date().toISOString(),
     });
@@ -1106,8 +1087,8 @@ leadForm.addEventListener("submit", async (event) => {
   if (event.isTrusted === false || !isQuizStep(3) || state.maxStep < 3) return;
   if (leadForm.dataset.sending === "true") return;
   phoneInput.setCustomValidity("");
-  const digits = phoneInput.value.replace(/\D/g, "");
-  if (!/^7\d{10}$/.test(digits)) {
+  const normalizedPhone = normalizeLeadPhone(phoneInput.value);
+  if (!normalizedPhone) {
     phoneInput.setCustomValidity("Укажи номер из 10 цифр после +7.");
     phoneInput.reportValidity();
     return;
@@ -1116,7 +1097,7 @@ leadForm.addEventListener("submit", async (event) => {
   window.VerhRepairPhoneAnalytics?.submitted();
   leadForm.dataset.sending = "true";
   leadPanel.classList.remove("is-error");
-  state.leadPhone = phoneInput.value.trim();
+  state.leadPhone = normalizedPhone;
   const leadMetricParams = {
     apartment: state.apartment,
     area: state.area,

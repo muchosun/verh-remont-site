@@ -15,7 +15,9 @@ test('main final submit rejects malformed phones, missing consent, hidden or syn
   for(const options of [{phone:'+7123'},{phone:'+79012345678',consent:false},{phone:'+79012345678',trusted:false},{phone:'+79012345678',active:false},{phone:'+79012345678',maxStep:2}]){
     let submit,calls=0,phoneError='';
     const context={state:{maxStep:options.maxStep??3},leadForm:{dataset:{},addEventListener:(_,fn)=>submit=fn,reportValidity:()=>options.consent!==false},phoneInput:{value:options.phone,setCustomValidity:v=>phoneError=v,reportValidity(){}},isQuizStep:()=>options.active!==false,sendLeadToMax:()=>{calls++;}};
-    vm.runInNewContext(handler('leadForm.addEventListener("submit", async (event) => {'),context);
+    context.window={};
+    const normalize=script.slice(script.indexOf('function normalizeLeadPhone('),script.indexOf('function createLeadPayload('));
+    vm.runInNewContext(normalize+'\n'+handler('leadForm.addEventListener("submit", async (event) => {'),context);
     await submit({isTrusted:options.trusted!==false,preventDefault(){}});
     assert.equal(calls,0);if(options.phone==='+7123')assert.match(phoneError,/10 цифр/);
   }
