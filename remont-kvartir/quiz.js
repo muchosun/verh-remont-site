@@ -14,15 +14,14 @@
       ['capital','Капитальный ремонт','../v14/assets/web/quiz-secondary.webp'],
       ['designer','Дизайнерский ремонт','../assets/projects/lux/lux_03_msg180.webp']]},
     {id:'scope',title:'Какой объем работ потребуется выполнить?',options:[['preclean','Предчистовая отделка'],['full','Отделка всего помещения "под ключ" от черновой отделки до чистовой'],['one','Частичный ремонт одной комнаты'],['several','Частичный ремонт нескольких комнат'],['other','Другое']]},
-    {id:'partialDecision',title:'Рассматриваете ремонт под ключ?',options:[['partial','Мне нужен именно частичный ремонт'],['full','Мне нужен ремонт под ключ']]},
     {id:'contact',title:'Куда отправить расчёт?',phonePrompt:'За этим номером мы закрепим расчет сметы в трех вариантах с выгодой до 250 000 рублей и подарки'},
   ];
-  const state={step:0,history:[],answers:{city:'krasnodar',property:'new',rooms:'',area:'',ceiling:'',repair:'',scope:'full',partialDecision:'',channels:['phone']},sending:false,submitted:false,phone:'',name:'',consent:true,phoneStarted:false,phoneValid:false};
+  const state={step:0,history:[],answers:{city:'krasnodar',property:'new',rooms:'',area:'',ceiling:'',repair:'',scope:'full',channels:['phone']},sending:false,submitted:false,phone:'',name:'',consent:true,phoneStarted:false,phoneValid:false};
   let trigger,autoTimer,phoneView=false;
   const esc=value=>String(value).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   function track(event,params={}){
     if(preview||typeof window.ym!=='function')return;
-    const safe={landing:'repair_reference',flow:'reference_quiz_v2'};
+    const safe={landing:'repair_reference',flow:'reference_quiz_v3'};
     for(const key of ['step','control','action','form','field'])if(typeof params[key]==='string'||Number.isInteger(params[key]))safe[key]=params[key];
     try{window.ym(110859289,'reachGoal',event,safe);}catch{}
   }
@@ -30,18 +29,14 @@
     const areaText=String(areaValue??'').trim(),ceilingText=String(ceilingValue??'').trim();
     if(!/^\d+(?:[.,]\d+)?$/.test(areaText)||ceilingText.length>120)return null;
     const area=Number(areaText.replace(',','.')),ceiling=ceilingText;
-    if(!Number.isFinite(area)||area<20||area>1000)return null;
+    if(!Number.isFinite(area)||area<1||area>1000)return null;
     return{area:Math.round(area*10)/10,ceiling};
   }
   function phoneDigits(value){const text=String(value);let d=text.replace(/\D/g,'');if(/^\s*\+/.test(text)&&!/^\s*\+7/.test(text))return '';if(/^\s*(?:\+7|8[\s(])/.test(text)&&d.length!==11)return '';if(d.length===10)d='7'+d;if(d.length===11&&d.startsWith('8'))d='7'+d.slice(1);return /^7\d{10}$/.test(d)?d:'';}
   function hasPhoneInput(value){const digits=String(value).replace(/\D/g,'');return Boolean(digits&&digits!=='7'&&digits!=='8');}
-  function nextStepIndex(index,answers){
-    const id=steps[index].id;
-    if(id==='scope')return steps.findIndex(s=>s.id===(['one','several'].includes(answers.scope)?'partialDecision':'contact'));
-    if(id==='partialDecision')return answers.partialDecision==='partial'?'reject_partial':steps.findIndex(s=>s.id==='contact');
+  function nextStepIndex(index){
     return index+1;
   }
-  function qualifiedScope(answers){return ['one','several'].includes(answers.scope)&&answers.partialDecision==='full'?'full':answers.scope;}
   function fail(message,field){error.textContent=message;error.hidden=false;if(field)field.focus();track('main_validation_error',{step:state.step+1,field:field?.type==='tel'?'phone':field?.type==='checkbox'?'consent':'form'});}
   function clearAuto(){clearTimeout(autoTimer);autoTimer=undefined;}
   function remember(){
@@ -52,15 +47,15 @@
   function render(){
     clearAuto();error.hidden=true;
     dialog.setAttribute('aria-labelledby','question-title');
-    const step=steps[state.step],standardSteps=steps.filter(s=>s.id!=='partialDecision');
-    const number=standardSteps.findIndex(s=>s.id===step.id)+1,percentage=Math.round((number||5)/standardSteps.length*100);
-    progress.style.width=percentage+'%';progressLabel.textContent=number?`${number} из ${standardSteps.length}`:'Уточнение';
+    const step=steps[state.step],number=state.step+1,percentage=Math.round(number/steps.length*100);
+    progress.style.width=percentage+'%';progressLabel.textContent=`${number} из ${steps.length}`;
     back.disabled=state.history.length===0||state.sending;next.disabled=state.sending;
     next.querySelector('span').textContent=step.id==='contact'?'Получить расчёт':'Далее';
     panel.innerHTML=`<h2 id="question-title" tabindex="-1">${esc(step.title)}</h2>`;
-    if(step.id==='dimensions')panel.insertAdjacentHTML('beforeend',`<div class="contact-fields"><p class="field-note">Можно примерно. Точную площадь уточним на замере.</p><div class="area-presets" aria-label="Примерная площадь">${[28,36,58,78].map(area=>`<button type="button" data-area-choice="${area}">${area} м²</button>`).join('')}</div><label class="text-field">Площадь, м²<input name="area" inputmode="decimal" autocomplete="off" maxlength="12" placeholder="Например, 65" value="${esc(state.answers.area)}" required aria-describedby="area-note" /><span class="field-note" id="area-note">От 20 до 1 000 м².</span></label><details><summary>Комнаты и высота (необязательно)</summary><div class="optional-fields"><label class="text-field">Комнат<select name="rooms">${[['','Не знаю / не указывать'],['1','1'],['2','2'],['3','3'],['4','4 и более']].map(([value,label])=>`<option value="${value}" ${state.answers.rooms===value?'selected':''}>${label}</option>`).join('')}</select></label><label class="text-field">Высота потолков, если знаете<input name="ceiling" autocomplete="off" maxlength="120" placeholder="Например, 2,7 м или не знаю" value="${esc(state.answers.ceiling)}" aria-describedby="ceiling-note" /><span class="field-note" id="ceiling-note">Можно написать в любом удобном формате или пропустить.</span></label></div></details></div>`);
+    if(step.id==='dimensions')panel.insertAdjacentHTML('beforeend',`<div class="contact-fields"><p class="field-note">Можно примерно. Точную площадь уточним на замере.</p><div class="area-presets" aria-label="Примерная площадь">${[28,36,58,78].map(area=>`<button type="button" data-area-choice="${area}">${area} м²</button>`).join('')}</div><label class="text-field">Площадь, м²<input name="area" inputmode="decimal" autocomplete="off" maxlength="12" placeholder="Например, 65" value="${esc(state.answers.area)}" required aria-describedby="area-note" /><span class="field-note" id="area-note">От 1 до 1 000 м².</span></label><details><summary>Комнаты и высота (необязательно)</summary><div class="optional-fields"><label class="text-field">Комнат<select name="rooms">${[['','Не знаю / не указывать'],['1','1'],['2','2'],['3','3'],['4','4 и более']].map(([value,label])=>`<option value="${value}" ${state.answers.rooms===value?'selected':''}>${label}</option>`).join('')}</select></label><label class="text-field">Высота потолков, если знаете<input name="ceiling" autocomplete="off" maxlength="120" placeholder="Например, 2,7 м или не знаю" value="${esc(state.answers.ceiling)}" aria-describedby="ceiling-note" /><span class="field-note" id="ceiling-note">Можно написать в любом удобном формате или пропустить.</span></label></div></details></div>`);
     else if(step.id==='contact'){
-      panel.insertAdjacentHTML('beforeend',`<div class="contact-fields"><p class="contact-prompt">${esc(step.phonePrompt)}</p><label class="text-field">Номер телефона<input name="phone" type="tel" inputmode="tel" autocomplete="tel" aria-label="Телефон для расчёта" placeholder="+7 (___) ___-__-__" maxlength="24" value="${esc(state.phone)}" required /></label><label class="text-field">Как удобнее связаться<select name="channel">${[['phone','Звонок'],['max','MAX'],['telegram','Telegram']].map(([value,label])=>`<option value="${value}" ${state.answers.channels.includes(value)?'selected':''}>${label}</option>`).join('')}</select></label><details><summary>Добавить имя (необязательно)</summary><label class="text-field">Имя<input name="name" autocomplete="given-name" maxlength="60" value="${esc(state.name)}" /></label></details><label class="answer consent"><input type="checkbox" name="personal_data_consent" ${state.consent?'checked':''} required /><span>Я согласен(-на) на <a href="../consent.html" target="_blank" rel="noopener">обработку персональных данных</a></span></label></div><label class="hp" aria-hidden="true">Сайт<input name="website" tabindex="-1" autocomplete="off" /></label>`);
+      const phonePrompt=['one','several'].includes(state.answers.scope)?'Оставьте номер — обсудим объём работ и подготовим расчёт для вашей задачи.':step.phonePrompt;
+      panel.insertAdjacentHTML('beforeend',`<div class="contact-fields"><p class="contact-prompt">${esc(phonePrompt)}</p><label class="text-field">Номер телефона<input name="phone" type="tel" inputmode="tel" autocomplete="tel" aria-label="Телефон для расчёта" placeholder="+7 (___) ___-__-__" maxlength="24" value="${esc(state.phone)}" required /></label><label class="text-field">Как удобнее связаться<select name="channel">${[['phone','Звонок'],['max','MAX'],['telegram','Telegram']].map(([value,label])=>`<option value="${value}" ${state.answers.channels.includes(value)?'selected':''}>${label}</option>`).join('')}</select></label><details><summary>Добавить имя (необязательно)</summary><label class="text-field">Имя<input name="name" autocomplete="given-name" maxlength="60" value="${esc(state.name)}" /></label></details><label class="answer consent"><input type="checkbox" name="personal_data_consent" ${state.consent?'checked':''} required /><span>Я согласен(-на) на <a href="../consent.html" target="_blank" rel="noopener">обработку персональных данных</a></span></label></div><label class="hp" aria-hidden="true">Сайт<input name="website" tabindex="-1" autocomplete="off" /></label>`);
       if(!phoneView){phoneView=true;track('main_quiz_contact',{step:state.step+1});track('repair_phone_view',{form:'repair_reference',step:state.step+1});}
     }else{
       const content=step.options.map(([value,label,image])=>{
@@ -71,12 +66,12 @@
     track('main_interaction',{action:'step_view',control:step.id,step:state.step+1});
     panel.querySelector('h2').focus({preventScroll:true});dialog.scrollTop=0;
   }
-  function rejected(partial=false){
-    const percentage=partial?72:9;
+  function rejected(){
+    const percentage=9;
     progress.style.width=percentage+'%';progressLabel.textContent=percentage+'%';
-    track('main_interaction',{action:partial?'partial_scope_rejected':'region_rejected',step:state.step+1});form.hidden=true;result.hidden=false;result.classList.add('terminal');
+    track('main_interaction',{action:'region_rejected',step:state.step+1});form.hidden=true;result.hidden=false;result.classList.add('terminal');
     dialog.setAttribute('aria-labelledby','result-title');
-    result.innerHTML=partial?'<h2 id="result-title" tabindex="-1">К сожалению, не сможем Вам помочь с частичным ремонтом.</h2><p>Прохождение квиза далее не требуется</p><button type="button" class="primary" data-return-scope>Вернуться к объёму работ</button>':'<h2 id="result-title" tabindex="-1">Извините, но мы не сможем вам помочь. Наша компания занимается ремонтом под ключ только в г.Краснодар</h2><p>Заполнение анкеты далее не требуется</p><button type="button" class="primary" data-return-city>Вернуться к выбору города</button>';
+    result.innerHTML='<h2 id="result-title" tabindex="-1">Извините, но мы не сможем вам помочь. Наша компания занимается ремонтом под ключ только в г.Краснодар</h2><p>Заполнение анкеты далее не требуется</p><button type="button" class="primary" data-return-city>Вернуться к выбору города</button>';
     result.querySelector('h2').focus();
   }
   async function advance(){
@@ -84,12 +79,11 @@
     const step=steps[state.step],answer=state.answers[step.id];
     if(step.id==='city'&&answer==='other'){rejected();return;}
     if(step.options&&(!answer||Array.isArray(answer)&&!answer.length)){fail('Выберите хотя бы один вариант.');return;}
-    if(step.id==='dimensions'&&!parseDimensions(state.answers.area,state.answers.ceiling)){fail('Укажите площадь числом от 20 до 1 000.',form.elements.area);return;}
+    if(step.id==='dimensions'&&!parseDimensions(state.answers.area,state.answers.ceiling)){fail('Укажите площадь числом от 1 до 1 000.',form.elements.area);return;}
     if(step.id==='contact'){await submit();return;}
     const goal={property:'quiz_apartment_selected',dimensions:'quiz_area_selected',repair:'quiz_tariff_selected'}[step.id];
     if(goal)track(goal,{step:state.step+1});
-    const target=nextStepIndex(state.step,state.answers);
-    if(target==='reject_partial'){rejected(true);return;}
+    const target=nextStepIndex(state.step);
     track('main_interaction',{action:'step_answer',control:step.id,step:state.step+1});state.history.push(state.step);state.step=target;render();
   }
   async function submit(){
@@ -101,7 +95,7 @@
     state.sending=true;next.disabled=true;back.disabled=true;next.querySelector('span').textContent='Отправляем…';
     track('quiz_submit_attempt',{step:state.step+1});
     try{
-      const payload={kind:'repair_reference',phone:'+'+digits,consent:true,name:state.name.trim(),website:form.elements.website?.value||'',referenceBrief:{city:state.answers.city,property:state.answers.property,rooms:state.answers.rooms,...size,repair:state.answers.repair,scope:qualifiedScope(state.answers),channels:state.answers.channels},source:window.VerhLead?.source().href||location.href,submittedAt:new Date().toISOString()};
+      const payload={kind:'repair_reference',phone:'+'+digits,consent:true,name:state.name.trim(),website:form.elements.website?.value||'',referenceBrief:{city:state.answers.city,property:state.answers.property,rooms:state.answers.rooms,...size,repair:state.answers.repair,scope:state.answers.scope,channels:state.answers.channels},source:window.VerhLead?.source().href||location.href,submittedAt:new Date().toISOString()};
       const delivery=preview?{status:'preview',duplicate:false}:await window.VerhLead.send(window.VERH_LEAD_ENDPOINT,payload);
       if(!['unverified','sent','preview'].includes(delivery.status))throw Error('No receipt');
       state.submitted=true;form.hidden=true;result.hidden=false;result.classList.add('terminal');progress.style.width='100%';progressLabel.textContent='100%';
@@ -118,7 +112,7 @@
     if(event.isTrusted===false||state.sending)return;
     const input=event.target,step=steps[state.step];
     if(input.name===step.id&&step.options){
-      if(step.id==='scope'&&state.answers.scope!==input.value)state.answers.partialDecision='';state.answers[step.id]=input.value;const from=state.step;clearAuto();autoTimer=setTimeout(()=>{if(state.step===from&&dialog.open)void advance();},150);
+      state.answers[step.id]=input.value;const from=state.step;clearAuto();autoTimer=setTimeout(()=>{if(state.step===from&&dialog.open)void advance();},150);
     }
   });
   panel.addEventListener('click',event=>{
@@ -145,7 +139,6 @@
   result.addEventListener('click',event=>{
     if(event.isTrusted===false)return;
     if(event.target.closest('[data-return-city]')){state.step=0;state.history=[];state.answers.city='krasnodar';form.hidden=false;result.hidden=true;render();}
-    if(event.target.closest('[data-return-scope]')){state.step=steps.findIndex(s=>s.id==='scope');state.history=state.history.filter(i=>i<state.step);state.answers.partialDecision='';form.hidden=false;result.hidden=true;render();}
     if(event.target.closest('[data-close-result]'))dialog.close();
   });
   document.querySelectorAll('[data-open-quiz]').forEach(button=>button.addEventListener('click',event=>{

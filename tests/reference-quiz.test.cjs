@@ -10,7 +10,8 @@ test('separate quiz keeps existing pages untouched and uses the existing CAPTCHA
 test('area remains numeric; optional ceiling is transmitted as entered text',()=>{
  const code=js.slice(js.indexOf('function parseDimensions('),js.indexOf('function phoneDigits(')),c={};vm.runInNewContext(code,c);
  for(const ceiling of ['270','2.7','2,7 м','не знаю','','150','501','270 см'])assert.deepEqual(JSON.parse(JSON.stringify(c.parseDimensions('63,5',ceiling))),{area:63.5,ceiling});
- for(const area of ['','19','63 м²','NaN','1e2','1001'])assert.equal(c.parseDimensions(area,'любая высота'),null,area);
+ for(const area of ['1','4','12','19','1000'])assert.equal(c.parseDimensions(area,'').area,Number(area));
+ for(const area of ['','0','0.5','63 м²','NaN','1e2','1001'])assert.equal(c.parseDimensions(area,'любая высота'),null,area);
  assert.equal(c.parseDimensions('65','x'.repeat(121)),null);
 });
 test('dimensions preserve both answers without numeric constraints on ceiling',()=>{
@@ -27,5 +28,5 @@ test('phone parser normalizes national and international formats and rejects par
 test('analytics cannot transmit phones, names, answers, text or URL through arbitrary parameters',()=>{
  const start=js.indexOf('function track('),code=js.slice(start,js.indexOf('function parseDimensions(',start)),events=[];
  const c={preview:false,window:{ym:(...args)=>events.push(args)}};vm.runInNewContext(code,c);c.track('main_interaction',{phone:'private',name:'private',source:'private',step:2,action:'step_view',control:'property'});
- assert.doesNotMatch(JSON.stringify(events),/private/);assert.equal(events[0][3].flow,'reference_quiz_v2');
+ assert.doesNotMatch(JSON.stringify(events),/private/);assert.equal(events[0][3].flow,'reference_quiz_v3');
 });
