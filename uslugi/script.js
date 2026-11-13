@@ -8,8 +8,17 @@
 
   const reachGoal = (goal, params = {}) => {
     if (typeof window.ym === "function") {
-      window.ym(110859289, "reachGoal", goal, { service: serviceSlug, ...params });
+      try {
+        window.ym(110859289, "reachGoal", goal, { service: serviceSlug, ...params });
+        return true;
+      } catch { /* Analytics must not block the form. */ }
     }
+    return false;
+  };
+
+  let leadStarted = false;
+  const markLeadStart = (params = {}) => {
+    if (!leadStarted) leadStarted = reachGoal("service_lead_start", { request: requestType, ...params });
   };
 
   const scrollToLead = (event) => {
@@ -18,7 +27,7 @@
     const selectedPackage = event?.currentTarget?.dataset?.package || "";
     const packageSelect = lead.querySelector("select[name='package']");
     if (selectedPackage && packageSelect) packageSelect.value = selectedPackage;
-    reachGoal("service_lead_start", { request: requestType, offer: selectedPackage || undefined });
+    markLeadStart({ offer: selectedPackage || undefined, placement: "cta" });
     lead.scrollIntoView({ behavior: "smooth", block: "start" });
     window.setTimeout(() => lead.querySelector("input[type='tel']")?.focus({ preventScroll: true }), 520);
   };
@@ -48,7 +57,9 @@
     const submit = form.querySelector("button[type='submit']");
     const status = form.querySelector("[data-form-status]");
 
+    phone.addEventListener("focus", () => markLeadStart({ placement: "form" }));
     phone.addEventListener("input", () => {
+      markLeadStart({ placement: "form" });
       phone.removeAttribute("aria-invalid");
       status.textContent = "";
       status.removeAttribute("data-state");
@@ -77,6 +88,7 @@
 
       if (website) return;
       if (submit.disabled) return;
+      markLeadStart({ offer: selectedPackage || undefined, placement: "submit" });
       const isLocal = location.protocol === "file:" || ["localhost", "127.0.0.1"].includes(location.hostname);
       reachGoal("service_lead_submit", { request: requestType, offer: selectedPackage || undefined, local_preview: isLocal });
 
