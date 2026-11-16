@@ -1,0 +1,25 @@
+html[data-design-intent="commercial"] :is(#estimate, #projects, #project-album, #prices, #visualizations, #gift, .faq-section, .service-price, .hero-pdf, [data-lead-deadline], [data-lead-price], [data-form-estimate], [data-quiz-mode]) {
+  display: none !important;
+}
+html[data-design-intent="commercial"] .preview-nav [hidden] {
+  display: none !important;
+}
+html[data-design-intent="commercial"] .service-hero h1 {
+  max-width: 620px;
+}
+html[data-design-intent="commercial"] .service-hero .hero-offer {
+  max-width: 440px;
+  margin: 20px 0 28px;
+  font-size: 16px;
+}
+html[data-design-intent="commercial"] .service-hero__media > img:not(.media-watermark) {
+  object-position: right 5%;
+}
+@media (max-width: 767px) {
+  html[data-design-intent="commercial"] .service-hero .hero-offer {
+    font-size: 14px;
+  }
+  html[data-design-intent="commercial"] .service-hero__media > img:not(.media-watermark) {
+    object-position: 62% center;
+  }
+}

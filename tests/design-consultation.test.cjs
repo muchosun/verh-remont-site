@@ -6,13 +6,13 @@ const vm = require('node:vm');
 const root = path.join(__dirname, '..');
 const validation = require('../design/brief-validation-v3');
 
-function fixture() {
+function fixture(initialMode = 'brief', commercial = false) {
   const goals = [], posts = [];
   const node = (value = '') => ({value, textContent:'', dataset:{}, hidden:false, disabled:false, checked:false, events:{},
     addEventListener(name, fn) { (this.events[name] ||= []).push(fn); },
     emit(name, event = {}) { for (const fn of this.events[name] || []) fn(event); },
     click() { this.emit('click'); }, dispatchEvent(event) { this.emit(event.type, event); },
-    setAttribute() {}, removeAttribute() {}, focus() {}, scrollIntoView() {}, closest() { return null; },
+    setAttribute() {}, removeAttribute(name) { if(name==='data-package') delete this.dataset.package; }, focus() {}, scrollIntoView() {}, closest() { return null; },
   });
   const legends = [node(), node(), node()]; legends[2].textContent = 'Куда вам позвонить';
   const steps = legends.map((legend,i) => ({...node(),dataset:{quizStep:String(i)},querySelector:() => legend}));
@@ -20,17 +20,18 @@ function fixture() {
   for (const name of ['leadMode','customerName','phone','callbackTime','city','area','package','projectStart','projectTask','consent','website']) {
     fields[name] = {...node(),name,closest:selector => selector === '[data-quiz-step]' ? steps[['city','area'].includes(name)?0:['package','projectStart','projectTask'].includes(name)?1:2] : null};
   }
-  fields.leadMode.value = 'brief';
+  fields.leadMode.value = initialMode;
   const selectors = ['[data-form-status]','[data-quiz-next]','[data-quiz-back]','[type="submit"]','[data-quiz-mode]','[data-captcha-retry]','[data-quiz-progress]','[data-quiz-counter]','progress','[data-quiz-summary]','[data-form-estimate]'];
   const nodes = Object.fromEntries(selectors.map(selector => [selector,node()]));
   const form = {...node(),elements:fields,querySelector:selector=>nodes[selector],querySelectorAll:selector=>selector==='[data-quiz-step]'?steps:Object.values(fields)};
   const lead = node(), title = node(), description = node(); title.textContent='Полная анкета'; description.textContent='Подробности проекта';
   const header = node(), hero = node(), calculator = node(); header.dataset.leadMode='callback'; calculator.dataset.package='Рабочий проект — 500 ₽/м², от 30 м², договор до 31 октября 2026';
   header.closest = selector => selector === '.preview-header' ? {} : null;
-  const document = {querySelector:selector=>selector.startsWith('[data-service-form]')?form:({'#lead':lead,'[data-lead-title]':title,'[data-lead-description]':description}[selector]||null),querySelectorAll:selector=>selector==='[data-scroll-lead]'?[header,hero,calculator]:[]};
-  const window = {ym:(_id,method,name,params)=>goals.push({method,name,params}),VerhQuizValidation:validation,VerhLead:{unverifiedMode:true,source:()=>new URL('https://verhremont.ru/design/?utm_source=qa'),send:async(_endpoint,payload)=>{posts.push(payload);return {status:'unverified',formType:payload.designBrief.mode==='callback'?'design_callback':'design_brief'};}},VERH_LEAD_ENDPOINT:'https://unit.invalid'};
-  const context={window,document,location:{hostname:'verhremont.ru',protocol:'https:'},URL,Event:class {constructor(type){this.type=type;}},setTimeout,clearTimeout};
-  for (const file of ['analytics.js','quiz.js']) vm.runInNewContext(fs.readFileSync(path.join(root,'design',file),'utf8'),context);
+  const document = {documentElement:node(),querySelector:selector=>selector.startsWith('[data-service-form]')?form:({'#lead':lead,'[data-lead-title]':title,'[data-lead-description]':description}[selector]||null),querySelectorAll:selector=>selector==='[data-scroll-lead]'?[header,hero,calculator]:[]};
+  const search='?utm_source=qa'+(commercial?'&intent=design_commercial':'');
+  const window = {ym:(_id,method,name,params)=>goals.push({method,name,params}),VerhQuizValidation:validation,VerhLead:{unverifiedMode:true,source:()=>new URL('https://verhremont.ru/design/'+search),send:async(_endpoint,payload)=>{posts.push(payload);return {status:'unverified',formType:payload.designBrief.mode==='callback'?'design_callback':'design_brief'};}},VERH_LEAD_ENDPOINT:'https://unit.invalid'};
+  const context={window,document,location:{hostname:'verhremont.ru',protocol:'https:',search},URL,URLSearchParams,Event:class {constructor(type){this.type=type;}},setTimeout,clearTimeout};
+  for (const file of [...(commercial?['commercial.js']:[]),'analytics.js','quiz.js']) vm.runInNewContext(fs.readFileSync(path.join(root,'design',file),'utf8'),context);
   const input=(field,value)=>{fields[field].value=value;form.emit('input',{target:fields[field]});};
   const send=()=>form.emit('submit',{preventDefault(){}});
   const flush=()=>new Promise(resolve=>setImmediate(resolve));
@@ -45,6 +46,30 @@ test('header and sticky consultation CTAs keep the original full questionnaire C
   assert(consultation.every(m=>m[3].includes('Обсудить проект')));
   assert(buttons.some(m=>m[3].includes('Рассчитать стоимость проекта')&&!m[0].includes('data-lead-mode')));
   assert(buttons.some(m=>m[0].includes('data-estimate-continue')&&!m[0].includes('data-lead-mode')));
+});
+test('an explicitly configured consultation starts at contact without a synthetic CTA goal',()=>{
+  const f=fixture('callback');
+  assert.deepEqual(f.steps.map(step=>step.hidden),[true,true,false]);
+  assert.equal(f.nodes['[data-quiz-next]'].hidden,true);
+  assert.equal(f.nodes['[data-form-estimate]'].hidden,true);
+  assert.equal(f.nodes['[type="submit"]'].textContent,'Получить консультацию');
+  assert.equal(f.goals.length,0);
+  assert.equal(f.posts.length,0);
+});
+test('commercial consultation preserves source intent and delivery contract without an apartment brief or paid goal',async()=>{
+  const f=fixture('brief',true);
+  assert.match(f.title.textContent,/ваше помещение/);
+  assert.equal(f.fields.leadMode.value,'callback');
+  assert.equal(f.goals.length,0);
+  f.input('phone','+79012345678');f.fields.consent.checked=true;f.send();await f.flush();
+  assert.equal(f.posts.length,1);
+  assert.equal(new URL(f.posts[0].source).searchParams.get('intent'),'design_commercial');
+  assert.equal(new URL(f.posts[0].source).searchParams.get('lead_type'),'callback');
+  assert.equal(f.posts[0].formVersion,3);
+  assert.equal(f.posts[0].designBrief.mode,'callback');
+  assert.equal(f.posts[0].designBrief.area,undefined);
+  assert.equal(f.posts[0].designBrief.package,undefined);
+  assert.equal(f.goals.some(g=>/manager|design_project_brief_delivered/.test(g.name)),false);
 });
 test('consultation opens only phone/contact fields, without area, quote, progress or a misleading Back button',()=>{
   const f=fixture();f.header.click();

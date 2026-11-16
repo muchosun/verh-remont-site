@@ -83,8 +83,8 @@
     step = index;
     const callback = mode.value === "callback";
     if (lead) lead.dataset.leadMode = mode.value;
-    if (leadTitle) leadTitle.textContent = callback ? "Обсудим ваш проект" : briefTitle;
-    if (leadDescription) leadDescription.textContent = callback ? "Позвоним, ответим на вопросы и поможем выбрать проект. Площадь и детали можно обсудить по телефону." : briefDescription;
+    if (leadTitle) leadTitle.textContent = callback ? (lead?.dataset.consultationTitle || "Обсудим ваш проект") : briefTitle;
+    if (leadDescription) leadDescription.textContent = callback ? (lead?.dataset.consultationDescription || "Позвоним, ответим на вопросы и поможем выбрать проект. Площадь и детали можно обсудить по телефону.") : briefDescription;
     contactLegend.textContent = callback ? "Как с вами связаться" : briefContactTitle;
     steps.forEach((element,i) => { element.hidden = i !== step; });
     form.querySelector("[data-quiz-progress]").hidden = callback;
@@ -205,7 +205,7 @@
     },{threshold:0.01});
     [document.querySelector(".service-hero"),form,document.querySelector("[data-page-footer]")].filter(Boolean).forEach(element => observer.observe(element));
   }
-  show(0,false);
+  show(mode.value === "callback" ? 2 : 0,false);
   if (window.VerhQuizValidation && window.VerhLead) {
     try { window.VerhLoad?.mark("form_ready"); } catch {}
   }
