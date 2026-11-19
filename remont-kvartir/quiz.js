@@ -16,8 +16,13 @@
     {id:'scope',title:'Какой объем работ потребуется выполнить?',options:[['preclean','Предчистовая отделка'],['full','Отделка всего помещения "под ключ" от черновой отделки до чистовой'],['one','Частичный ремонт одной комнаты'],['several','Частичный ремонт нескольких комнат'],['other','Другое']]},
     {id:'contact',title:'Куда отправить расчёт?',phonePrompt:'За этим номером мы закрепим расчет сметы в трех вариантах с выгодой до 250 000 рублей и подарки'},
   ];
-  const state={step:0,history:[],answers:{city:'krasnodar',property:'new',rooms:'',area:'',ceiling:'',repair:'',scope:'full',channels:['phone']},sending:false,submitted:false,phone:'',name:'',consent:true,phoneStarted:false,phoneValid:false};
+  const state={step:0,history:[],answers:{city:'krasnodar',property:'new',rooms:'',area:'',ceiling:'',repair:'',scope:'full',channels:['max']},sending:false,submitted:false,phone:'',name:'',consent:true,phoneStarted:false,phoneValid:false};
   let trigger,autoTimer,phoneView=false;
+  const channelOptions=[['max','MAX'],['telegram','Telegram'],['phone','Звонок']];
+  const speedNotes={max:'Наш сотрудник уже держит палец над кнопкой — напишем в MAX в течение 2–3 минут.',telegram:'Наш сотрудник уже держит палец над кнопкой — напишем в Telegram в течение 2–3 минут.',phone:'Наш сотрудник уже держит палец над кнопкой — позвоним в течение 2–3 минут.'};
+  const purposeNote='Номер нужен, чтобы уточнить детали и посчитать ремонт именно под вашу квартиру.';
+  const trustBadges=['Без рассылок','Не передаём в базы','Только по вашей заявке'];
+  const currentChannel=()=>channelOptions.some(([value])=>value===state.answers.channels[0])?state.answers.channels[0]:'max';
   const esc=value=>String(value).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   function track(event,params={}){
     if(preview||typeof window.ym!=='function')return;
@@ -51,11 +56,12 @@
     progress.style.width=percentage+'%';progressLabel.textContent=`${number} из ${steps.length}`;
     back.disabled=state.history.length===0||state.sending;next.disabled=state.sending;
     next.querySelector('span').textContent=step.id==='contact'?'Получить расчёт':'Далее';
+    panel.classList.toggle('is-contact',step.id==='contact');
     panel.innerHTML=`<h2 id="question-title" tabindex="-1">${esc(step.title)}</h2>`;
     if(step.id==='dimensions')panel.insertAdjacentHTML('beforeend',`<div class="contact-fields"><p class="field-note">Можно примерно. Точную площадь уточним на замере.</p><div class="area-presets" aria-label="Примерная площадь">${[28,36,58,78].map(area=>`<button type="button" data-area-choice="${area}">${area} м²</button>`).join('')}</div><label class="text-field">Площадь, м²<input name="area" inputmode="decimal" autocomplete="off" maxlength="12" placeholder="Например, 65" value="${esc(state.answers.area)}" required aria-describedby="area-note" /><span class="field-note" id="area-note">От 1 до 1 000 м².</span></label><details><summary>Комнаты и высота (необязательно)</summary><div class="optional-fields"><label class="text-field">Комнат<select name="rooms">${[['','Не знаю / не указывать'],['1','1'],['2','2'],['3','3'],['4','4 и более']].map(([value,label])=>`<option value="${value}" ${state.answers.rooms===value?'selected':''}>${label}</option>`).join('')}</select></label><label class="text-field">Высота потолков, если знаете<input name="ceiling" autocomplete="off" maxlength="120" placeholder="Например, 2,7 м или не знаю" value="${esc(state.answers.ceiling)}" aria-describedby="ceiling-note" /><span class="field-note" id="ceiling-note">Можно написать в любом удобном формате или пропустить.</span></label></div></details></div>`);
     else if(step.id==='contact'){
       const phonePrompt=['one','several'].includes(state.answers.scope)?'Оставьте номер — обсудим объём работ и подготовим расчёт для вашей задачи.':step.phonePrompt;
-      panel.insertAdjacentHTML('beforeend',`<div class="contact-fields"><p class="contact-prompt">${esc(phonePrompt)}</p><label class="text-field">Номер телефона<input name="phone" type="tel" inputmode="tel" autocomplete="tel" aria-label="Телефон для расчёта" placeholder="+7 (___) ___-__-__" maxlength="24" value="${esc(state.phone)}" required /></label><label class="text-field">Как удобнее связаться<select name="channel">${[['phone','Звонок'],['max','MAX'],['telegram','Telegram']].map(([value,label])=>`<option value="${value}" ${state.answers.channels.includes(value)?'selected':''}>${label}</option>`).join('')}</select></label><details><summary>Добавить имя (необязательно)</summary><label class="text-field">Имя<input name="name" autocomplete="given-name" maxlength="60" value="${esc(state.name)}" /></label></details><label class="answer consent"><input type="checkbox" name="personal_data_consent" ${state.consent?'checked':''} required /><span>Я согласен(-на) на <a href="../consent.html" target="_blank" rel="noopener">обработку персональных данных</a></span></label></div><label class="hp" aria-hidden="true">Сайт<input name="website" tabindex="-1" autocomplete="off" /></label>`);
+      panel.insertAdjacentHTML('beforeend',`<div class="contact-fields"><p class="contact-prompt">${esc(phonePrompt)}</p><fieldset class="channel-choice"><legend>Как удобнее связаться</legend><div class="channel-options">${channelOptions.map(([value,label])=>`<label class="channel-option"><input type="radio" name="channel" value="${value}" ${currentChannel()===value?'checked':''} /><span>${label}</span></label>`).join('')}</div></fieldset><label class="text-field">Номер телефона<input name="phone" type="tel" inputmode="tel" autocomplete="tel" aria-label="Телефон для расчёта" placeholder="+7 (___) ___-__-__" maxlength="24" value="${esc(state.phone)}" required /></label><p class="contact-note" id="contact-speed" aria-live="polite">${esc(speedNotes[currentChannel()])}</p><p class="contact-note">${esc(purposeNote)}</p><ul class="trust-badges" aria-label="Что мы обещаем">${trustBadges.map(text=>`<li>${esc(text)}</li>`).join('')}</ul><details><summary>Добавить имя (необязательно)</summary><label class="text-field">Имя<input name="name" autocomplete="given-name" maxlength="60" value="${esc(state.name)}" /></label></details><label class="answer consent"><input type="checkbox" name="personal_data_consent" ${state.consent?'checked':''} required /><span>Я согласен(-на) на <a href="../consent.html" target="_blank" rel="noopener">обработку персональных данных</a></span></label></div><label class="hp" aria-hidden="true">Сайт<input name="website" tabindex="-1" autocomplete="off" /></label>`);
       if(!phoneView){phoneView=true;track('main_quiz_contact',{step:state.step+1});track('repair_phone_view',{form:'repair_reference',step:state.step+1});}
     }else{
       const content=step.options.map(([value,label,image])=>{
@@ -111,6 +117,10 @@
   form.addEventListener('change',event=>{
     if(event.isTrusted===false||state.sending)return;
     const input=event.target,step=steps[state.step];
+    if(step.id==='contact'&&input.name==='channel'){
+      state.answers.channels=[input.value];const note=panel.querySelector('#contact-speed');if(note)note.textContent=speedNotes[currentChannel()];
+      track('main_interaction',{action:'channel_select',control:currentChannel(),step:state.step+1});return;
+    }
     if(input.name===step.id&&step.options){
       state.answers[step.id]=input.value;const from=state.step;clearAuto();autoTimer=setTimeout(()=>{if(state.step===from&&dialog.open)void advance();},150);
     }
