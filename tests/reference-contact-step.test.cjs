@@ -27,12 +27,12 @@ test('contact step renders channel, phone, speed note and privacy note before th
  const block=between("else if(step.id==='contact'){","}else{");
  const order=['class="contact-prompt"','class="channel-choice"','name="phone"','id="contact-speed"','${esc(purposeNote)}','class="trust-badges"','name="name"','name="personal_data_consent"','name="website"'].map(part=>block.indexOf(part));
  assert(order.every(index=>index>=0),JSON.stringify(order));assert.deepEqual([...order].sort((a,b)=>a-b),order);
- assert.match(block,/id="contact-speed" aria-live="polite">\$\{esc\(speedNotes\[currentChannel\(\)\]\)\}/);
+ assert.match(block,/id="contact-speed" aria-live="polite">\$\{esc\(speedNote\(\)\)\}/);
 });
 test('choosing a channel updates state and the note, is tracked without private data and never auto-advances',()=>{
  const block=between("form.addEventListener('change'","panel.addEventListener('click'");
  assert.match(block,/if\(step\.id==='contact'&&input\.name==='channel'\)\{/);
- assert.match(block,/state\.answers\.channels=\[input\.value\];/);assert.match(block,/note\.textContent=speedNotes\[currentChannel\(\)\];/);
+ assert.match(block,/state\.answers\.channels=\[input\.value\];/);assert.match(block,/note\.textContent=speedNote\(\);/);
  assert.match(block,/track\('main_interaction',\{action:'channel_select',control:currentChannel\(\),step:state\.step\+1\}\);return;/);
  assert(block.indexOf("input.name==='channel'")<block.indexOf('autoTimer=setTimeout'));
  assert.match(js,/state\.answers\.channels=\[form\.elements\.channel\.value\];/);
@@ -49,4 +49,15 @@ test('styles cover the channel buttons, their checked and focus states and the n
 test('contact step gets a compact layout class that other steps drop',()=>{
  assert.match(js,/panel\.classList\.toggle\('is-contact',step\.id==='contact'\);/);
  assert(js.indexOf("panel.classList.toggle('is-contact'")<js.indexOf('panel.innerHTML=`<h2 id="question-title"'));
+});
+test('speed promise follows Moscow working hours 9:00-21:00 every day; outside them the step promises the morning',()=>{
+ const start=js.indexOf('const channelOptions='),end=js.indexOf('const esc=');const c={state:{answers:{channels:['max']}}};
+ vm.runInNewContext(js.slice(start,end)+'this.isWorkingTime=isWorkingTime;this.speedNote=speedNote;this.nightNotes=nightNotes;this.speedNotes=speedNotes;',c);
+ const at=iso=>new Date(iso);
+ for(const iso of ['2026-11-19T06:00:00Z','2026-11-19T12:30:00Z','2026-11-19T17:59:59Z','2026-11-21T06:00:00Z','2026-11-22T17:00:00Z'])assert.equal(c.isWorkingTime(at(iso)),true,iso);
+ for(const iso of ['2026-11-19T05:59:59Z','2026-11-19T18:00:00Z','2026-11-19T21:14:00Z','2026-11-20T03:06:00Z','2026-11-21T20:59:00Z'])assert.equal(c.isWorkingTime(at(iso)),false,iso);
+ assert.equal(c.speedNote(at('2026-11-19T12:30:00Z')),c.speedNotes.max);assert.equal(c.speedNote(at('2026-11-19T21:14:00Z')),c.nightNotes.max);
+ c.state.answers.channels=['phone'];assert.equal(c.speedNote(at('2026-11-20T03:06:00Z')),'Сейчас наши сотрудники отдыхают — позвоним утром, с 9:00.');assert.equal(c.speedNote(at('2026-11-20T06:00:00Z')),c.speedNotes.phone);
+ c.state.answers.channels=['telegram'];assert.equal(c.speedNote(at('2026-11-19T18:00:00Z')),'Сейчас наши сотрудники отдыхают — напишем в Telegram утром, с 9:00.');
+ assert.deepEqual(Object.keys(c.nightNotes).sort(),['max','phone','telegram']);for(const text of Object.values(c.nightNotes))assert.doesNotMatch(text,/минут/);
 });
