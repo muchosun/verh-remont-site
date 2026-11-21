@@ -33,6 +33,9 @@
     if (digits.length === 11 && digits[0] === '8') digits = '7' + digits.slice(1);
     if (!/^7\d{10}$/.test(digits) || !form.elements.consent.checked) { error.textContent = 'Укажите номер телефона и согласитесь на обработку данных.'; error.hidden = false; return; }
     const source = window.VerhLead.source();
+    // The existing intake accepts callback submissions only for registered paths.
+    source.searchParams.set('landing_path', source.pathname);
+    source.pathname = '/';
     source.searchParams.set('offer', 'arenda_17000');
     source.searchParams.set('property', form.elements.property.value);
     const area = form.elements.area.value.trim();
