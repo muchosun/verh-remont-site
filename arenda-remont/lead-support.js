@@ -1,0 +1,142 @@
+(() => {
+  "use strict";
+  const intakeMode = window.VerhSmartCaptcha?.mode || "unverified-all-v1";
+  const smartMode = intakeMode === "smartcaptcha-v1";
+  const reported = new Set();
+  function reportUnverified(result) {
+    const query = new URLSearchParams(location.search);
+    if (query.get('utm_source') === 'qa' || /^TEST_/i.test(query.get('utm_campaign') || '')) return;
+    if (result.duplicate || reported.has(result.leadId)) return;
+    reported.add(result.leadId);
+    const key = `verh-unverified-goal-${result.leadId}`;
+    try { if (sessionStorage.getItem(key)) return; } catch {}
+    try {
+      if (typeof window.ym === "function") {
+        window.ym(110859289, "reachGoal", `unverified_${result.formType}_delivered`, {form:result.formType,verification:"unverified"});
+        try { sessionStorage.setItem(key,"1"); } catch {}
+      }
+    } catch { /* A delivered lead must not be retried because analytics failed. */ }
+  }
+  const sitekey = "0x4AAAAAAFlZIdAV1EMcxek9";
+  let captchaScript;
+  function loadCaptcha() {
+    if (window.turnstile) return Promise.resolve();
+    if (captchaScript) return captchaScript;
+    captchaScript = new Promise((resolve,reject) => {
+      const script = document.createElement("script");
+      const fail = () => { clearTimeout(timer); script.remove(); captchaScript = null; reject(new Error("Protection unavailable")); };
+      const timer = setTimeout(fail,12000);
+      script.src = "https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit";
+      script.async = true;
+      script.onload = () => { clearTimeout(timer); if (window.turnstile) resolve(); else fail(); };
+      script.onerror = fail;
+      document.head.append(script);
+    });
+    return captchaScript;
+  }
+  async function getCaptchaToken(action) {
+    await loadCaptcha();
+    return new Promise((resolve,reject) => {
+      const container = document.createElement("div");
+      document.body.append(container);
+      let widget, done = false;
+      const finish = (error,token) => {
+        if (done) return;
+        done = true;
+        clearTimeout(timer);
+        if (widget !== undefined) { try { window.turnstile.remove(widget); } catch {} }
+        container.remove();
+        if (error) reject(new Error("Protection unavailable")); else resolve(token);
+      };
+      const timer = setTimeout(() => finish(true),20000);
+      try {
+        widget = window.turnstile.render(container,{
+          sitekey,action,language:"ru",retry:"never","response-field":false,
+          callback:token => finish(typeof token !== "string" || !token,token),
+          "error-callback":() => { finish(true); return true; },
+          "timeout-callback":() => finish(true),
+          "expired-callback":() => finish(true),
+        });
+      } catch { finish(true); }
+    });
+  }
+  if (!window.VerhCaptcha) window.VerhCaptcha = Object.freeze({getToken:getCaptchaToken});
+  const key = "verh-campaign";
+  const isCampaignKey = (name) => /^utm_[a-z_]+$/.test(name) || ["yclid", "gclid", "fbclid"].includes(name);
+  const current = new URL(location.href);
+  let campaign = {};
+  try { campaign = JSON.parse(sessionStorage.getItem(key) || "{}"); } catch { /* Storage is optional. */ }
+  if (!campaign || typeof campaign !== "object" || Array.isArray(campaign)) campaign = {};
+  const incoming = [...current.searchParams].filter(([name]) => isCampaignKey(name));
+  if (incoming.length) {
+    campaign = Object.fromEntries(incoming);
+    try { sessionStorage.setItem(key, JSON.stringify(campaign)); } catch { /* Links still carry attribution. */ }
+  }
+  const source = (href = location.href) => {
+    const url = new URL(href, location.href);
+    for (const [name, value] of Object.entries(campaign)) {
+      if (isCampaignKey(name) && typeof value === "string" && !url.searchParams.has(name)) url.searchParams.set(name, value);
+    }
+    return url;
+  };
+  // Carry only campaign identifiers, never arbitrary query parameters or form data.
+  document.querySelectorAll("a[href]").forEach((link) => {
+    const raw = link.getAttribute("href");
+    if (raw.startsWith("#")) return;
+    const url = new URL(link.href);
+    if (url.origin === location.origin && /^\/(?:uslugi(?:\/|$)|design(?:\/|$)|$)/.test(url.pathname)) link.href = source(url.href).href;
+  });
+  const getClientId = () => new Promise((resolve) => {
+    if (typeof window.ym !== "function") return resolve({clientId:"",clientIdStatus:"ym_unavailable"});
+    let done=false;
+    const finish=(clientId,clientIdStatus)=>{if(done)return;done=true;clearTimeout(timer);resolve({clientId,clientIdStatus});};
+    const timer = setTimeout(() => finish("","timeout"), 1200);
+    try {
+      window.ym(110859289, "getClientID", (value) => {
+        const valid=/^\d{1,64}$/.test(String(value));
+        finish(valid?String(value):"",valid?"available":"invalid");
+      });
+    } catch { finish("","exception"); }
+  });
+  const send = async (endpoint, payload) => {
+    if (!endpoint) throw new Error("Lead endpoint is not configured");
+    const {clientId,clientIdStatus} = await getClientId();
+    const yclid = source(payload.source || location.href).searchParams.get("yclid") || "";
+    payload = {...payload, attribution:{clientId, yclid:/^\d{1,128}$/.test(yclid) ? yclid : "",clientIdStatus}};
+    if (window.VerhSmartCaptcha?.monitoring) {
+      const delivery=await window.VerhSmartCaptcha.submit(endpoint,payload);
+      reportUnverified(delivery);
+      return delivery;
+    }
+    const url = new URL(payload.source || location.href,location.href);
+    const design = Boolean(payload.designBrief) || payload.formVersion === 3 || url.pathname.startsWith("/design/") || url.searchParams.get("request") === "design-project";
+    const emergencyEligible = !design && url.origin === location.origin && url.pathname === '/' && (!payload.kind || payload.kind === 'quiz') && payload.emergencyTimeoutFallback === 'repair-main-timeout-v1';
+    const smartCaptchaToken = smartMode ? await window.VerhSmartCaptcha.getToken() : undefined;
+    const turnstileToken = intakeMode ? undefined : payload.turnstileToken || await window.VerhCaptcha.getToken(design ? "design_lead" : "repair_lead");
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), intakeMode || emergencyEligible ? 25000 : 15000);
+    try {
+      const response = await fetch(endpoint, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({...payload,turnstileToken,smartCaptchaToken,intakeMode}),
+        signal: controller.signal,
+      });
+      if (!response.ok) throw new Error(`Lead endpoint responded with ${response.status}`);
+      const result = await response.json();
+      if (smartMode) {
+        if (result.status !== "accepted" || result.verification !== "smartcaptcha" || result.intakeMode !== intakeMode || !result.leadId || typeof result.duplicate !== "boolean") throw new Error("Verified delivery was not confirmed");
+        return {status:"sent",qualification:result.qualification || "",leadId:result.leadId,duplicate:result.duplicate};
+      }
+      if (intakeMode && result.status === 'accepted_unverified' && result.intakeMode === intakeMode && result.qualification === 'unverified' && result.leadId && /^(repair_(main|callback|calculator)|design_(brief|callback)|service_(priemka_kvartiry|ukladka_laminata|pokleyka_oboev|shpaklevka_sten|ukladka_plitki|razvodka_santehniki|natyazhnoy_potolok))$/.test(result.formType)) {
+        reportUnverified(result);
+        return {status:'unverified',leadId:result.leadId,formType:result.formType,duplicate:result.duplicate === true};
+      }
+      if (intakeMode) throw new Error("Unverified delivery was not confirmed");
+      if (emergencyEligible && result.status === 'accepted_unverified' && result.leadId && result.qualification === 'repair_unverified') return {status:'unverified'};
+      if (result.status !== "accepted" || !result.leadId) throw new Error("Lead delivery was not confirmed");
+      return { status: "sent" };
+    } finally { clearTimeout(timeout); }
+  };
+  window.VerhLead = { source, send, unverifiedMode:window.VerhSmartCaptcha?.monitoring === true || !smartMode && Boolean(intakeMode) };
+})();
