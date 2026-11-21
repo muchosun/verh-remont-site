@@ -85,6 +85,11 @@
     try {
       const updated=await post(endpoint,{intakeMode:monitorMode,phase:"result",receipt:result.receipt,smartCaptchaToken:token,captchaOutcome:outcome},true);
       if(updated.status!=="monitor_updated"||updated.goalPolicy!==goalPolicy||updated.formType!==result.formType||!["passed","cancelled","timeout","unavailable","failed"].includes(updated.captchaStatus)) throw Error("Status update not confirmed");
+      const query = new URLSearchParams(location.search);
+      const qa = query.get('utm_source') === 'qa' || /^TEST_/i.test(query.get('utm_campaign') || '');
+      if (!qa && !result.duplicate && !updated.duplicate && updated.leadId === result.leadId && updated.captchaStatus === 'passed') {
+        try { window.ym?.(110859289, 'reachGoal', 'arenda_17000_lead_delivered'); } catch {}
+      }
       reportStatus(result.formType,updated.captchaStatus);
       reportVerified(result,updated);
     } catch {reportStatus(result.formType,"status_update_failed");}

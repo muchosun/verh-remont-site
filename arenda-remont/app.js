@@ -5,6 +5,8 @@
   const second = form.querySelector('[data-step="2"]');
   const error = form.querySelector('.error');
   const preview = ['localhost', '127.0.0.1'].includes(location.hostname) || location.protocol === 'file:';
+  const query = new URLSearchParams(location.search);
+  const qa = query.get('utm_source') === 'qa' || /^TEST_/i.test(query.get('utm_campaign') || '');
   const track = event => { try { window.ym?.(110859289, 'params', {arenda_17000:{event}}); } catch {} };
   let trigger;
   document.querySelectorAll('[data-open]').forEach(button => button.addEventListener('click', () => { trigger = button; dialog.showModal(); track('form_open'); }));
@@ -24,7 +26,7 @@
   }));
   gallery.querySelector('.gallery-close').addEventListener('click', () => gallery.close());
   gallery.addEventListener('close', () => galleryTrigger?.focus());
-  form.querySelector('[data-next]').addEventListener('click', () => { first.hidden = true; second.hidden = false; form.elements.phone.focus(); });
+  form.querySelector('[data-next]').addEventListener('click', () => { first.hidden = true; second.hidden = false; form.elements.phone.focus(); if (!qa) { try { window.ym?.(110859289, 'reachGoal', 'arenda_17000_phone_view'); } catch {} } });
   form.querySelector('[data-back]').addEventListener('click', () => { second.hidden = true; first.hidden = false; form.querySelector('[data-next]').focus(); });
   form.addEventListener('submit', async event => {
     event.preventDefault();
